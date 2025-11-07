@@ -1,69 +1,66 @@
 {{ 'problem-infographic.css' | asset_url | stylesheet_tag }}
 
-<section class="nad-decline-meter section-{{ section.id }}-padding" style="background-color: {{ section.settings.section_bg_color }};">
+<section
+  class="nad-decline-meter section-{{ section.id }}-padding"
+  style="--section-bg-color: {{ section.settings.section_bg_color }};"
+>
   <div class="nad-decline-meter__container page-width">
     <!-- Two Column Layout -->
-
     <div class="nad-decline-meter__two-column {% if section.settings.swap_columns %}nad-decline-meter__two-column--swapped{% endif %}">
       <!-- Left Column: Text Content -->
+      <div class="nad-decline-meter__content-col" style="--content-alignment: {{ section.settings.content_alignment }};">
+        <p
+          class="nad-decline-meter__subtitle"
+          style="--subtitle-color: {{ section.settings.subtitle_color }};"
+        >
+          {{ section.settings.subtitle }}
+        </p>
 
-      <div class="nad-decline-meter__content-col" style="text-align: {{ section.settings.content_alignment }}; margin-top: {{ section.settings.content_col_margin_top }}px; margin-bottom: {{ section.settings.content_col_margin_bottom }}px;">
-        {% if section.settings.subtitle != blank %}
-          <div class="nad-decline-meter__subtitle" style="font-size: {{ section.settings.subtitle_font_size }}px; color: {{ section.settings.subtitle_color }}; margin-bottom: {{ section.settings.subtitle_margin_bottom }}px; padding: {{ section.settings.subtitle_padding }}px;">
-            {{ section.settings.subtitle }}
-          </div>
-        {% endif %}
+        <h2 class="nad-decline-meter__heading">
+          {{ section.settings.main_heading | replace: 'NAD+', '<span class="nad-highlight" style="color: ' | append: section.settings.heading_highlight_color | append: ';">NAD+</span>' }}
+        </h2>
 
-        {% if section.settings.main_heading != blank %}
-          <h2 class="nad-decline-meter__heading" style="font-size: {{ section.settings.heading_font_size }}px; color: {{ section.settings.heading_color }}; margin-bottom: {{ section.settings.heading_margin_bottom }}px; padding: {{ section.settings.heading_padding }}px;">
-            {% assign heading_parts = section.settings.main_heading | split: 'NAD+' %}
-            {% if heading_parts.size > 1 %}
-              {{ heading_parts[0] -}}
-              <span class="nad-highlight" style="color: {{ section.settings.heading_highlight_color }};">NAD+</span>{{ heading_parts[1] }}
-            {% else %}
-              {{ section.settings.main_heading }}
-            {% endif %}
-          </h2>
-        {% endif %}
-
-        {% if section.settings.description != blank %}
-          <div class="nad-decline-meter__description" style="font-size: {{ section.settings.description_font_size }}px; color: {{ section.settings.description_color }}; margin-bottom: {{ section.settings.description_margin_bottom }}px; padding: {{ section.settings.description_padding }}px;">
-            {{ section.settings.description }}
-          </div>
-        {% endif %}
+        <div class="nad-decline-meter__description rte">
+          {{ section.settings.description }}
+        </div>
 
         {% if section.settings.button_text != blank %}
-          <a href="{{ section.settings.button_link }}" class="nad-decline-meter__button" style="font-size: {{ section.settings.button_font_size }}px; color: {{ section.settings.button_text_color }}; background-color: {{ section.settings.button_bg_color }}; border-color: {{ section.settings.button_border_color }}; padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px; margin-top: {{ section.settings.button_margin_top }}px;">
+          <a
+            href="{{ section.settings.button_link }}"
+            class="nad-decline-meter__button"
+            style="--button-text-color: {{ section.settings.button_text_color }}; --button-bg-color: {{ section.settings.button_bg_color }}; --button-border-color: {{ section.settings.button_border_color }}; --button-hover-bg-color: {{ section.settings.button_border_color }}; --button-hover-text-color: #ffffff;"
+          >
             {{ section.settings.button_text }}
           </a>
         {% endif %}
       </div>
 
       <!-- Right Column: Gauge -->
-
-      <div class="nad-decline-meter__gauge-col" style="margin-top: {{ section.settings.gauge_col_margin_top }}px; margin-bottom: {{ section.settings.gauge_col_margin_bottom }}px;">
-        {% if section.settings.title != blank %}
-          <h3 class="nad-decline-meter__title" style="font-size: {{ section.settings.title_font_size }}px; color: {{ section.settings.title_color }}; margin-bottom: {{ section.settings.title_margin_bottom }}px; padding: {{ section.settings.title_padding }}px;">
-            {{ section.settings.title }}
-          </h3>
-        {% endif %}
+      <div class="nad-decline-meter__gauge-col">
+        <h3 class="nad-decline-meter__title" style="--title-color: {{ section.settings.title_color }};">
+          {{ section.settings.title }}
+        </h3>
 
         <div class="nad-decline-meter__gauge-wrapper">
-          <svg class="nad-decline-meter__gauge" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-            <!-- Define gradient for the stroke -->
-
+          <svg
+            class="nad-decline-meter__gauge"
+            viewBox="0 0 300 300"
+            aria-labelledby="gaugeTitle-{{ section.id }}"
+            role="img"
+          >
+            <title id="gaugeTitle-{{ section.id }}">
+              {{ section.settings.title }} - {{ section.settings.decline_percentage }}% Decline
+            </title>
             <defs>
               <linearGradient id="gaugeGradient-{{ section.id }}" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-opacity:1" />
-                <stop offset="100%" style="stop-opacity:1" />
+                <stop offset="0%" style="stop-color:{{ section.settings.gauge_color }};" />
+                <stop offset="100%" style="stop-color:{{ section.settings.gauge_gradient_end_color }};" />
               </linearGradient>
-
-              <!-- Glow filter -->
               <filter id="glow-{{ section.id }}" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="8" result="coloredBlur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
@@ -76,67 +73,61 @@
               r="130"
               fill="none"
               stroke-width="14"
+              style="--gauge-bg-color: {{ section.settings.gauge_bg_color }};"
             />
 
-
-
             <!-- Animated progress circle -->
-
             <circle
-
               class="nad-decline-meter__circle-progress"
-
               cx="150"
-
               cy="150"
-
               r="130"
-
               fill="none"
-
               stroke="url(#gaugeGradient-{{ section.id }})"
-
               stroke-width="14"
-
               stroke-linecap="round"
-
               style="transform-origin: center; transform: rotate(180deg) scaleY(-1);"
-
               data-percentage="{{ section.settings.decline_percentage }}"
-
             />
           </svg>
 
-          <!-- Center content -->
-
           <div class="nad-decline-meter__content">
-            <div class="nad-decline-meter__percentage" style="font-size: {{ section.settings.percentage_font_size }}px; color: {{ section.settings.percentage_color }};">↓ {{ section.settings.decline_percentage }}%</div>
-
-            <div class="nad-decline-meter__label" style="font-size: {{ section.settings.label_font_size }}px; color: {{ section.settings.label_color }};">{{ section.settings.gauge_label_text }}</div>
+            <div
+              class="nad-decline-meter__percentage"
+              style="--percentage-color: {{ section.settings.percentage_color }};"
+            >
+              ↓ 0%
+            </div>
+            <div class="nad-decline-meter__label" style="--label-color: {{ section.settings.label_color }};">
+              {{ section.settings.label_text }}
+            </div>
           </div>
         </div>
 
-        <!-- Age timeline -->
-
-        <div class="nad-decline-meter__timeline" style="margin-top: {{ section.settings.timeline_margin_top }}px; margin-bottom: {{ section.settings.timeline_margin_bottom }}px;">
+        <div class="nad-decline-meter__timeline">
           <div class="nad-decline-meter__timeline-item">
-            <div class="nad-decline-meter__age" style="font-size: {{ section.settings.age_font_size }}px; color: {{ section.settings.age_color }}; margin-bottom: {{ section.settings.age_margin_bottom }}px;">Age {{ section.settings.start_age }}</div>
-
-            <div class="nad-decline-meter__status" style="font-size: {{ section.settings.status_font_size }}px; color: {{ section.settings.status_color }};">100% NAD+</div>
+            <div class="nad-decline-meter__age" style="--age-text-color: {{ section.settings.age_text_color }};">
+              {{ section.settings.start_age }}
+            </div>
+            <div class="nad-decline-meter__status" style="--status-text-color: {{ section.settings.status_text_color }};">
+              Peak
+            </div>
           </div>
-
-          <div class="nad-decline-meter__timeline-line" style="background: linear-gradient(to right, {{ section.settings.timeline_start_color }} 0%, {{ section.settings.timeline_middle_color }} 50%, {{ section.settings.timeline_end_color }} 100%);"></div>
-
+          <div
+            class="nad-decline-meter__timeline-line"
+            style="--timeline-line-color: {{ section.settings.timeline_line_color }}; --timeline-line-bg-color: {{ section.settings.timeline_line_bg_color }}; --timeline-endpoint-color: {{ section.settings.timeline_endpoint_color }};"
+          ></div>
           <div class="nad-decline-meter__timeline-item">
-            <div class="nad-decline-meter__age" style="font-size: {{ section.settings.age_font_size }}px; color: {{ section.settings.age_color }}; margin-bottom: {{ section.settings.age_margin_bottom }}px;">Age {{ section.settings.end_age }}</div>
-
-            <div class="nad-decline-meter__status" style="font-size: {{ section.settings.status_font_size }}px; color: {{ section.settings.status_color }};">{{ 100 | minus: section.settings.decline_percentage }}% NAD+</div>
+            <div class="nad-decline-meter__age" style="--age-text-color: {{ section.settings.age_text_color }};">
+              {{ section.settings.end_age }}
+            </div>
+            <div class="nad-decline-meter__status" style="--status-text-color: {{ section.settings.status_text_color }};">
+              Decline
+            </div>
           </div>
         </div>
 
-        <!-- Citation -->
-
-        <div class="nad-decline-meter__citation" style="font-size: {{ section.settings.citation_font_size }}px; color: {{ section.settings.citation_color }}; margin-top: {{ section.settings.citation_margin_top }}px; padding: {{ section.settings.citation_padding }}px;">
+        <div class="nad-decline-meter__citation" style="--citation-color: {{ section.settings.citation_color }};">
           {{ section.settings.citation_text }}
         </div>
       </div>
@@ -309,8 +300,171 @@
 </script>
 
 <style>
-  .nad-decline-meter__circle-progress {
-    filter: drop-shadow(0 0 8px {{ section.settings.gauge_color | color_modify: 'alpha', 0.3 }});
+  .section-{{ section.id }}-padding {
+    background-color: var(--section-bg-color);
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  .nad-decline-meter__content-col {
+    text-align: var(--content-alignment);
+    margin-top: {{ section.settings.content_col_margin_top_mobile }}px;
+    margin-bottom: {{ section.settings.content_col_margin_bottom_mobile }}px;
+  }
+
+  .nad-decline-meter__subtitle {
+    font-size: {{ section.settings.subtitle_font_size_mobile }}px;
+    color: var(--subtitle-color);
+    margin-bottom: {{ section.settings.subtitle_margin_bottom_mobile }}px;
+    padding: {{ section.settings.subtitle_padding_mobile }}px;
+  }
+
+  .nad-decline-meter__heading {
+    font-size: {{ section.settings.heading_font_size_mobile }}px;
+    color: {{ section.settings.heading_color }};
+    margin-bottom: {{ section.settings.heading_margin_bottom_mobile }}px;
+    padding: {{ section.settings.heading_padding_mobile }}px;
+  }
+
+  .nad-decline-meter__description {
+    font-size: {{ section.settings.description_font_size_mobile }}px;
+    color: {{ section.settings.description_color }};
+    margin-bottom: {{ section.settings.description_margin_bottom_mobile }}px;
+    padding: {{ section.settings.description_padding_mobile }}px;
+  }
+
+  .nad-decline-meter__button {
+    font-size: {{ section.settings.button_font_size_mobile }}px;
+    padding: {{ section.settings.button_padding_vertical_mobile }}px {{ section.settings.button_padding_horizontal_mobile }}px;
+    margin-top: {{ section.settings.button_margin_top_mobile }}px;
+    color: var(--button-text-color);
+    background-color: var(--button-bg-color);
+    border-color: var(--button-border-color);
+  }
+  .nad-decline-meter__button:hover {
+    background-color: var(--button-hover-bg-color);
+    color: var(--button-hover-text-color);
+  }
+
+  .nad-decline-meter__gauge-col {
+    margin-top: {{ section.settings.gauge_col_margin_top_mobile }}px;
+    margin-bottom: {{ section.settings.gauge_col_margin_bottom_mobile }}px;
+  }
+
+  .nad-decline-meter__title {
+    font-size: {{ section.settings.title_font_size_mobile }}px;
+    color: var(--title-color);
+    margin-bottom: {{ section.settings.title_margin_bottom_mobile }}px;
+    padding: {{ section.settings.title_padding_mobile }}px;
+  }
+
+  .nad-decline-meter__percentage {
+    font-size: {{ section.settings.percentage_font_size_mobile }}px;
+    color: var(--percentage-color);
+  }
+
+  .nad-decline-meter__label {
+    font-size: {{ section.settings.label_font_size_mobile }}px;
+    color: var(--label-color);
+  }
+
+  .nad-decline-meter__timeline {
+    margin-top: {{ section.settings.timeline_margin_top_mobile }}px;
+    margin-bottom: {{ section.settings.timeline_margin_bottom_mobile }}px;
+  }
+
+  .nad-decline-meter__timeline-line {
+    background: linear-gradient(to right, var(--timeline-line-color) 0%, var(--timeline-line-bg-color) 50%, var(--timeline-endpoint-color) 100%);
+  }
+  .nad-decline-meter__timeline-line::before {
+    background-color: var(--timeline-line-color);
+  }
+  .nad-decline-meter__timeline-line::after {
+    background-color: var(--timeline-endpoint-color);
+  }
+
+  .nad-decline-meter__age {
+    font-size: {{ section.settings.age_font_size_mobile }}px;
+    color: var(--age-text-color);
+    margin-bottom: {{ section.settings.age_margin_bottom_mobile }}px;
+  }
+
+  .nad-decline-meter__status {
+    font-size: {{ section.settings.status_font_size_mobile }}px;
+    color: var(--status-text-color);
+  }
+
+  .nad-decline-meter__citation {
+    font-size: {{ section.settings.citation_font_size_mobile }}px;
+    color: var(--citation-color);
+    margin-top: {{ section.settings.citation_margin_top_mobile }}px;
+    padding: {{ section.settings.citation_padding_mobile }}px;
+  }
+
+  .nad-decline-meter__circle-bg {
+    stroke: var(--gauge-bg-color);
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+    .nad-decline-meter__content-col {
+      margin-top: {{ section.settings.content_col_margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.content_col_margin_bottom_desktop }}px;
+    }
+    .nad-decline-meter__subtitle {
+      font-size: {{ section.settings.subtitle_font_size_desktop }}px;
+      margin-bottom: {{ section.settings.subtitle_margin_bottom_desktop }}px;
+      padding: {{ section.settings.subtitle_padding_desktop }}px;
+    }
+    .nad-decline-meter__heading {
+      font-size: {{ section.settings.heading_font_size_desktop }}px;
+      margin-bottom: {{ section.settings.heading_margin_bottom_desktop }}px;
+      padding: {{ section.settings.heading_padding_desktop }}px;
+    }
+    .nad-decline-meter__description {
+      font-size: {{ section.settings.description_font_size_desktop }}px;
+      margin-bottom: {{ section.settings.description_margin_bottom_desktop }}px;
+      padding: {{ section.settings.description_padding_desktop }}px;
+    }
+    .nad-decline-meter__button {
+      font-size: {{ section.settings.button_font_size_desktop }}px;
+      padding: {{ section.settings.button_padding_vertical_desktop }}px {{ section.settings.button_padding_horizontal_desktop }}px;
+      margin-top: {{ section.settings.button_margin_top_desktop }}px;
+    }
+    .nad-decline-meter__gauge-col {
+      margin-top: {{ section.settings.gauge_col_margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.gauge_col_margin_bottom_desktop }}px;
+    }
+    .nad-decline-meter__title {
+      font-size: {{ section.settings.title_font_size_desktop }}px;
+      margin-bottom: {{ section.settings.title_margin_bottom_desktop }}px;
+      padding: {{ section.settings.title_padding_desktop }}px;
+    }
+    .nad-decline-meter__percentage {
+      font-size: {{ section.settings.percentage_font_size_desktop }}px;
+    }
+    .nad-decline-meter__label {
+      font-size: {{ section.settings.label_font_size_desktop }}px;
+    }
+    .nad-decline-meter__timeline {
+      margin-top: {{ section.settings.timeline_margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.timeline_margin_bottom_desktop }}px;
+    }
+    .nad-decline-meter__age {
+      font-size: {{ section.settings.age_font_size_desktop }}px;
+      margin-bottom: {{ section.settings.age_margin_bottom_desktop }}px;
+    }
+    .nad-decline-meter__status {
+      font-size: {{ section.settings.status_font_size_desktop }}px;
+    }
+    .nad-decline-meter__citation {
+      font-size: {{ section.settings.citation_font_size_desktop }}px;
+      margin-top: {{ section.settings.citation_margin_top_desktop }}px;
+      padding: {{ section.settings.citation_padding_desktop }}px;
+    }
   }
 
   .nad-decline-meter__two-column--swapped {
@@ -327,15 +481,6 @@
 
   #gaugeGradient-{{ section.id }} stop:last-child {
     stop-color: {{ section.settings.gauge_gradient_end_color }};
-  }
-
-  .nad-decline-meter__circle-bg {
-    stroke: {{ section.settings.gauge_bg_color }};
-  }
-
-  .nad-decline-meter__button:hover {
-    background-color: {{ section.settings.button_border_color }};
-    color: #ffffff;
   }
 </style>
 
@@ -371,39 +516,50 @@
       "id": "content_alignment",
       "label": "Content Alignment",
       "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "center",
-          "label": "Center"
-        },
-        {
-          "value": "right",
-          "label": "Right"
-        }
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
       ],
       "default": "left"
     },
     {
       "type": "range",
-      "id": "content_col_margin_top",
+      "id": "content_col_margin_top_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Column Margin Top",
+      "label": "Column Margin Top (Desktop)",
       "default": 0
     },
     {
       "type": "range",
-      "id": "content_col_margin_bottom",
+      "id": "content_col_margin_bottom_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Column Margin Bottom",
+      "label": "Column Margin Bottom (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "content_col_margin_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Column Margin Top (Mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "content_col_margin_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Column Margin Bottom (Mobile)",
       "default": 0
     },
     {
@@ -418,13 +574,23 @@
     },
     {
       "type": "range",
-      "id": "subtitle_font_size",
+      "id": "subtitle_font_size_desktop",
       "min": 12,
       "max": 48,
       "step": 1,
       "unit": "px",
-      "label": "Subtitle Font Size",
+      "label": "Font Size (Desktop)",
       "default": 24
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size_mobile",
+      "min": 10,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 18
     },
     {
       "type": "color",
@@ -434,22 +600,42 @@
     },
     {
       "type": "range",
-      "id": "subtitle_margin_bottom",
+      "id": "subtitle_margin_bottom_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Subtitle Margin Bottom",
+      "label": "Margin Bottom (Desktop)",
       "default": 15
     },
     {
       "type": "range",
-      "id": "subtitle_padding",
+      "id": "subtitle_margin_bottom_mobile",
       "min": 0,
       "max": 50,
       "step": 5,
       "unit": "px",
-      "label": "Subtitle Padding",
+      "label": "Margin Bottom (Mobile)",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "subtitle_padding_desktop",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "subtitle_padding_mobile",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Mobile)",
       "default": 0
     },
     {
@@ -464,13 +650,23 @@
     },
     {
       "type": "range",
-      "id": "heading_font_size",
+      "id": "heading_font_size_desktop",
       "min": 20,
       "max": 80,
       "step": 2,
       "unit": "px",
-      "label": "Heading Font Size",
+      "label": "Font Size (Desktop)",
       "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_mobile",
+      "min": 18,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 32
     },
     {
       "type": "color",
@@ -486,22 +682,42 @@
     },
     {
       "type": "range",
-      "id": "heading_margin_bottom",
+      "id": "heading_margin_bottom_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Heading Margin Bottom",
+      "label": "Margin Bottom (Desktop)",
       "default": 25
     },
     {
       "type": "range",
-      "id": "heading_padding",
+      "id": "heading_margin_bottom_mobile",
       "min": 0,
       "max": 50,
       "step": 5,
       "unit": "px",
-      "label": "Heading Padding",
+      "label": "Margin Bottom (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "heading_padding_desktop",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "heading_padding_mobile",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Mobile)",
       "default": 0
     },
     {
@@ -516,13 +732,23 @@
     },
     {
       "type": "range",
-      "id": "description_font_size",
+      "id": "description_font_size_desktop",
       "min": 12,
       "max": 36,
       "step": 1,
       "unit": "px",
-      "label": "Description Font Size",
+      "label": "Font Size (Desktop)",
       "default": 18
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 14
     },
     {
       "type": "color",
@@ -532,22 +758,42 @@
     },
     {
       "type": "range",
-      "id": "description_margin_bottom",
+      "id": "description_margin_bottom_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Description Margin Bottom",
+      "label": "Margin Bottom (Desktop)",
       "default": 25
     },
     {
       "type": "range",
-      "id": "description_padding",
+      "id": "description_margin_bottom_mobile",
       "min": 0,
       "max": 50,
       "step": 5,
       "unit": "px",
-      "label": "Description Padding",
+      "label": "Margin Bottom (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "description_padding_desktop",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "description_padding_mobile",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Mobile)",
       "default": 0
     },
     {
@@ -567,13 +813,23 @@
     },
     {
       "type": "range",
-      "id": "button_font_size",
+      "id": "button_font_size_desktop",
       "min": 12,
       "max": 32,
       "step": 1,
       "unit": "px",
-      "label": "Button Font Size",
+      "label": "Font Size (Desktop)",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 14
     },
     {
       "type": "color",
@@ -595,32 +851,62 @@
     },
     {
       "type": "range",
-      "id": "button_padding_vertical",
+      "id": "button_padding_vertical_desktop",
       "min": 0,
       "max": 50,
       "step": 2,
       "unit": "px",
-      "label": "Button Padding Vertical",
+      "label": "Padding Vertical (Desktop)",
       "default": 14
     },
     {
       "type": "range",
-      "id": "button_padding_horizontal",
+      "id": "button_padding_horizontal_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Button Padding Horizontal",
+      "label": "Padding Horizontal (Desktop)",
       "default": 30
     },
     {
       "type": "range",
-      "id": "button_margin_top",
+      "id": "button_padding_vertical_mobile",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Vertical (Mobile)",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal_mobile",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Horizontal (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_margin_top_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Button Margin Top",
+      "label": "Margin Top (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_margin_top_mobile",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin Top (Mobile)",
       "default": 0
     },
     {
@@ -629,23 +915,43 @@
     },
     {
       "type": "range",
-      "id": "gauge_col_margin_top",
+      "id": "gauge_col_margin_top_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Gauge Column Margin Top",
+      "label": "Gauge Column Margin Top (Desktop)",
       "default": 0
     },
     {
       "type": "range",
-      "id": "gauge_col_margin_bottom",
+      "id": "gauge_col_margin_bottom_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Gauge Column Margin Bottom",
+      "label": "Gauge Column Margin Bottom (Desktop)",
       "default": 0
+    },
+    {
+      "type": "range",
+      "id": "gauge_col_margin_top_mobile",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Gauge Column Margin Top (Mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "gauge_col_margin_bottom_mobile",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Gauge Column Margin Bottom (Mobile)",
+      "default": 20
     },
     {
       "type": "header",
@@ -659,13 +965,23 @@
     },
     {
       "type": "range",
-      "id": "title_font_size",
+      "id": "title_font_size_desktop",
       "min": 14,
       "max": 48,
       "step": 1,
       "unit": "px",
-      "label": "Title Font Size",
+      "label": "Font Size (Desktop)",
       "default": 20
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 16
     },
     {
       "type": "color",
@@ -675,22 +991,42 @@
     },
     {
       "type": "range",
-      "id": "title_margin_bottom",
+      "id": "title_margin_bottom_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Title Margin Bottom",
+      "label": "Margin Bottom (Desktop)",
       "default": 30
     },
     {
       "type": "range",
-      "id": "title_padding",
+      "id": "title_margin_bottom_mobile",
       "min": 0,
       "max": 50,
       "step": 5,
       "unit": "px",
-      "label": "Title Padding",
+      "label": "Margin Bottom (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "title_padding_desktop",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "title_padding_mobile",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Mobile)",
       "default": 0
     },
     {
@@ -732,13 +1068,23 @@
     },
     {
       "type": "range",
-      "id": "percentage_font_size",
+      "id": "percentage_font_size_desktop",
       "min": 24,
       "max": 80,
       "step": 2,
       "unit": "px",
-      "label": "Percentage Font Size",
+      "label": "Percentage Font Size (Desktop)",
       "default": 48
+    },
+    {
+      "type": "range",
+      "id": "percentage_font_size_mobile",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Percentage Font Size (Mobile)",
+      "default": 32
     },
     {
       "type": "color",
@@ -748,19 +1094,29 @@
     },
     {
       "type": "text",
-      "id": "gauge_label_text",
-      "label": "Gauge Label Text",
+      "id": "label_text",
+      "label": "Label Text",
       "default": "NAD+ Decline"
     },
     {
       "type": "range",
-      "id": "label_font_size",
+      "id": "label_font_size_desktop",
       "min": 10,
-      "max": 32,
+      "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Label Font Size",
+      "label": "Label Font Size (Desktop)",
       "default": 14
+    },
+    {
+      "type": "range",
+      "id": "label_font_size_mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Label Font Size (Mobile)",
+      "default": 12
     },
     {
       "type": "color",
@@ -773,59 +1129,73 @@
       "content": "Timeline Settings"
     },
     {
-      "type": "range",
+      "type": "number",
       "id": "start_age",
-      "min": 20,
-      "max": 50,
-      "step": 5,
       "label": "Start Age",
       "default": 30
     },
     {
-      "type": "range",
+      "type": "number",
       "id": "end_age",
-      "min": 50,
-      "max": 90,
-      "step": 5,
       "label": "End Age",
       "default": 70
     },
     {
       "type": "range",
-      "id": "timeline_margin_top",
+      "id": "timeline_margin_top_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Timeline Margin Top",
+      "label": "Margin Top (Desktop)",
       "default": 0
     },
     {
       "type": "range",
-      "id": "timeline_margin_bottom",
+      "id": "timeline_margin_bottom_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Timeline Margin Bottom",
+      "label": "Margin Bottom (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "timeline_margin_top_mobile",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin Top (Mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "timeline_margin_bottom_mobile",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin Bottom (Mobile)",
       "default": 0
     },
     {
       "type": "color",
-      "id": "timeline_start_color",
-      "label": "Timeline Start Color",
+      "id": "timeline_line_color",
+      "label": "Timeline Line Color",
       "default": "#0b63ce"
     },
     {
       "type": "color",
-      "id": "timeline_middle_color",
-      "label": "Timeline Middle Color",
+      "id": "timeline_line_bg_color",
+      "label": "Timeline Line Background",
       "default": "#e5e7eb"
     },
     {
       "type": "color",
-      "id": "timeline_end_color",
-      "label": "Timeline End Color",
+      "id": "timeline_endpoint_color",
+      "label": "Timeline Endpoint Color",
       "default": "#cde6ff"
     },
     {
@@ -834,29 +1204,49 @@
     },
     {
       "type": "range",
-      "id": "age_font_size",
+      "id": "age_font_size_desktop",
       "min": 12,
       "max": 36,
       "step": 1,
       "unit": "px",
-      "label": "Age Font Size",
+      "label": "Font Size (Desktop)",
       "default": 18
     },
     {
+      "type": "range",
+      "id": "age_font_size_mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 14
+    },
+    {
       "type": "color",
-      "id": "age_color",
-      "label": "Age Color",
+      "id": "age_text_color",
+      "label": "Color",
       "default": "#111827"
     },
     {
       "type": "range",
-      "id": "age_margin_bottom",
+      "id": "age_margin_bottom_desktop",
       "min": 0,
-      "max": 50,
-      "step": 2,
+      "max": 20,
+      "step": 1,
       "unit": "px",
-      "label": "Age Margin Bottom",
+      "label": "Margin Bottom (Desktop)",
       "default": 4
+    },
+    {
+      "type": "range",
+      "id": "age_margin_bottom_mobile",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Bottom (Mobile)",
+      "default": 2
     },
     {
       "type": "header",
@@ -864,18 +1254,28 @@
     },
     {
       "type": "range",
-      "id": "status_font_size",
+      "id": "status_font_size_desktop",
       "min": 10,
-      "max": 28,
+      "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Status Font Size",
+      "label": "Font Size (Desktop)",
       "default": 14
     },
     {
+      "type": "range",
+      "id": "status_font_size_mobile",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 12
+    },
+    {
       "type": "color",
-      "id": "status_color",
-      "label": "Status Color",
+      "id": "status_text_color",
+      "label": "Color",
       "default": "#6b7280"
     },
     {
@@ -883,45 +1283,75 @@
       "content": "Citation Settings"
     },
     {
-      "type": "textarea",
+      "type": "text",
       "id": "citation_text",
       "label": "Citation Text",
       "default": "Source: Massudi et al., PLoS ONE, 1012; Jinfinity Health Report."
     },
     {
       "type": "range",
-      "id": "citation_font_size",
+      "id": "citation_font_size_desktop",
       "min": 8,
       "max": 24,
       "step": 1,
       "unit": "px",
-      "label": "Citation Font Size",
+      "label": "Font Size (Desktop)",
       "default": 12
+    },
+    {
+      "type": "range",
+      "id": "citation_font_size_mobile",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 10
     },
     {
       "type": "color",
       "id": "citation_color",
-      "label": "Citation Color",
+      "label": "Color",
       "default": "#000000"
     },
     {
       "type": "range",
-      "id": "citation_margin_top",
+      "id": "citation_margin_top_desktop",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "px",
-      "label": "Citation Margin Top",
+      "label": "Margin Top (Desktop)",
       "default": 25
     },
     {
       "type": "range",
-      "id": "citation_padding",
+      "id": "citation_margin_top_mobile",
       "min": 0,
       "max": 50,
       "step": 5,
       "unit": "px",
-      "label": "Citation Padding",
+      "label": "Margin Top (Mobile)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "citation_padding_desktop",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "citation_padding_mobile",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding (Mobile)",
       "default": 0
     },
     {
@@ -930,23 +1360,43 @@
     },
     {
       "type": "range",
-      "id": "padding_top",
+      "id": "padding_top_desktop",
       "min": 0,
-      "max": 150,
+      "max": 200,
       "step": 10,
       "unit": "px",
-      "label": "Padding Top",
+      "label": "Padding Top (Desktop)",
       "default": 80
     },
     {
       "type": "range",
-      "id": "padding_bottom",
+      "id": "padding_bottom_desktop",
       "min": 0,
-      "max": 150,
+      "max": 200,
       "step": 10,
       "unit": "px",
-      "label": "Padding Bottom",
+      "label": "Padding Bottom (Desktop)",
       "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom (Mobile)",
+      "default": 40
     }
   ],
   "presets": [
@@ -956,13 +1406,3 @@
   ]
 }
 {% endschema %}
-
-<style>
-  .section-{{ section.id }}-padding {
-
-    padding-top: {{ section.settings.padding_top }}px;
-
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-
-  }
-</style>
