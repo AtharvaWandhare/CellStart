@@ -1,0 +1,557 @@
+{% comment %}
+  Countdown Sale Section with Parallax Background
+{% endcomment %}
+
+<style>
+  .countdown-sale-section {
+    position: relative;
+    min-height: 300px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 40px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .countdown-sale-section {
+      min-height: 400px;
+    }
+  }
+
+  /* Parallax Background - GPU-accelerated */
+  .countdown-sale__background {
+    position: absolute;
+    top: -10%;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    pointer-events: none;
+    border-radius: 1rem;
+  }
+
+  .countdown-sale__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+    pointer-events: none;
+    border-radius: 1rem;
+  }
+
+  /* Content Container */
+  .countdown-sale__content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    color: white;
+  }
+
+  .countdown-sale__content--left {
+    text-align: left;
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .countdown-sale__content--center {
+    text-align: center;
+  }
+
+  .countdown-sale__content--right {
+    text-align: right;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  /* Badge */
+  .countdown-sale__badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background-color: rgba(255, 59, 48, 0.9);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Heading */
+  .countdown-sale__heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  @media screen and (min-width: 750px) {
+    .countdown-sale__heading {
+      font-size: 3.75rem;
+    }
+  }
+
+  /* Description */
+  .countdown-sale__description {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  @media screen and (min-width: 750px) {
+    .countdown-sale__description {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* Countdown Timer */
+  .countdown-sale__timer {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .countdown-sale__content--left .countdown-sale__timer {
+    justify-content: flex-start;
+  }
+
+  .countdown-sale__content--center .countdown-sale__timer {
+    justify-content: center;
+  }
+
+  .countdown-sale__content--right .countdown-sale__timer {
+    justify-content: flex-end;
+  }
+
+  .countdown-sale__timer-unit {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    min-width: 90px;
+    text-align: center;
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+
+  .countdown-sale__timer-unit:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  @media screen and (min-width: 750px) {
+    .countdown-sale__timer-unit {
+      min-width: 120px;
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  .countdown-sale__timer-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-family: var(--font-family-heading, inherit);
+  }
+
+  @media screen and (min-width: 750px) {
+    .countdown-sale__timer-number {
+      font-size: 3.5rem;
+    }
+  }
+
+  .countdown-sale__timer-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+  }
+
+  @media screen and (min-width: 750px) {
+    .countdown-sale__timer-label {
+      font-size: 0.875rem;
+    }
+  }
+
+  /* CTA Button */
+  .countdown-sale__cta {
+    display: inline-block;
+    padding: 1rem 4rem;
+    background-color: white;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .countdown-sale__cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+
+  /* Fade-in animations */
+  .animate-fade-in-up {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .animate-fade-in-up.animate-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .animate-scale-in {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .animate-scale-in.animate-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .animate-stagger-1 {
+    transition-delay: 0.1s;
+  }
+  .animate-stagger-2 {
+    transition-delay: 0.2s;
+  }
+  .animate-stagger-3 {
+    transition-delay: 0.3s;
+  }
+  .animate-stagger-4 {
+    transition-delay: 0.4s;
+  }
+  /* Shape divider styles (bottom) */
+  .custom-shape-divider-bottom-1762194434 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  .custom-shape-divider-bottom-1762194434 svg {
+    position: relative;
+    display: block;
+    width: calc(184% + 1.3px);
+    height: 92px;
+  }
+
+  .custom-shape-divider-bottom-1762194434 .shape-fill {
+    fill: #ffffff;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // ============================================================
+    // SMOOTH PARALLAX ENGINE (requestAnimationFrame + lerp easing)
+    // ============================================================
+    const parallaxSection = document.querySelector('.countdown-sale-section');
+    const parallaxBg = document.querySelector('.countdown-sale__background');
+
+    if (parallaxSection && parallaxBg) {
+      const speed = parseFloat(parallaxSection.dataset.parallaxSpeed || '0.5');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = window.innerWidth <= 749;
+      const enableParallax = !prefersReducedMotion && !isMobile;
+
+      let targetY = 0;
+      let currentY = 0;
+      const ease = 0.1;
+      let ticking = false;
+
+      function updateParallax() {
+        // Smooth lerp interpolation
+        currentY += (targetY - currentY) * ease;
+        parallaxBg.style.transform = `translate3d(0, ${currentY}px, 0)`;
+
+        // Continue animation loop
+        if (Math.abs(targetY - currentY) > 0.5) {
+          requestAnimationFrame(updateParallax);
+        } else {
+          ticking = false;
+        }
+      }
+
+      function onScroll() {
+        if (!enableParallax) return;
+
+        const rect = parallaxSection.getBoundingClientRect();
+        const scrollProgress = -rect.top;
+        targetY = scrollProgress * speed;
+
+        // Clamp the parallax range
+        const maxShift = parallaxSection.offsetHeight * 0.5;
+        targetY = Math.max(-maxShift, Math.min(maxShift, targetY));
+
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(updateParallax);
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // Initial calculation
+      if (enableParallax) {
+        onScroll();
+      }
+    }
+
+    // ============================================================
+    // COUNTDOWN TIMER
+    // ============================================================
+    const endDate = new Date('{{ section.settings.end_date }}').getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = endDate - now;
+
+      if (distance < 0) {
+        const timerEl = document.querySelector('.countdown-sale__timer');
+        if (timerEl) {
+          timerEl.innerHTML = '<div style="font-size: 2rem; font-weight: 700; color: white;">Sale Ended!</div>';
+        }
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      const daysEl = document.getElementById('countdown-days');
+      const hoursEl = document.getElementById('countdown-hours');
+      const minutesEl = document.getElementById('countdown-minutes');
+      const secondsEl = document.getElementById('countdown-seconds');
+
+      if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+      if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+      if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+      if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ============================================================
+    // CONTENT FADE-IN ANIMATIONS
+    // ============================================================
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-visible');
+        }
+      });
+    }, observerOptions);
+
+    const animatedElements = document.querySelectorAll('.animate-fade-in-up, .animate-scale-in');
+    animatedElements.forEach((element) => {
+      observer.observe(element);
+    });
+  });
+</script>
+
+<div class="countdown-sale-section" data-parallax-speed="0.5">
+  {%- comment -%} Parallax Background {%- endcomment -%}
+  <div
+    class="countdown-sale__background"
+    style="background-image: url('{{ section.settings.background_image | image_url: width: 1920 }}');"
+  ></div>
+  <div class="countdown-sale__overlay"></div>
+
+  {%- comment -%} Content {%- endcomment -%}
+  <div class="countdown-sale__content countdown-sale__content--{{ section.settings.text_alignment }}">
+    {%- if section.settings.badge_text != blank -%}
+      <div class="countdown-sale__badge animate-scale-in">
+        {{ section.settings.badge_text }}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="countdown-sale__heading animate-fade-in-up">
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.description != blank -%}
+      <div class="countdown-sale__description animate-fade-in-up">
+        {{ section.settings.description }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Countdown Timer {%- endcomment -%}
+    <div class="countdown-sale__timer">
+      <div class="countdown-sale__timer-unit animate-fade-in-up animate-stagger-1">
+        <span class="countdown-sale__timer-number" id="countdown-days">00</span>
+        <span class="countdown-sale__timer-label">Days</span>
+      </div>
+      <div class="countdown-sale__timer-unit animate-fade-in-up animate-stagger-2">
+        <span class="countdown-sale__timer-number" id="countdown-hours">00</span>
+        <span class="countdown-sale__timer-label">Hours</span>
+      </div>
+      <div class="countdown-sale__timer-unit animate-fade-in-up animate-stagger-3">
+        <span class="countdown-sale__timer-number" id="countdown-minutes">00</span>
+        <span class="countdown-sale__timer-label">Minutes</span>
+      </div>
+      <div class="countdown-sale__timer-unit animate-fade-in-up animate-stagger-4">
+        <span class="countdown-sale__timer-number" id="countdown-seconds">00</span>
+        <span class="countdown-sale__timer-label">Seconds</span>
+      </div>
+    </div>
+
+    {%- if section.settings.cta_text != blank -%}
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="countdown-sale__cta animate-fade-in-up">
+        {{ section.settings.cta_text }}
+      </a>
+    {%- endif -%}
+  </div>
+  {% comment %}
+    <div class="custom-shape-divider-bottom-1762194434">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+      </svg>
+    </div>
+  {% endcomment %}
+</div>
+
+{% schema %}
+{
+  "name": "Countdown Sale",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image",
+      "info": "Image will have parallax effect on scroll"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "DON'T MISS OUT!"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Black Friday Exclusive: 40% OFF"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Unlock your cellular potential with premium NAD+ supplements. Limited time offer—save big on your journey to better health and vitality. Stock up now before time runs out!"
+    },
+    {
+      "type": "header",
+      "content": "Countdown Timer"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "Sale end date",
+      "info": "Format: November 29, 2025 23:59:59",
+      "default": "November 29, 2025 23:59:59"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown Sale"
+    }
+  ]
+}
+{% endschema %}

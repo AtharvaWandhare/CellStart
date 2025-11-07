@@ -1,0 +1,739 @@
+{% comment %}
+  Customer Testimonials Section
+  Clean, minimal design showcasing customer reviews with star ratings
+{% endcomment %}
+
+<style>
+  .customer-testimonials-section {
+    padding: 4rem 0;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials-section {
+      padding: 6rem 0;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonials-section {
+      padding: 8rem 0;
+    }
+  }
+
+  .customer-testimonials__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* Header Section */
+  .customer-testimonials__header {
+    max-width: 700px;
+    margin-bottom: 3rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials__header {
+      margin-bottom: 4rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonials__header {
+      margin-bottom: 5rem;
+    }
+  }
+
+  .customer-testimonials__badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: {{ section.settings.badge_color }};
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials__badge {
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+  }
+
+  .customer-testimonials__title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials__title {
+      font-size: 2.75rem;
+      margin-bottom: 1.25rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonials__title {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .customer-testimonials__subtitle {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: {{ section.settings.subtitle_color }};
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials__subtitle {
+      font-size: 1.25rem;
+      line-height: 1.75;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonials__subtitle {
+      font-size: 1.5rem;
+      line-height: 1.8;
+    }
+  }
+
+  /* Testimonials Carousel */
+  .customer-testimonials__carousel-wrapper {
+    position: relative;
+    margin-bottom: 3rem;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonials__carousel-wrapper {
+      margin-bottom: 4rem;
+    }
+  }
+
+  .customer-testimonials__grid {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 1rem;
+  }
+
+  .customer-testimonials__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials__grid {
+      gap: 2rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonials__grid {
+      overflow-x: hidden;
+    }
+  }
+
+  /* Testimonial Card */
+  .customer-testimonial-card {
+    background: {{ section.settings.card_background_color }};
+    border-radius: 0.75rem;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 280px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonial-card {
+      padding: 2.5rem 2rem;
+      min-width: 380px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonial-card {
+      min-width: 480px;
+      max-width: 520px;
+      padding: 3rem 2.5rem;
+    }
+  }
+
+  .customer-testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(2, 88, 166, 0.08);
+  }
+
+  .customer-testimonial-card--active {
+    border: 2px solid {{ section.settings.star_color }};
+    box-shadow: 0 8px 20px rgba(2, 88, 166, 0.15);
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonial-card--active {
+      border-width: 3px;
+      box-shadow: 0 12px 28px rgba(2, 88, 166, 0.2);
+    }
+  }
+
+  /* Star Rating */
+  .customer-testimonial__rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .customer-testimonial__star {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonial__star {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonial__star {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .customer-testimonial__star svg {
+    width: 100%;
+    height: 100%;
+    fill: {{ section.settings.star_color }};
+  }
+
+  /* Review Text */
+  .customer-testimonial__review {
+    font-size: 0.938rem;
+    line-height: 1.7;
+    color: {{ section.settings.review_text_color }};
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    max-width: 60ch;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonial__review {
+      font-size: 1.063rem;
+      line-height: 1.75;
+      margin-bottom: 2rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonial__review {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+  }
+
+  /* Customer Info */
+  .customer-testimonial__author {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    padding-top: 1rem;
+  }
+
+  .customer-testimonial__name {
+    font-size: 0.938rem;
+    font-weight: 700;
+    color: {{ section.settings.author_name_color }};
+    margin-bottom: 0.25rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonial__name {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonial__name {
+      font-size: 1.25rem;
+    }
+  }
+
+  .customer-testimonial__date {
+    font-size: 0.813rem;
+    color: {{ section.settings.date_color }};
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonial__date {
+      font-size: 0.938rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonial__date {
+      font-size: 1rem;
+    }
+  }
+
+  /* Navigation Arrows */
+  .customer-testimonials__navigation {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .customer-testimonials__nav-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(2, 88, 166, 0.2);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials__nav-button {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  .customer-testimonials__nav-button:hover {
+    background: {{ section.settings.star_color }};
+    border-color: {{ section.settings.star_color }};
+  }
+
+  .customer-testimonials__nav-button:hover svg {
+    fill: white;
+  }
+
+  .customer-testimonials__nav-button svg {
+    width: 16px;
+    height: 16px;
+    fill: {{ section.settings.star_color }};
+    transition: fill 0.3s ease;
+  }
+
+  @media screen and (min-width: 750px) {
+    .customer-testimonials__nav-button svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* Fade-in Animation */
+  .animate-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .animate-fade-in.animate-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .animate-delay-1 {
+    transition-delay: 0.1s;
+  }
+
+  .animate-delay-2 {
+    transition-delay: 0.2s;
+  }
+
+  .animate-delay-3 {
+    transition-delay: 0.3s;
+  }
+
+  .animate-delay-4 {
+    transition-delay: 0.4s;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-visible');
+        }
+      });
+    }, observerOptions);
+
+    const animatedElements = document.querySelectorAll('.customer-testimonials-section .animate-fade-in');
+    animatedElements.forEach((element) => {
+      observer.observe(element);
+    });
+
+    // Carousel Navigation
+    const carousel = document.querySelector('.customer-testimonials__grid');
+    const prevButton = document.querySelector('.customer-testimonials__nav-button--prev');
+    const nextButton = document.querySelector('.customer-testimonials__nav-button--next');
+
+    if (carousel && prevButton && nextButton) {
+      const cardWidth = carousel.querySelector('.customer-testimonial-card')?.offsetWidth || 480;
+      const gap = 32; // 2rem gap
+      const scrollAmount = cardWidth + gap;
+
+      // Function to update active card indicator
+      function updateActiveCard() {
+        const cards = carousel.querySelectorAll('.customer-testimonial-card');
+        const carouselRect = carousel.getBoundingClientRect();
+        const carouselCenter = carouselRect.left + carouselRect.width / 2;
+        
+        let closestCard = null;
+        let minDistance = Infinity;
+        
+        cards.forEach(card => {
+          const cardRect = card.getBoundingClientRect();
+          const cardCenter = cardRect.left + cardRect.width / 2;
+          const distance = Math.abs(carouselCenter - cardCenter);
+          
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestCard = card;
+          }
+        });
+        
+        // Remove active class from all cards
+        cards.forEach(card => card.classList.remove('customer-testimonial-card--active'));
+        
+        // Add active class to closest card
+        if (closestCard) {
+          closestCard.classList.add('customer-testimonial-card--active');
+        }
+      }
+
+      prevButton.addEventListener('click', function () {
+        carousel.scrollBy({
+          left: -scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+
+      nextButton.addEventListener('click', function () {
+        carousel.scrollBy({
+          left: scrollAmount,
+          behavior: 'smooth'
+        });
+      });
+
+      // Update button states based on scroll position
+      function updateButtonStates() {
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        const currentScroll = carousel.scrollLeft;
+
+        prevButton.style.opacity = currentScroll <= 0 ? '0.4' : '1';
+        prevButton.style.cursor = currentScroll <= 0 ? 'not-allowed' : 'pointer';
+        
+        nextButton.style.opacity = currentScroll >= maxScroll - 5 ? '0.4' : '1';
+        nextButton.style.cursor = currentScroll >= maxScroll - 5 ? 'not-allowed' : 'pointer';
+      }
+
+      carousel.addEventListener('scroll', updateButtonStates);
+      carousel.addEventListener('scroll', updateActiveCard);
+      
+      // Initial state
+      updateButtonStates();
+      updateActiveCard();
+    }
+  });
+</script>
+
+<div class="customer-testimonials-section">
+  <div class="customer-testimonials__container">
+    {%- comment -%} Header Section {%- endcomment -%}
+    <div class="customer-testimonials__header animate-fade-in">
+      {%- if section.settings.badge_text != blank -%}
+        <span class="customer-testimonials__badge">
+          {{ section.settings.badge_text }}
+        </span>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="customer-testimonials__title">
+          {{ section.settings.title }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.subtitle != blank -%}
+        <p class="customer-testimonials__subtitle">
+          {{ section.settings.subtitle }}
+        </p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Testimonials Carousel {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="customer-testimonials__carousel-wrapper">
+        <div class="customer-testimonials__grid">
+          {%- for block in section.blocks -%}
+            {%- assign delay_class = 'animate-delay-' | append: forloop.index -%}
+            {%- if forloop.index > 4 -%}
+              {%- assign delay_class = 'animate-delay-4' -%}
+            {%- endif -%}
+
+            <div class="customer-testimonial-card animate-fade-in {{ delay_class }}" {{ block.shopify_attributes }}>
+              {%- comment -%} Star Rating {%- endcomment -%}
+              <div class="customer-testimonial__rating">
+                {%- for i in (1..5) -%}
+                  <span class="customer-testimonial__star">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  </span>
+                {%- endfor -%}
+              </div>
+
+              {%- comment -%} Review Text {%- endcomment -%}
+              {%- if block.settings.review_text != blank -%}
+                <p class="customer-testimonial__review">
+                  {{ block.settings.review_text }}
+                </p>
+              {%- endif -%}
+
+              {%- comment -%} Customer Info {%- endcomment -%}
+              <div class="customer-testimonial__author">
+                {%- if block.settings.customer_name != blank -%}
+                  <div class="customer-testimonial__name">
+                    {{ block.settings.customer_name }}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.review_date != blank -%}
+                  <p class="customer-testimonial__date">
+                    {{ block.settings.review_date }}
+                  </p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- comment -%} Navigation Arrows {%- endcomment -%}
+      {%- if section.settings.show_navigation -%}
+        <div class="customer-testimonials__navigation">
+          <button class="customer-testimonials__nav-button customer-testimonials__nav-button--prev" aria-label="Previous testimonials">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          <button class="customer-testimonials__nav-button customer-testimonials__nav-button--next" aria-label="Next testimonials">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+          </button>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer Testimonials",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_background_color",
+      "label": "Card background color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "TRUSTED BY THOUSANDS"
+    },
+    {
+      "type": "color",
+      "id": "badge_color",
+      "label": "Badge color",
+      "default": "#0258A6"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Real results from real people"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1a1f36"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Section subtitle",
+      "default": "Join thousands who have transformed their health with our premium NAD+ supplement. Read authentic experiences from customers who are living with more energy and vitality."
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#4a5568"
+    },
+    {
+      "type": "header",
+      "content": "Review Card Colors"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star rating color",
+      "default": "#0258A6"
+    },
+    {
+      "type": "color",
+      "id": "review_text_color",
+      "label": "Review text color",
+      "default": "#1a1f36"
+    },
+    {
+      "type": "color",
+      "id": "author_name_color",
+      "label": "Author name color",
+      "default": "#1a1f36"
+    },
+    {
+      "type": "color",
+      "id": "date_color",
+      "label": "Date color",
+      "default": "#718096"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show navigation arrows",
+      "default": true,
+      "info": "Display left/right arrow buttons at the bottom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Customer Review",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review text",
+          "default": "After just three weeks, I noticed a significant boost in my energy levels. No more afternoon crashes. I feel more focused throughout the day and my workouts have improved dramatically. This supplement has become essential to my daily routine."
+        },
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer name",
+          "default": "Sarah Mitchell"
+        },
+        {
+          "type": "text",
+          "id": "review_date",
+          "label": "Review date",
+          "default": "October 28, 2024"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "After just three weeks, I noticed a significant boost in my energy levels. No more afternoon crashes. I feel more focused throughout the day and my workouts have improved dramatically. This supplement has become essential to my daily routine.",
+            "customer_name": "Sarah Mitchell",
+            "review_date": "October 28, 2024"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "I'm 52 and was skeptical at first, but the results speak for themselves. Better sleep quality, improved mental clarity, and I genuinely feel years younger. The science-backed formula gives me confidence in what I'm taking daily.",
+            "customer_name": "James Chen",
+            "review_date": "November 02, 2024"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "As a busy professional, I need sustained energy without jitters. This NAD+ supplement delivers exactly that. Premium quality, noticeable benefits, and excellent customer service. Highly recommend to anyone serious about their health.",
+            "customer_name": "Emily Rodriguez",
+            "review_date": "October 15, 2024"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "Game changer for my recovery and performance. I've tried countless supplements, but this one actually works. Energy levels are stable, recovery time is faster, and I feel sharper mentally. Worth every penny.",
+            "customer_name": "Michael Thompson",
+            "review_date": "October 22, 2024"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "review_text": "The quality and purity of this supplement are unmatched. I appreciate the transparency in ingredients and third-party testing. Two months in and I'm experiencing better focus, sustained energy, and overall improved well-being.",
+            "customer_name": "Rachel Park",
+            "review_date": "November 01, 2024"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

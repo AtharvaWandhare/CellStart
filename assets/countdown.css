@@ -1,0 +1,81 @@
+.countdown-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.countdown-container.align-left {
+    justify-content: flex-start;
+}
+
+.countdown-container.align-center {
+    justify-content: center;
+}
+
+.countdown-container.align-right {
+    justify-content: flex-end;
+}
+
+.countdown-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    padding: 15px 20px;
+    min-width: 80px;
+    width: 120px;
+    backdrop-filter: blur(10px);
+}
+
+.countdown-item span {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+.countdown-item p {
+    margin: 0;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+.sale-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+@media screen and (max-width: 749px) {
+    .countdown-container {
+        justify-content: center !important;
+    }
+    
+    .countdown-item {
+        min-width: 70px;
+        padding: 12px 15px;
+    }
+    
+    .countdown-item span {
+        font-size: 2em;
+    }
+    
+    .countdown-item p {
+        font-size: 0.65em;
+    }
+    
+    .countdown-container {
+        gap: 10px;
+    }
+}

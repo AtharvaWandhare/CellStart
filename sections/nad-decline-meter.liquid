@@ -1,0 +1,428 @@
+{{ 'section-nad-decline-meter.css' | asset_url | stylesheet_tag }}
+
+<section class="nad-decline-meter section-{{ section.id }}-padding">
+  <div class="free_vectors">
+    <!-- Top left area - large circle -->
+    <img class="float-shape float-circle-1" src="{{ 'circle-svgrepo-com.svg' | asset_url }}" width="80" height="80" loading="eager" alt="">
+    
+    <!-- Top right area - medium DNA -->
+    <img class="float-shape float-dna-1" src="{{ 'dna-svgrepo-com.svg' | asset_url }}" width="60" height="60" loading="eager" alt="">
+    
+    <!-- Left content area - small circle -->
+    <img class="float-shape float-circle-2" src="{{ 'circle-svgrepo-com.svg' | asset_url }}" width="40" height="40" loading="eager" alt="">
+    
+    <!-- Middle area - large DNA -->
+    <img class="float-shape float-dna-2" src="{{ 'dna-svgrepo-com.svg' | asset_url }}" width="90" height="90" loading="eager" alt="">
+    
+    <!-- Right gauge area - small circle -->
+    <img class="float-shape float-circle-3" src="{{ 'circle-svgrepo-com.svg' | asset_url }}" width="35" height="35" loading="eager" alt="">
+    
+    <!-- Bottom left - medium circle -->
+    <img class="float-shape float-circle-4" src="{{ 'circle-svgrepo-com.svg' | asset_url }}" width="55" height="55" loading="eager" alt="">
+    
+    <!-- Bottom right - small DNA -->
+    <img class="float-shape float-dna-3" src="{{ 'dna-svgrepo-com.svg' | asset_url }}" width="45" height="45" loading="eager" alt="">
+    
+    <!-- Top center - tiny circle -->
+    <img class="float-shape float-circle-5" src="{{ 'circle-svgrepo-com.svg' | asset_url }}" width="30" height="30" loading="eager" alt="">
+    
+    <!-- Right side middle - medium DNA -->
+    <img class="float-shape float-dna-4" src="{{ 'dna-svgrepo-com.svg' | asset_url }}" width="70" height="70" loading="eager" alt="">
+    
+    <!-- Extra bottom-left - subtle circle -->
+    <img class="float-shape float-circle-6" src="{{ 'circle-svgrepo-com.svg' | asset_url }}" width="65" height="65" loading="eager" alt="">
+
+    <!-- Extra bottom-right - subtle DNA -->
+    <img class="float-shape float-dna-5" src="{{ 'dna-svgrepo-com.svg' | asset_url }}" width="60" height="60" loading="eager" alt="">
+  </div>
+  <div class="nad-decline-meter__container page-width">
+    <!-- Two Column Layout -->
+    <div class="nad-decline-meter__two-column">
+      <!-- Left Column: Text Content -->
+      <div class="nad-decline-meter__content-col">
+        {% if section.settings.subtitle != blank %}
+          <div class="nad-decline-meter__subtitle">
+            {{ section.settings.subtitle }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.main_heading != blank %}
+          <h2 class="nad-decline-meter__heading">
+            {{ section.settings.main_heading }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="nad-decline-meter__description">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.button_text != blank %}
+          <a href="{{ section.settings.button_link }}" class="nad-decline-meter__button">
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Right Column: Gauge -->
+      <div class="nad-decline-meter__gauge-col">
+        {% if section.settings.title != blank %}
+          <h3 class="nad-decline-meter__title">
+            {{ section.settings.title }}
+          </h3>
+        {% endif %}
+
+        <div class="nad-decline-meter__gauge-wrapper">
+          <svg class="nad-decline-meter__gauge" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+            <!-- Define gradient for the stroke -->
+            <defs>
+              <linearGradient id="gaugeGradient-{{ section.id }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:{{ section.settings.gauge_color }};stop-opacity:1" />
+                <stop offset="100%" style="stop-color:{{ section.settings.gauge_color | color_lighten: 40 }};stop-opacity:1" />
+              </linearGradient>
+
+              <!-- Glow filter -->
+              <filter id="glow-{{ section.id }}" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Background circle -->
+            <circle
+              class="nad-decline-meter__circle-bg"
+              cx="150"
+              cy="150"
+              r="130"
+              fill="none"
+              stroke="#e5e7eb"
+              stroke-width="14"
+            />
+
+            <!-- Animated progress circle -->
+            <circle
+              class="nad-decline-meter__circle-progress"
+              cx="150"
+              cy="150"
+              r="130"
+              fill="none"
+              stroke="url(#gaugeGradient-{{ section.id }})"
+              stroke-width="14"
+              stroke-linecap="round"
+              transform="rotate(-90 150 150)"
+              data-percentage="{{ section.settings.decline_percentage }}"
+            />
+          </svg>
+
+          <!-- Center content -->
+          <div class="nad-decline-meter__content">
+            <div class="nad-decline-meter__percentage">↓ {{ section.settings.decline_percentage }}%</div>
+            <div class="nad-decline-meter__label">
+              NAD+ Decline <br>
+              in Tissue
+            </div>
+          </div>
+        </div>
+
+        <!-- Age timeline -->
+        <div class="nad-decline-meter__timeline">
+          <div class="nad-decline-meter__timeline-item">
+            <div class="nad-decline-meter__age">Age {{ section.settings.start_age }}</div>
+            <div class="nad-decline-meter__status">100% NAD+</div>
+          </div>
+          <div class="nad-decline-meter__timeline-line"></div>
+          <div class="nad-decline-meter__timeline-item">
+            <div class="nad-decline-meter__age">Age {{ section.settings.end_age }}</div>
+            <div class="nad-decline-meter__status">{{ 100 | minus: section.settings.decline_percentage }}% NAD+</div>
+          </div>
+        </div>
+
+        <!-- Citation -->
+        <div class="nad-decline-meter__citation">
+          {{ section.settings.citation_text }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const section = document.querySelector('.nad-decline-meter');
+    if (!section) return;
+
+    const progressCircle = section.querySelector('.nad-decline-meter__circle-progress');
+    const percentageElement = section.querySelector('.nad-decline-meter__percentage');
+    const targetPercentage = parseFloat(progressCircle.getAttribute('data-percentage'));
+    const targetLevel = 100 - targetPercentage; // This will be 100 - 65 = 35
+    const radius = 130;
+    const circumference = 2 * Math.PI * radius;
+
+    // Calculate offset to show decline percentage filled from top
+    const offset = circumference - (targetLevel / 100) * circumference;
+
+    // Set initial state
+    progressCircle.style.strokeDasharray = circumference;
+    progressCircle.style.strokeDashoffset = circumference;
+    progressCircle.style.transition = 'none';
+
+    let animationFrameId = null;
+    let isAnimating = false;
+
+    // Number animation function using requestAnimationFrame
+    function animateNumber(duration = 2000) {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const startTime = performance.now();
+      const startValue = 100; // START AT 100
+      const endValue = targetLevel; // END AT 35
+      let lastValue = -1;
+
+      function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        // Animate from startValue down to endValue
+        const currentValue = Math.round(startValue + (endValue - startValue) * easedProgress);
+
+        if (currentValue !== lastValue) {
+          percentageElement.textContent = currentValue + '%'; // Remove the down arrow
+          lastValue = currentValue;
+        }
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(updateNumber);
+        } else {
+          if (lastValue !== endValue) {
+            percentageElement.textContent = endValue + '%'; // Ensure it ends on 35%
+          }
+          isAnimating = false;
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(updateNumber);
+    }
+
+    // Reset animation to initial state
+    function resetAnimation() {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+
+      isAnimating = false;
+      percentageElement.textContent = '100%'; // Reset to 100%
+      progressCircle.style.transition = 'none';
+      progressCircle.style.strokeDashoffset = 0; // 100% filled
+      progressCircle.style.filter = 'none';
+
+      progressCircle.offsetHeight;
+    }
+
+    // Main animation function
+    function animateGauge() {
+      // Animate circle (slower)
+      progressCircle.style.transition = 'stroke-dashoffset 3.5s ease-out';
+      progressCircle.style.strokeDashoffset = offset;
+
+      // Animate number (slower)
+      animateNumber(3500);
+
+      // Add glow effect after animation completes
+      setTimeout(() => {
+        progressCircle.style.filter = 'url(#glow-{{ section.id }})';
+      }, 3500);
+    }
+
+    // Loop animation every 10 seconds
+    function startAnimationLoop() {
+      animateGauge();
+
+      setInterval(() => {
+        resetAnimation();
+
+        // Start new animation after a short delay
+        setTimeout(() => {
+          animateGauge();
+        }, 100);
+      }, 10000);
+    }
+
+    // Intersection Observer for scroll-triggered animation
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px',
+    };
+
+    let hasAnimated = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          hasAnimated = true;
+          startAnimationLoop();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    observer.observe(section);
+  })();
+</script>
+
+<style>
+  .nad-decline-meter__circle-progress {
+    filter: drop-shadow(0 0 8px {{ section.settings.gauge_color | color_modify: 'alpha', 0.3 }});
+  }
+
+  .nad-decline-meter__percentage,
+  .nad-decline-meter__title {
+    color: {{ section.settings.gauge_color }};
+  }
+
+  .nad-decline-meter__timeline-line {
+    background: linear-gradient(to right,
+      {{ section.settings.gauge_color }} 0%,
+      #e5e7eb 50%,
+      {{ section.settings.gauge_color | color_lighten: 50 }} 100%);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "NAD+ Decline Meter",
+  "tag": "section",
+  "class": "section-nad-decline-meter",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left Column Content"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "THE SCIENCE BEHIND NAD+"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading",
+      "default": "Every cell in your body is fueled by NAD+"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Your 37.2 trillion cells are powered by NAD+, a vital coenzyme that fuels cellular energy and repair throughout your entire body. NAD+ levels naturally decline with age, lifestyle factors, and stressors. Replenishing NAD+ levels is essential for maintaining your cellular health, energy, and vitality."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Right Column - Gauge"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Gauge Title",
+      "default": "NAD+ Declines by Up to 65% Between Ages 30 and 70"
+    },
+    {
+      "type": "header",
+      "content": "Gauge Settings"
+    },
+    {
+      "type": "range",
+      "id": "decline_percentage",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Decline Percentage",
+      "default": 65
+    },
+    {
+      "type": "range",
+      "id": "start_age",
+      "min": 20,
+      "max": 50,
+      "step": 5,
+      "label": "Start Age",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "end_age",
+      "min": 50,
+      "max": 90,
+      "step": 5,
+      "label": "End Age",
+      "default": 70
+    },
+    {
+      "type": "textarea",
+      "id": "citation_text",
+      "label": "Citation Text",
+      "default": "Massudi et al., 2012; Janssens et al., 2022 | Based on analysis of human skin and muscle tissue."
+    },
+    {
+      "type": "color",
+      "id": "gauge_color",
+      "label": "Gauge Color",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "NAD+ Decline Meter"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+</style>

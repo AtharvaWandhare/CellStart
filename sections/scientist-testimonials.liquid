@@ -1,0 +1,403 @@
+{% comment %}
+  Scientist Testimonial Section
+  Clean, minimal design showcasing expert endorsement
+{% endcomment %}
+
+<style>
+  .scientist-testimonial-section {
+    padding: 4rem 0;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .scientist-testimonial-section {
+      padding: 6rem 0;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .scientist-testimonial-section {
+      padding: 8rem 0;
+    }
+  }
+
+  .scientist-testimonial__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* Section Title */
+  .scientist-testimonial__section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: {{ section.settings.section_title_color }};
+    margin-bottom: 3rem;
+    line-height: 1.3;
+  }
+
+  @media screen and (min-width: 750px) {
+    .scientist-testimonial__section-title {
+      font-size: 2.5rem;
+      margin-bottom: 4rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .scientist-testimonial__section-title {
+      font-size: 3rem;
+      margin-bottom: 5rem;
+    }
+  }
+
+  /* Grid Layout */
+  .scientist-testimonial__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 990px) {
+    .scientist-testimonial__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .scientist-testimonial__grid {
+      gap: 7rem;
+    }
+  }
+
+  /* Image Column */
+  .scientist-testimonial__image-column {
+    order: 1;
+  }
+
+  .scientist-testimonial__grid--image-right .scientist-testimonial__image-column {
+    order: 2;
+  }
+
+  @media screen and (max-width: 989px) {
+    .scientist-testimonial__image-column {
+      order: 1 !important;
+    }
+  }
+
+  .scientist-testimonial__image-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto;
+  }
+
+  .scientist-testimonial__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0;
+  }
+
+  /* Content Column */
+  .scientist-testimonial__content-column {
+    order: 2;
+    padding: 2rem 0;
+  }
+
+  .scientist-testimonial__grid--image-right .scientist-testimonial__content-column {
+    order: 1;
+  }
+
+  @media screen and (max-width: 989px) {
+    .scientist-testimonial__content-column {
+      order: 2 !important;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .scientist-testimonial__content-column {
+      padding: 3rem 0;
+    }
+  }
+
+  /* Quote */
+  .scientist-testimonial__quote {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: {{ section.settings.quote_color }};
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+  }
+
+  @media screen and (min-width: 750px) {
+    .scientist-testimonial__quote {
+      font-size: 1.375rem;
+      line-height: 1.9;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .scientist-testimonial__quote {
+      font-size: 1.5rem;
+      line-height: 2;
+      margin-bottom: 3rem;
+    }
+  }
+
+  /* Scientist Info */
+  .scientist-testimonial__info {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 1.5rem;
+  }
+
+  .scientist-testimonial__name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: {{ section.settings.name_color }};
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  @media screen and (min-width: 750px) {
+    .scientist-testimonial__name {
+      font-size: 1.125rem;
+    }
+  }
+
+  .scientist-testimonial__credentials {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: {{ section.settings.credentials_color }};
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .scientist-testimonial__credentials {
+      font-size: 0.938rem;
+      line-height: 1.7;
+    }
+  }
+
+  .scientist-testimonial__credentials p {
+    margin: 0;
+    padding: 0.125rem 0;
+  }
+
+  /* Fade-in Animation */
+  .animate-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .animate-fade-in.animate-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .animate-delay-1 {
+    transition-delay: 0.1s;
+  }
+
+  .animate-delay-2 {
+    transition-delay: 0.2s;
+  }
+
+  .animate-delay-3 {
+    transition-delay: 0.3s;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-visible');
+        }
+      });
+    }, observerOptions);
+
+    const animatedElements = document.querySelectorAll('.scientist-testimonial-section .animate-fade-in');
+    animatedElements.forEach((element) => {
+      observer.observe(element);
+    });
+  });
+</script>
+
+{%- liquid
+  assign image_position = section.settings.image_position
+-%}
+
+<div class="scientist-testimonial-section">
+  <div class="scientist-testimonial__container">
+    {%- if section.settings.section_title != blank -%}
+      <h2 class="scientist-testimonial__section-title animate-fade-in">
+        {{ section.settings.section_title }}
+      </h2>
+    {%- endif -%}
+
+    <div class="scientist-testimonial__grid scientist-testimonial__grid--{{ image_position }}">
+      {%- comment -%} Image Column {%- endcomment -%}
+      <div class="scientist-testimonial__image-column animate-fade-in animate-delay-1">
+        <div class="scientist-testimonial__image-wrapper">
+          {%- if section.settings.scientist_image != blank -%}
+            {{
+              section.settings.scientist_image
+              | image_url: width: 1100
+              | image_tag:
+                loading: 'lazy',
+                class: 'scientist-testimonial__image',
+                widths: '400, 600, 800, 1000',
+                sizes: '(min-width: 1200px) 550px, (min-width: 990px) 45vw, 100vw'
+            }}
+          {%- else -%}
+            <div
+              class="scientist-testimonial__image"
+              style="background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%); aspect-ratio: 3/4; min-height: 400px;"
+            ></div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- comment -%} Content Column {%- endcomment -%}
+      <div class="scientist-testimonial__content-column animate-fade-in animate-delay-2">
+        {%- if section.settings.quote != blank -%}
+          <blockquote class="scientist-testimonial__quote">
+            {{ section.settings.quote }}
+          </blockquote>
+        {%- endif -%}
+
+        <div class="scientist-testimonial__info">
+          {%- if section.settings.scientist_name != blank -%}
+            <div class="scientist-testimonial__name">
+              {{ section.settings.scientist_name }}
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.credentials != blank -%}
+            <div class="scientist-testimonial__credentials">
+              {{ section.settings.credentials | newline_to_br }}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Scientist Testimonial",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Backed by world-leading researchers"
+    },
+    {
+      "type": "color",
+      "id": "section_title_color",
+      "label": "Section title color",
+      "default": "#0258A6"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "image-left",
+          "label": "Image on left"
+        },
+        {
+          "value": "image-right",
+          "label": "Image on right"
+        }
+      ],
+      "default": "image-left",
+      "info": "Choose which side the scientist image appears on"
+    },
+    {
+      "type": "header",
+      "content": "Scientist Details"
+    },
+    {
+      "type": "image_picker",
+      "id": "scientist_image",
+      "label": "Scientist image",
+      "info": "Recommended: Portrait/vertical image, minimum 800x1000px"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "default": "\"Niagen, Niagen Bioscience's patented nicotinamide riboside product, is one of the most well-studied, carefully controlled dietary supplements, and indeed, a gold standard in the industry.\""
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote text color",
+      "default": "#0258A6"
+    },
+    {
+      "type": "text",
+      "id": "scientist_name",
+      "label": "Name",
+      "default": "Roger Kornberg, Ph.D."
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Name color",
+      "default": "#0258A6"
+    },
+    {
+      "type": "textarea",
+      "id": "credentials",
+      "label": "Credentials",
+      "info": "Use line breaks for multiple credential lines",
+      "default": "Nobel Prize Winner in Chemistry | Mrs. George A. Winzer Professor of Medicine, Stanford | Niagen Bioscience Scientific Advisory Board Chairman"
+    },
+    {
+      "type": "color",
+      "id": "credentials_color",
+      "label": "Credentials color",
+      "default": "#0258A6"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scientist Testimonial"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,221 @@
+{% comment %}
+  Custom Hero Carousel Section
+  Implements a full-width hero carousel with multiple slides
+  Supports video background for first slide
+{% endcomment %}
+
+{{ 'custom-landing.css' | asset_url | stylesheet_tag }}
+
+<div class="hero-carousel-custom hero-carousel-fullscreen">
+  <div class="hero-carousel-wrapper">
+    <div class="carousel-slides-custom">
+      {% for block in section.blocks %}
+        {% if block.type == 'slide' %}
+          <div class="carousel-slide-custom {% if forloop.first %}active{% endif %} {% if block.settings.centered_layout %}slide-centered{% endif %}" {{ block.shopify_attributes }} data-slide-index="{{ forloop.index0 }}">
+            
+            {% comment %} Video Background (if video is provided) {% endcomment %}
+            {% if block.settings.background_video != blank %}
+              <div class="slide-video-container">
+                <video 
+                  class="slide-video" 
+                  autoplay 
+                  muted 
+                  playsinline
+                  {% if forloop.first %}loop{% endif %}
+                  data-video-duration="8000"
+                >
+                  <source src="{{ block.settings.background_video | asset_url }}" type="video/mp4">
+                </video>
+                <div class="video-overlay"></div>
+              </div>
+            {% endif %}
+
+            {% comment %} Image Background (if no video) {% endcomment %}
+            <div 
+              class="slide-container {% if block.settings.background_video != blank %}has-video{% endif %}"
+              {% if block.settings.background_image != blank and block.settings.background_video == blank %}
+                style="background-image: url('{{ block.settings.background_image | image_url: width: 3840 }}');"
+              {% endif %}
+            >
+              <div class="slide-content">
+                {% if block.settings.heading != blank %}
+                  <h1 class="hero-heading-custom">
+                    {{ block.settings.heading }}
+                  </h1>
+                {% endif %}
+
+                {% if block.settings.subheading != blank %}
+                  <h3 class="hero-slogan-custom">
+                    {{ block.settings.subheading }}
+                  </h3>
+                {% endif %}
+
+                {% unless block.settings.centered_layout %}
+                  <div class="hero-separator-custom"></div>
+                {% endunless %}
+
+                {% if block.settings.description != blank %}
+                  <p class="hero-description-custom">
+                    {{ block.settings.description }}
+                  </p>
+                {% endif %}
+
+                {% if block.settings.list_items != blank and block.settings.centered_layout == false %}
+                  <ul class="hero-list-custom">
+                    {% assign list_items = block.settings.list_items | split: '||' %}
+                    {% for item in list_items %}
+                      <li>{{ item }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% unless block.settings.centered_layout %}
+                  <div class="hero-separator-custom"></div>
+                {% endunless %}
+
+                {% if block.settings.button_label != blank %}
+                  <a href="{{ block.settings.button_link | default: '#' }}" class="cta-btn-custom">
+                    {{ block.settings.button_label }}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Carousel Indicators (Line Style) -->
+    <div class="carousel-indicators-custom">
+      {% for block in section.blocks %}
+        {% if block.type == 'slide' %}
+          <button class="indicator {% if forloop.first %}active{% endif %}" aria-label="Go to slide {{ forloop.index }}"></button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Social Media Icons -->
+    <div class="hero-social-icons">
+      <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="TikTok">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.561a2.896 2.896 0 0 1-5.201 1.743 2.895 2.895 0 0 1 3.972-4.232l.001-.001V7.479a6.135 6.135 0 0 0-1.084.096 6.167 6.167 0 0 0-.891.253 6.119 6.119 0 0 0-.743.358 6.176 6.176 0 0 0-4.495 10.888 6.188 6.188 0 0 0 4.74 2.079 6.146 6.146 0 0 0 3.955-1.455 6.18 6.18 0 0 0 1.891-3.078v-7.642a8.277 8.277 0 0 0 4.773 1.471V8.403a4.83 4.83 0 0 1-1.702-.717z" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" fill="currentColor"/>
+        </svg>
+      </a>
+      {% comment %} <a href="https://www.snapchat.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Snapchat">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.15h.699c.723 0 1.362.363 1.717.936.465.761.485 1.74.085 2.528-.103.202-.23.38-.372.53.08.22.158.44.22.666.18.646.202 1.31.064 1.948a5.557 5.557 0 0 1-1.106 2.51c-.26.35-.56.67-.893.954-.748.64-1.805 1.017-2.867 1.017h-.05c-.14.01-.277.024-.41.04-2.404.293-3.7 1.434-3.894 1.629a.994.994 0 0 1-.706.292.984.984 0 0 1-.706-.292c-.194-.195-1.49-1.336-3.894-1.628a12.6 12.6 0 0 0-.41-.04h-.05c-1.062 0-2.119-.378-2.867-1.018a5.458 5.458 0 0 1-.893-.953 5.557 5.557 0 0 1-1.106-2.51 4.52 4.52 0 0 1 .064-1.948c.062-.227.14-.447.22-.667a3.56 3.56 0 0 1-.372-.529c-.4-.788-.38-1.767.085-2.528.355-.573.994-.936 1.717-.936h.699l-.003-.15c-.104-1.628-.23-3.654.299-4.847C7.458 1.068 10.816.792 11.806.792zm-5.07 5.486l.003.138c.003.739-.006 1.669-.005 1.924h-.002a.865.865 0 0 0-.865.865v.046c0 .479.388.866.867.866h.08c.478 0 .867.388.867.866v.014c0 .479-.39.867-.868.867h-.432c-.512 0-1 .207-1.35.572-.21.22-.34.51-.36.818-.034.533.166 1.046.545 1.424.26.26.586.433.94.5.379.072.78.073 1.173.003a11.5 11.5 0 0 1 1.188-.003c.354-.067.68-.24.94-.5.378-.378.578-.89.544-1.424-.02-.309-.15-.598-.36-.818-.35-.365-.838-.572-1.35-.572h-.432a.867.867 0 0 1-.867-.867v-.014c0-.478.388-.866.867-.866h.08c.478 0 .867-.387.867-.866v-.046a.865.865 0 0 0-.865-.865h-.003c.002-.255-.008-1.185-.005-1.924l.003-.138zm10.14 0l.003.138c.003.739-.007 1.669-.005 1.924h-.002a.865.865 0 0 0-.866.865v.046c0 .479.388.866.867.866h.08c.479 0 .868.388.868.866v.014c0 .479-.39.867-.868.867h-.432c-.512 0-1.001.207-1.35.572-.21.22-.34.51-.36.818-.034.533.166 1.046.545 1.424.26.26.586.433.94.5.379.072.78.073 1.173.003.387.07.789.07 1.188-.003.354-.067.68-.24.94-.5.379-.378.578-.89.544-1.424-.02-.309-.15-.598-.36-.818-.35-.365-.838-.572-1.35-.572h-.432a.867.867 0 0 1-.867-.867v-.014c0-.478.388-.866.867-.866h.08c.479 0 .868-.387.868-.866v-.046a.865.865 0 0 0-.866-.865h-.003c.002-.255-.008-1.185-.005-1.924l.003-.138z" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
+        </svg>
+      </a> {% endcomment %}
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'hero-carousel-custom.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Hero Carousel Custom",
+  "tag": "section",
+  "class": "section-hero-carousel-custom",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Add multiple slides to create a carousel. Each slide can have its own background image and content."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Background Media"
+        },
+        {
+          "type": "image_picker",
+          "id": "background_image",
+          "label": "Background Image",
+          "info": "Upload a background image for this slide. Used when no video is provided."
+        },
+        {
+          "type": "text",
+          "id": "background_video",
+          "label": "Background Video URL (Optional)",
+          "info": "Video URL from Files. Use for first slide only. Leave blank to use image background instead."
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "checkbox",
+          "id": "centered_layout",
+          "label": "Centered Layout",
+          "default": false,
+          "info": "Enable for premium centered text layout (slide 2 style)"
+        },
+        {
+          "type": "html",
+          "id": "heading",
+          "label": "Heading",
+          "default": "The <span class='hero-highlight'>NAD<span class='hero-highlight-plus'>+</span></span> Advantage"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "NAD+ Replenishment for Timeless Vitality."
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto obcaecati repellendus at."
+        },
+        {
+          "type": "textarea",
+          "id": "list_items",
+          "label": "List Items (separate with ||)",
+          "info": "Example: Item 1||Item 2||Item 3. Only shown when centered layout is OFF.",
+          "default": "Lorem ipsum dolor sit amet.||Lorem ipsum dolor sit.||Lorem ipsum dolor, sit amet consectetur adipisicing elit."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label",
+          "default": "Unlock Your Potential"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Carousel Custom",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

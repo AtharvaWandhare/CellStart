@@ -1,0 +1,649 @@
+{% comment %}
+  Animated Testimonial Carousel Section
+  Features 3D image stack with staggered text animation
+{% endcomment %}
+
+<style>
+  .testimonial-carousel {
+    padding: 4rem 1rem;
+    font-family: var(--font-body-family);
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonial-carousel {
+      padding: 6rem 2rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .testimonial-carousel {
+      padding: 6rem 3rem;
+    }
+  }
+
+  .testimonial-carousel__container {
+    max-width: 400px;
+    margin: 0 auto;
+    background: rgb(var(--color-background));
+    border: 1px solid rgba(var(--color-foreground), 0.08);
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    padding: 1.25rem;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonial-carousel__container {
+      max-width: 1024px;
+      padding: 2rem;
+    }
+  }
+
+  .testimonial-carousel__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonial-carousel__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Container for the 3D image stack */
+  .testimonial-image-stack {
+    perspective: 1000px;
+    position: relative;
+    height: 320px;
+    width: 100%;
+  }
+
+  /* Individual image wrapper */
+  .testimonial-image {
+    position: absolute;
+    inset: 0;
+    transform-origin: center bottom;
+    transition: all 0.4s ease-in-out;
+    transform-style: preserve-3d;
+    opacity: 0.7;
+    transform: scale(0.95) translateZ(-100px) rotateY(var(--rotate-y, 0deg));
+  }
+
+  .testimonial-image img {
+    height: 100%;
+    width: 100%;
+    border-radius: 1.5rem;
+    object-fit: cover;
+    object-position: center;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Active image styles */
+  .testimonial-image.active {
+    opacity: 1;
+    transform: scale(1) translateZ(0) rotateY(0deg);
+    z-index: 40;
+    animation: hop 0.5s ease-in-out;
+  }
+
+  /* Keyframes for the 'hop' animation on the active image */
+  @keyframes hop {
+    0% {
+      transform: scale(1) translateZ(0) rotateY(0deg) translateY(0);
+    }
+    50% {
+      transform: scale(1) translateZ(0) rotateY(0deg) translateY(-60px);
+    }
+    100% {
+      transform: scale(1) translateZ(0) rotateY(0deg) translateY(0);
+    }
+  }
+
+  /* Right column layout */
+  .testimonial-carousel__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonial-carousel__content {
+      padding: 1rem 0;
+    }
+  }
+
+  /* Text content block animation */
+  .testimonial-text-content {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .testimonial-text-content.exiting {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  .testimonial-text-content.entering {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .testimonial-name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: rgb(var(--color-foreground));
+    margin-bottom: 0.5rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonial-name {
+      font-size: 2.5rem;
+    }
+  }
+
+  .testimonial-designation {
+    font-size: 1.5rem;
+    color: rgba(var(--color-foreground), 0.6);
+    margin-bottom: 2rem;
+  }
+
+  /* Star rating */
+  .testimonial-stars {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .testimonial-star {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+  }
+
+  .testimonial-star svg {
+    width: 100%;
+    height: 100%;
+    fill: rgba(var(--color-foreground), 0.18);
+  }
+
+  .testimonial-star.active svg {
+    fill: #ffd700;
+  }
+
+  .testimonial-quote {
+    font-size: 1.4rem;
+    line-height: 1.6;
+    color: rgb(var(--color-foreground));
+    margin-top: 1rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonial-quote {
+      font-size: 1.625rem;
+    }
+  }
+
+  /* Staggered word animation */
+  .quote-word {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(5px);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .quote-word.visible {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+
+  /* Navigation Buttons */
+  .testimonial-carousel__navigation {
+    display: flex;
+    gap: 1rem;
+    padding-top: 3rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonial-carousel__navigation {
+      padding-top: 0;
+    }
+  }
+
+  .testimonial-nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background: rgba(var(--color-foreground), 0.1);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .testimonial-nav-button:hover {
+    background: rgba(var(--color-foreground), 0.2);
+  }
+
+  .testimonial-nav-button svg {
+    height: 20px;
+    width: 20px;
+    color: rgb(var(--color-foreground));
+    transition: transform 0.3s ease;
+  }
+
+  .testimonial-nav-button:hover svg.icon-prev {
+    transform: rotate(12deg);
+  }
+
+  .testimonial-nav-button:hover svg.icon-next {
+    transform: rotate(-12deg);
+  }
+</style>
+
+<div class="testimonial-carousel">
+  <div class="testimonial-carousel__container">
+    <div class="testimonial-carousel__grid">
+      {%- comment -%} Left Column: Image Stack {%- endcomment -%}
+      <div>
+        <div class="testimonial-image-stack" id="testimonial-image-stack-{{ section.id }}">
+          {%- for block in section.blocks -%}
+            <div
+              class="testimonial-image"
+              data-index="{{ forloop.index0 }}"
+              data-rotate="0"
+              style="z-index: {{ section.blocks.size | minus: forloop.index0 }};"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.image != blank -%}
+                <img
+                  src="{{ block.settings.image | image_url: width: 500 }}"
+                  alt="{{ block.settings.name | escape }}"
+                  loading="lazy"
+                  width="500"
+                  height="500"
+                >
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- comment -%} Right Column: Text and Navigation {%- endcomment -%}
+      <div class="testimonial-carousel__content">
+        {%- comment -%} Testimonial Text Content {%- endcomment -%}
+        <div class="testimonial-text-content" id="testimonial-text-content-{{ section.id }}">
+          <h3 class="testimonial-name" id="testimonial-name-{{ section.id }}"></h3>
+          <p class="testimonial-designation" id="testimonial-designation-{{ section.id }}"></p>
+          <div class="testimonial-stars" id="testimonial-stars-{{ section.id }}"></div>
+          <p class="testimonial-quote" id="testimonial-quote-{{ section.id }}"></p>
+        </div>
+
+        {%- comment -%} Navigation Buttons {%- endcomment -%}
+        <div class="testimonial-carousel__navigation">
+          <button
+            type="button"
+            class="testimonial-nav-button"
+            id="prev-button-{{ section.id }}"
+            aria-label="Previous testimonial"
+          >
+            <svg
+              class="icon-prev"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="testimonial-nav-button"
+            id="next-button-{{ section.id }}"
+            aria-label="Next testimonial"
+          >
+            <svg
+              class="icon-next"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTestimonials);
+    } else {
+      initTestimonials();
+    }
+
+    function initTestimonials() {
+      // --- DATA FROM LIQUID ---
+      const testimonials = [
+        {%- for block in section.blocks -%}
+          {
+            name: {{ block.settings.name | json }},
+            designation: {{ block.settings.designation | json }},
+            quote: {{ block.settings.quote | json }},
+            star_rating: {{ block.settings.star_rating | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ];
+
+      if (testimonials.length === 0) return;
+
+      // --- STATE & CONFIG ---
+      let active = 0;
+      const autoplay = {{ section.settings.autoplay }};
+      let autoplayInterval;
+
+      // --- ELEMENT SELECTORS ---
+      const imageStack = document.getElementById('testimonial-image-stack-' + sectionId);
+      const textContent = document.getElementById('testimonial-text-content-' + sectionId);
+      const nameEl = document.getElementById('testimonial-name-' + sectionId);
+      const designationEl = document.getElementById('testimonial-designation-' + sectionId);
+      const quoteEl = document.getElementById('testimonial-quote-' + sectionId);
+      const prevButton = document.getElementById('prev-button-' + sectionId);
+      const nextButton = document.getElementById('next-button-' + sectionId);
+
+      if (!imageStack || !textContent) return;
+
+      // --- HELPER FUNCTIONS ---
+
+      /**
+       * Returns a random rotation degree between -10 and 10
+       */
+      const randomRotateY = () => Math.floor(Math.random() * 21) - 10;
+
+      /**
+       * Initialize image rotations
+       */
+      const initImageRotations = () => {
+        const allImages = imageStack.querySelectorAll('.testimonial-image');
+        allImages.forEach((image) => {
+          const rotate = randomRotateY();
+          image.dataset.rotate = rotate;
+          image.style.setProperty('--rotate-y', rotate + 'deg');
+        });
+      };
+
+      /**
+       * Animates the text content update
+       * @param {object} testimonial - The testimonial object to display
+       */
+      const animateText = (testimonial) => {
+        // 1. Trigger exit animation
+        textContent.classList.add('exiting');
+
+        // 2. Wait for exit animation to finish, then update content
+        setTimeout(() => {
+          // Update text content
+          nameEl.textContent = testimonial.name;
+          designationEl.textContent = testimonial.designation;
+
+          // Render star rating
+          const starsEl = document.getElementById('testimonial-stars-' + sectionId);
+          if (starsEl) {
+            let starsHtml = '';
+            // Render 5 stars, marking active vs inactive according to rating
+            const rating = testimonial.star_rating;
+            console.log('Rendering stars for rating:', rating);
+            for (let s = 1; s <= 5; s++) {
+              const cls = s <= rating ? 'active' : 'inactive';
+              starsHtml += `
+                <span class="testimonial-star ${cls}">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                </span>`;
+            }
+            starsEl.innerHTML = starsHtml;
+            // Add accessible label for screen readers
+            starsEl.setAttribute('role', 'img');
+            starsEl.setAttribute('aria-label', `Rated ${rating} out of 5`);
+          }
+
+          // Clear and repopulate quote with word spans
+          quoteEl.innerHTML = '';
+          testimonial.quote.split(' ').forEach((word, wordIndex) => {
+            const span = document.createElement('span');
+            span.className = 'quote-word';
+            span.textContent = word + ' ';
+            span.style.transitionDelay = (0.02 * wordIndex) + 's';
+            quoteEl.appendChild(span);
+          });
+
+          // 3. Trigger enter animation
+          textContent.classList.remove('exiting');
+          textContent.classList.add('entering');
+
+          // 4. Force reflow and start staggered word animation
+          setTimeout(() => {
+            textContent.classList.remove('entering');
+            const words = quoteEl.querySelectorAll('.quote-word');
+            words.forEach(word => {
+              word.classList.add('visible');
+            });
+          }, 20);
+
+        }, 200);
+      };
+
+      /**
+       * Displays the testimonial at the given index
+       * @param {number} index - The index of the testimonial to show
+       */
+      const showTestimonial = (index) => {
+        active = index;
+        const allImages = imageStack.querySelectorAll('.testimonial-image');
+
+        allImages.forEach((image) => {
+          const i = parseInt(image.dataset.index, 10);
+          const rotate = image.dataset.rotate;
+
+          if (i === active) {
+            // This is the active image
+            image.classList.add('active');
+            image.style.zIndex = 40;
+          } else {
+            // This is an inactive image
+            image.classList.remove('active');
+            image.style.zIndex = testimonials.length - i;
+            image.style.setProperty('--rotate-y', rotate + 'deg');
+          }
+        });
+
+        // Animate the text
+        animateText(testimonials[active]);
+
+        // Reset autoplay timer
+        if (autoplay) {
+          resetAutoplay();
+        }
+      };
+
+      // --- AUTOPLAY CONTROLS ---
+
+      const startAutoplay = () => {
+        clearInterval(autoplayInterval);
+        const speed = {{ section.settings.autoplay_speed | times: 1000 }};
+        autoplayInterval = setInterval(handleNext, speed);
+      };
+
+      const resetAutoplay = () => {
+        if (autoplay) {
+          startAutoplay();
+        }
+      };
+
+      // --- EVENT HANDLERS ---
+
+      const handleNext = () => {
+        const nextIndex = (active + 1) % testimonials.length;
+        showTestimonial(nextIndex);
+      };
+
+      const handlePrev = () => {
+        const prevIndex = (active - 1 + testimonials.length) % testimonials.length;
+        showTestimonial(prevIndex);
+      };
+
+      // --- EVENT LISTENERS ---
+
+      if (prevButton) {
+        prevButton.addEventListener('click', handlePrev);
+      }
+      if (nextButton) {
+        nextButton.addEventListener('click', handleNext);
+      }
+
+      // --- INITIALIZATION ---
+
+      initImageRotations();
+      showTestimonial(0);
+
+      if (autoplay) {
+        startAutoplay();
+      }
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Testimonial Carousel",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Autoplay Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Autoplay speed",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Customer image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Customer name",
+          "default": "Alex Johnson"
+        },
+        {
+          "type": "text",
+          "id": "designation",
+          "label": "Designation",
+          "default": "CEO, TechCorp"
+        },
+        {
+          "type": "range",
+          "id": "star_rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Star rating",
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "This is truly a game-changer. The performance and aesthetics are unparalleled. We've seen a 30% increase in user engagement since implementation."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial Carousel",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Sarah M.",
+            "designation": "Wellness Enthusiast",
+            "quote": "This NAD+ supplement has been a game-changer for my energy levels. I feel more vibrant and focused throughout the day!",
+            "star_rating": 2
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Michael R.",
+            "designation": "Fitness Coach",
+            "quote": "I've tried many supplements, but this one truly delivers. My recovery time has improved significantly and I feel younger.",
+            "star_rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "Jennifer L.",
+            "designation": "Entrepreneur",
+            "quote": "Absolutely love this product! The quality is exceptional and I've noticed real results within weeks. Highly recommended!",
+            "star_rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "name": "David K.",
+            "designation": "Medical Professional",
+            "quote": "As a healthcare provider, I appreciate science-backed supplements. This NAD+ formula is top-tier and I recommend it to my patients.",
+            "star_rating": 4
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

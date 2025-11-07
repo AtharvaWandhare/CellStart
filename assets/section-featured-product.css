@@ -1,0 +1,202 @@
+.featured-product .product__media-list {
+  width: 100%;
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.featured-product .product-media-container {
+  margin-bottom: var(--media-shadow-vertical-offset);
+  max-width: 100%;
+}
+
+.featured-product .product__media-item {
+  padding-left: 0;
+}
+
+.featured-product .placeholder-svg {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.background-secondary .featured-product {
+  padding: 2.5rem;
+}
+
+.featured-product .share-button:nth-last-child(2) {
+  display: inline-flex;
+}
+
+.share-button+.product__view-details {
+  display: inline-flex;
+  float: right;
+  align-items: center;
+  min-height: 4.4rem;
+}
+
+.share-button+.product__view-details::after {
+  content: '';
+  clear: both;
+  display: table;
+}
+
+@media screen and (min-width: 750px) {
+  .featured-product .product__media-item {
+    padding-bottom: 0;
+  }
+
+  .background-secondary .featured-product {
+    padding: 5rem;
+  }
+
+  .product--right .product__media-wrapper {
+    order: 2;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .background-secondary .featured-product:not(.product--no-media)>.product__info-wrapper {
+    padding: 0 0 0 5rem;
+  }
+
+  .background-secondary .featured-product:not(.product--no-media).product--right>.product__info-wrapper {
+    padding: 0 5rem 0 0;
+  }
+
+  .featured-product:not(.product--no-media)>.product__info-wrapper {
+    padding: 0 7rem;
+  }
+
+  .background-secondary .featured-product {
+    padding: 6rem 7rem;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Floating decorative shapes for featured-product section (confined to left/info column) */
+.product__info-wrapper .free_vectors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  /* behind info content */
+  overflow: hidden;
+}
+
+.product__info-wrapper .float-shape {
+  position: absolute;
+  opacity: 0.12;
+  /* slightly more visible */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: transform, opacity;
+  mix-blend-mode: multiply;
+  /* blends subtly with background */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes fp-float-slow {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(4deg);
+  }
+}
+
+@keyframes fp-float-medium {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+}
+
+@keyframes fp-float-reverse {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(10px) rotate(6deg);
+  }
+}
+
+.product__info-wrapper .fp-circle-1 {
+  top: 6%;
+  left: 0%;
+  animation: fp-float-slow 18s ease-in-out infinite;
+}
+
+.product__info-wrapper .fp-dna-1 {
+  top: 10%;
+  right: 8%;
+  animation: fp-float-medium 16s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.product__info-wrapper .fp-circle-2 {
+  top: 80%;
+  left: 8%;
+  animation: fp-float-reverse 14s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.product__info-wrapper .fp-dna-2 {
+  top: 60%;
+  left: 52%;
+  transform: translateX(-50%);
+  animation: fp-float-slow 20s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+.product__info-wrapper .fp-circle-3 {
+  top: 20%;
+  left: 34%;
+  animation: fp-float-medium 15s ease-in-out infinite;
+}
+
+.product__info-wrapper .fp-dna-3 {
+  bottom: 5%;
+  right: 14%;
+  animation: fp-float-reverse 17s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+/* Hide some shapes on small screens to avoid clutter */
+@media screen and (max-width: 768px) {
+
+  .product__info-wrapper .fp-circle-2,
+  .product__info-wrapper .fp-circle-3,
+  .product__info-wrapper .fp-dna-2 {
+    display: none;
+  }
+
+  .product__info-wrapper .float-shape {
+    opacity: 0.04;
+  }
+}
+
+/* Slight increase on hover */
+.product__info-wrapper:hover .float-shape {
+  opacity: 0.16;
+}
+
+/* Ensure featured product content sits above decorative shapes */
+.product__info-wrapper {
+  position: relative;
+  z-index: 2;
+}

@@ -1,0 +1,794 @@
+{% comment %}
+  Section: UGC Video Showcase
+  Purpose: Display user-generated content videos from TikTok, Instagram, etc. for social proof
+  Features: Mobile-ratio video cards with thumbnail images, titles, descriptions, and modal iframe popup on click
+{% endcomment %}
+
+<style>
+  .ugc-video-section {
+    background: {{ section.settings.background_color }};
+    padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ugc-video-section {
+      padding: {{ section.settings.padding_top_desktop }}px 0 {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  .ugc-video-container {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ugc-video-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .ugc-video-header .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: {{ section.settings.eyebrow_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .ugc-video-header h2 {
+    font-family: "Cabin", sans-serif;
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 700;
+    color: {{ section.settings.heading_color }};
+    line-height: 1.2;
+    margin: 0 0 1rem 0;
+  }
+
+  .ugc-video-header p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: {{ section.settings.text_color }};
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .ugc-video-carousel-wrapper {
+    position: relative;
+    margin-top: 3rem;
+    overflow: hidden;
+  }
+
+  .ugc-video-grid {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding: 0 20px 20px 20px;
+  }
+
+  .ugc-video-grid::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+
+  @media screen and (min-width: 750px) {
+    .ugc-video-grid {
+      gap: 2.5rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .ugc-video-grid {
+      gap: 2rem;
+      padding: 0 calc((100vw - {{ section.settings.container_width }}px) / 2 + 20px) 20px calc((100vw - {{ section.settings.container_width }}px) / 2 + 20px);
+    }
+  }
+
+  .ugc-video-card {
+    position: relative;
+    background: {{ section.settings.card_background }};
+    border-radius: {{ section.settings.card_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ugc-video-card {
+      flex: 0 0 320px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .ugc-video-card {
+      flex: 0 0 calc(({{ section.settings.container_width }}px - 4rem) / 3);
+    }
+  }
+
+  .ugc-video-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  }
+
+  .ugc-video-thumbnail {
+    position: relative;
+    width: 100%;
+    /* Portrait ratio: 3:4 */
+    padding-bottom: 133.33%; /* (4/3) * 100 = 133.33% */
+    background: #f0f0f0;
+    overflow: hidden;
+  }
+
+  .ugc-video-thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .ugc-video-card:hover .ugc-video-thumbnail img {
+    transform: scale(1.05);
+  }
+
+  .ugc-video-play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+  }
+
+  .ugc-video-card:hover .ugc-video-play-overlay {
+    background: rgba(0, 0, 0, 0.85);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .ugc-video-play-overlay svg {
+    width: 28px;
+    height: 28px;
+    fill: #ffffff;
+    margin-left: 4px; /* slight offset for play icon visual centering */
+  }
+
+  .ugc-video-platform-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
+    z-index: 2;
+  }
+
+  .ugc-video-content {
+    padding: 1.5rem;
+  }
+
+  .ugc-video-content h3 {
+    font-family: "Cabin", sans-serif;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: {{ section.settings.heading_color }};
+    margin: 0 0 0.75rem 0;
+    line-height: 1.3;
+  }
+
+  .ugc-video-content p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: {{ section.settings.text_color }};
+    margin: 0;
+  }
+
+  /* Carousel Navigation Arrows */
+  .ugc-carousel-nav {
+    display: none;
+  }
+
+  @media screen and (min-width: 990px) {
+    .ugc-carousel-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .ugc-carousel-arrow {
+      width: 48px;
+      height: 48px;
+      border: 2px solid {{ section.settings.heading_color }};
+      background: {{ section.settings.card_background }};
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      opacity: 0.7;
+    }
+
+    .ugc-carousel-arrow:hover {
+      opacity: 1;
+      background: {{ section.settings.heading_color }};
+    }
+
+    .ugc-carousel-arrow:hover svg {
+      stroke: {{ section.settings.card_background }};
+    }
+
+    .ugc-carousel-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .ugc-carousel-arrow svg {
+      width: 20px;
+      height: 20px;
+      stroke: {{ section.settings.heading_color }};
+      stroke-width: 2;
+      transition: stroke 0.3s ease;
+    }
+  }
+
+  /* Scroll Indicator */
+  .ugc-scroll-indicator {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: {{ section.settings.text_color }};
+    opacity: 0.7;
+  }
+
+  @media screen and (min-width: 990px) {
+    .ugc-scroll-indicator {
+      display: none;
+    }
+  }
+
+  /* Modal Styles */
+  .ugc-video-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ugc-video-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .ugc-video-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+  }
+
+  .ugc-video-modal.active .ugc-video-modal-content {
+    transform: scale(1);
+  }
+
+  .ugc-video-modal-iframe-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 133.33%; /* 3:4 aspect ratio */
+    background: #000;
+  }
+
+  .ugc-video-modal-iframe-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .ugc-video-modal-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    z-index: 10;
+  }
+
+  .ugc-video-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .ugc-video-modal-close svg {
+    width: 20px;
+    height: 20px;
+    stroke: #ffffff;
+    stroke-width: 2;
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .ugc-video-card,
+    .ugc-video-thumbnail img,
+    .ugc-video-play-overlay,
+    .ugc-video-modal,
+    .ugc-video-modal-content {
+      transition: none;
+    }
+  }
+</style>
+
+<section class="ugc-video-section" id="ugc-video-{{ section.id }}">
+  <div class="ugc-video-container">
+    {%- if section.settings.eyebrow != blank
+      or section.settings.heading != blank
+      or section.settings.description != blank
+    -%}
+      <div class="ugc-video-header">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2>{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p>{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="ugc-video-carousel-wrapper">
+      <div class="ugc-video-grid" id="ugc-carousel-{{ section.id }}">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'ugc_video' -%}
+            <div
+              class="ugc-video-card"
+              {{ block.shopify_attributes }}
+              data-video-url="{{ block.settings.video_url | escape }}"
+            >
+              <div class="ugc-video-thumbnail">
+                {%- if block.settings.thumbnail != blank -%}
+                  <img
+                    src="{{ block.settings.thumbnail | image_url: width: 600 }}"
+                    srcset="
+                      {{ block.settings.thumbnail | image_url: width: 300 }} 300w,
+                      {{ block.settings.thumbnail | image_url: width: 450 }} 450w,
+                      {{ block.settings.thumbnail | image_url: width: 600 }} 600w
+                    "
+                    sizes="(min-width: 990px) calc(({{ section.settings.container_width }}px - 4rem) / 3), (min-width: 750px) 320px, 280px"
+                    alt="{{ block.settings.title | escape }}"
+                    loading="lazy"
+                    width="{{ block.settings.thumbnail.width }}"
+                    height="{{ block.settings.thumbnail.height }}"
+                  >
+                {%- else -%}
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+
+                <div class="ugc-video-play-overlay" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+
+                {%- if block.settings.platform != blank -%}
+                  <span class="ugc-video-platform-badge">{{ block.settings.platform }}</span>
+                {%- endif -%}
+              </div>
+
+              <div class="ugc-video-content">
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+                {%- if block.settings.description != blank -%}
+                  <p>{{ block.settings.description }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="ugc-carousel-nav">
+        <button class="ugc-carousel-arrow ugc-carousel-prev" aria-label="Previous videos">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="ugc-carousel-arrow ugc-carousel-next" aria-label="Next videos">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="ugc-scroll-indicator">
+        ← Swipe to see more →
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for video playback -->
+  <div
+    class="ugc-video-modal"
+    id="ugc-video-modal-{{ section.id }}"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Video player"
+  >
+    <button class="ugc-video-modal-close" aria-label="Close video">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="ugc-video-modal-content">
+      <div class="ugc-video-modal-iframe-wrapper">
+        <iframe
+          id="ugc-video-iframe-{{ section.id }}"
+          src=""
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const sectionId = '{{ section.id }}';
+    const modal = document.getElementById('ugc-video-modal-' + sectionId);
+    const iframe = document.getElementById('ugc-video-iframe-' + sectionId);
+    const closeBtn = modal ? modal.querySelector('.ugc-video-modal-close') : null;
+    const videoCards = document.querySelectorAll('#ugc-video-' + sectionId + ' .ugc-video-card');
+    const carousel = document.getElementById('ugc-carousel-' + sectionId);
+    const prevBtn = document.querySelector('#ugc-video-' + sectionId + ' .ugc-carousel-prev');
+    const nextBtn = document.querySelector('#ugc-video-' + sectionId + ' .ugc-carousel-next');
+
+    if (!modal || !iframe || !closeBtn) return;
+
+    // Carousel navigation
+    if (carousel && prevBtn && nextBtn) {
+      function getCardWidth() {
+        const firstCard = carousel.querySelector('.ugc-video-card');
+        if (firstCard) {
+          const cardStyle = window.getComputedStyle(firstCard);
+          const gap = parseFloat(window.getComputedStyle(carousel).gap) || 32;
+          return firstCard.offsetWidth + gap;
+        }
+        return 340; // fallback
+      }
+
+      prevBtn.addEventListener('click', function() {
+        const cardWidth = getCardWidth();
+        carousel.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', function() {
+        const cardWidth = getCardWidth();
+        carousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      });
+
+      // Update button states based on scroll position
+      function updateButtonStates() {
+        const isAtStart = carousel.scrollLeft <= 0;
+        const isAtEnd = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 10;
+        
+        prevBtn.disabled = isAtStart;
+        nextBtn.disabled = isAtEnd;
+      }
+
+      carousel.addEventListener('scroll', updateButtonStates);
+      updateButtonStates(); // Initial state
+    }
+
+    // Open modal and load video
+    videoCards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        const videoUrl = card.getAttribute('data-video-url');
+        if (videoUrl) {
+          iframe.src = videoUrl;
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+
+      // Keyboard accessibility
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute(
+        'aria-label',
+        'Play video: ' + (card.querySelector('h3') ? card.querySelector('h3').textContent : 'User video')
+      );
+    });
+
+    // Close modal
+    function closeModal() {
+      modal.classList.remove('active');
+      iframe.src = '';
+      document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close on background click
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "UGC Video Showcase",
+  "tag": "section",
+  "class": "section-ugc-video-showcase",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Real Results"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "See What Our Community Is Saying"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Real people, real transformations. Watch authentic reviews from our valued customers."
+    },
+    {
+      "type": "header",
+      "content": "Section Styling"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#002f5c"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#6c757d"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow Color",
+      "default": "#0057a6"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "default": 1400,
+      "unit": "px",
+      "info": "Width of the carousel container. Cards will automatically size to fit 3 per view."
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top Padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom Padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ugc_video",
+      "name": "UGC Video Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "thumbnail",
+          "label": "Video Thumbnail",
+          "info": "Upload a screenshot from the video as thumbnail"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Video Title",
+          "default": "Amazing Results!"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Video Description",
+          "default": "See how our product changed my life."
+        },
+        {
+          "type": "text",
+          "id": "platform",
+          "label": "Platform Badge",
+          "default": "TikTok",
+          "info": "e.g., TikTok, Instagram, YouTube"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video Embed URL",
+          "info": "Use the embed URL from TikTok/Instagram (e.g., https://www.tiktok.com/embed/...)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "UGC Video Showcase",
+      "blocks": [
+        {
+          "type": "ugc_video",
+          "settings": {
+            "title": "Life-Changing Results",
+            "description": "I've been using this for 3 months and the difference is incredible!",
+            "platform": "TikTok",
+            "video_url": ""
+          }
+        },
+        {
+          "type": "ugc_video",
+          "settings": {
+            "title": "Highly Recommend",
+            "description": "Best supplement I've ever tried. Energy levels through the roof!",
+            "platform": "Instagram",
+            "video_url": ""
+          }
+        },
+        {
+          "type": "ugc_video",
+          "settings": {
+            "title": "Amazing Quality",
+            "description": "Premium ingredients, fast shipping, and real results. 5 stars!",
+            "platform": "TikTok",
+            "video_url": ""
+          }
+        },
+        {
+          "type": "ugc_video",
+          "settings": {
+            "title": "Game Changer",
+            "description": "My friends keep asking what I'm taking. This is the secret!",
+            "platform": "Instagram",
+            "video_url": ""
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

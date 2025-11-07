@@ -1,0 +1,1017 @@
+{% comment %}
+  Section: Three Powers
+  Purpose: Showcase the three key benefits/approaches of the NAD+ formula
+  Shows: Numbered cards with hero images, headlines, and benefit descriptions
+{% endcomment %}
+
+<style>
+    .three-powers-section {
+      position: relative;
+      {% if section.settings.background_type == 'solid' %}
+      /* Prefer the site's darker primary hover variable if available, otherwise fall back to the section setting */
+      background: var(--color-primary-hover-custom, {{ section.settings.background_color }});
+      {% else %}
+      background: linear-gradient({{ section.settings.gradient_direction }}, {{ section.settings.gradient_start_color }}, {{ section.settings.gradient_end_color }});
+      {% endif %}
+      padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+      overflow: hidden;
+    }
+
+    @media screen and (min-width: 750px) {
+      .three-powers-section {
+        padding: {{ section.settings.padding_top_desktop }}px 0 {{ section.settings.padding_bottom_desktop }}px;
+      }
+    }
+
+    .three-powers-container {
+      max-width: {{ section.settings.container_width }}px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    @media screen and (min-width: 750px) {
+      .three-powers-container {
+        scale: 0.85;
+      }
+    }
+
+    .three-powers-header {
+      text-align: center;
+      margin-bottom: 40px;
+      /* start hidden for scroll animation */
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.9s cubic-bezier(0.2,0.9,0.2,1), transform 0.9s cubic-bezier(0.2,0.9,0.2,1);
+    }
+
+    .three-powers-header h2 {
+      font-size: {{ section.settings.heading_size_mobile }}px;
+      font-weight: {{ section.settings.heading_weight }};
+      color: {{ section.settings.heading_color }};
+      margin: 0 0 20px 0;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    @media screen and (min-width: 750px) {
+      .three-powers-header h2 {
+        font-size: {{ section.settings.heading_size_desktop }}px;
+      }
+    }
+
+    .three-powers-header p {
+      font-size: {{ section.settings.subheading_size_mobile }}px;
+      color: {{ section.settings.subheading_color }};
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1;
+    }
+
+    @media screen and (min-width: 750px) {
+      .three-powers-header p {
+        font-size: {{ section.settings.subheading_size_desktop }}px;
+      }
+    }
+
+    .three-powers-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-top: 60px;
+    }
+
+    /* animation helpers for cards */
+    .power-card {
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+      transition: opacity 0.9s cubic-bezier(0.2,0.9,0.2,1), transform 0.9s cubic-bezier(0.2,0.9,0.2,1);
+      will-change: transform, opacity;
+    }
+
+    .power-card.animate-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .three-powers-header.animate-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media screen and (min-width: 750px) {
+      .three-powers-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: {{ section.settings.card_gap }}px;
+      }
+    }
+
+    /* Mobile carousel behavior: convert grid to horizontal scroll with snap */
+    @media screen and (max-width: 749px) {
+      .three-powers-grid {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 8px; /* give space for controls */
+        margin-top: 24px;
+      }
+
+      .three-powers-grid::-webkit-scrollbar { display: none; }
+
+      .power-card {
+        flex: 0 0 92%; /* show one card at a time with side peeking */
+        scroll-snap-align: center;
+        width: auto;
+        margin: 0 auto;
+      }
+
+      /* Carousel controls (mobile) */
+      .three-powers-carousel-controls {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .three-powers-carousel-controls button {
+        background: rgba(0,0,0,0.06);
+        border: none;
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .three-powers-carousel-controls button:active { transform: scale(0.96); }
+
+      .three-powers-carousel-controls svg { width: 16px; height: 16px; fill: #0b63ce; }
+    }
+
+    .power-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      {% if section.settings.card_background_type == 'solid' %}
+      /* Use the site's primary color (lighter hue) for cards if available, otherwise fall back to the section card setting */
+      background: var(--color-primary-custom, {{ section.settings.card_background }});
+      {% else %}
+      background: linear-gradient({{ section.settings.card_gradient_direction }}, {{ section.settings.card_gradient_start_color }}, {{ section.settings.card_gradient_end_color }});
+      {% endif %}
+      border-radius: {{ section.settings.card_border_radius }}px;
+      overflow: hidden;
+      /* subtle resting shadow to lift the card from the background */
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      /* Keep a longer entrance for transform + opacity, but keep a snappier shadow change */
+      transition: opacity 0.9s cubic-bezier(0.2,0.9,0.2,1), transform 0.9s cubic-bezier(0.2,0.9,0.2,1), box-shadow 0.32s cubic-bezier(.2,.9,.2,1);
+    }
+
+    @media (hover: hover) {
+      .power-card:hover {
+        transform: translateY(-12px);
+        /* stronger shadow on hover to simulate hovering */
+        box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+        z-index: 3;
+      }
+    }
+
+    .power-card-number {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: {{ section.settings.number_size }}px;
+      font-weight: 700;
+      color: {{ section.settings.number_color }};
+      z-index: 2;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      line-height: 1;
+    }
+
+    .power-card-image {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+
+    @media screen and (min-width: 750px) {
+      .power-card-image {
+        height: {{ section.settings.image_height }}px;
+      }
+    }
+
+    .power-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    @media (hover: hover) {
+      .power-card:hover .power-card-image img {
+        transform: scale(1.05);
+      }
+    }
+
+    .power-card-content {
+      padding: 30px 25px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media screen and (min-width: 750px) {
+      .power-card-content {
+        padding: {{ section.settings.card_padding }}px;
+      }
+    }
+
+    .power-card-title {
+      font-size: {{ section.settings.card_title_size_mobile }}px;
+      font-weight: {{ section.settings.card_title_weight }};
+      color: {{ section.settings.card_title_color }};
+      margin: 0 0 15px 0;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    @media screen and (min-width: 750px) {
+      .power-card-title {
+        font-size: {{ section.settings.card_title_size_desktop }}px;
+      }
+    }
+
+    .power-card-description {
+      font-size: {{ section.settings.card_description_size_mobile }}px;
+      color: {{ section.settings.card_description_color }};
+      line-height: 1.6;
+      margin: 0 0 25px 0;
+    }
+
+    @media screen and (min-width: 750px) {
+      .power-card-description {
+        font-size: {{ section.settings.card_description_size_desktop }}px;
+      }
+    }
+
+    /* Remove thin hairline often visible under svg shape dividers (anti-aliasing artifact) */
+    .custom-shape-divider-bottom-1761814031 {
+      margin-bottom: -1px;
+    }
+
+    .custom-shape-divider-bottom-1761814031 svg {
+      display: block;
+      border: none;
+      width: calc(100% + 1px);
+      height: auto;
+    }
+
+    /* Shape Dividers */
+    .custom-shape-divider-bottom-1761814031 {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      transform: rotate(180deg);
+      z-index: 1;
+    }
+
+    .custom-shape-divider-bottom-1761814031 svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 70px;
+    }
+
+    .custom-shape-divider-bottom-1761814031 .shape-fill {
+      fill: {{ section.settings.shape_divider_color }};
+    }
+
+    @media screen and (min-width: 750px) {
+      .custom-shape-divider-bottom-1761814031 svg {
+        height: {{ section.settings.shape_divider_height }}px;
+      }
+    }
+
+    .three-powers-container {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Top shape divider (uses same color setting as bottom) - replaced with updated class */
+    .custom-shape-divider-top-1762185432 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      transform: rotate(180deg);
+  }
+
+  .custom-shape-divider-top-1762185432 svg {
+      position: relative;
+      display: block;
+      width: calc(153% + 1.3px);
+      height: 104px;
+  }
+
+  .custom-shape-divider-top-1762185432 .shape-fill {
+      fill: {{ section.settings.shape_divider_color }};
+  }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .power-card,
+      .power-card-image img {
+        transition: none;
+      }
+    }
+</style>
+
+<section class="three-powers-section" id="three-powers-{{ section.id }}">
+  <!-- Top SVG shape divider (updated per user) -->
+  <div class="custom-shape-divider-top-1762185432">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+    </svg>
+  </div>
+  <div class="three-powers-container">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+    <div class="three-powers-header" data-animate="header">
+        {%- if section.settings.heading != blank -%}
+          <h2>{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p>{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="three-powers-grid" data-animate="grid">
+      {%- for block in section.blocks -%}
+        <div class="power-card" style="--i:{{ forloop.index0 }};" {{ block.shopify_attributes }}>
+          <span class="power-card-number" aria-hidden="true">{{ block.settings.number }}</span>
+
+          <div class="power-card-image">
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 800 }}"
+                srcset="
+                  {{ block.settings.image | image_url: width: 400 }} 400w,
+                  {{ block.settings.image | image_url: width: 600 }} 600w,
+                  {{ block.settings.image | image_url: width: 800 }} 800w
+                "
+                sizes="(min-width: 750px) calc(33.33vw - 40px), 90vw"
+                alt="{{ block.settings.image.alt | escape }}"
+                loading="lazy"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+              >
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+
+          <div class="power-card-content">
+            {%- if block.settings.title != blank -%}
+              <h3 class="power-card-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <p class="power-card-description">{{ block.settings.description }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    <!-- Mobile carousel controls -->
+    <div class="three-powers-carousel-controls" aria-hidden="false">
+      <button type="button" class="three-powers-prev" aria-label="Previous">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      </button>
+      <button type="button" class="three-powers-next" aria-label="Next">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  {%- if section.settings.show_bottom_divider -%}
+    <div class="custom-shape-divider-bottom-1761814031">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+      </svg>
+    </div>
+  {%- endif -%}
+</section>
+
+<script>
+  (function () {
+    const root = document.getElementById('three-powers-{{ section.id }}');
+    if (!root) return;
+
+    const container = root.querySelector('.three-powers-grid');
+    const prevBtn = root.querySelector('.three-powers-prev');
+    const nextBtn = root.querySelector('.three-powers-next');
+
+    // Only enable carousel behavior on small screens
+    function isMobile() {
+      return window.matchMedia('(max-width: 749px)').matches;
+    }
+
+    function scrollToCard(index) {
+      const cards = Array.from(container.querySelectorAll('.power-card'));
+      if (!cards.length) return;
+      const card = cards[index];
+      if (!card) return;
+      const left = card.offsetLeft - (container.clientWidth - card.clientWidth) / 2;
+      container.scrollTo({ left, behavior: 'smooth' });
+    }
+
+    function getVisibleIndex() {
+      const cards = Array.from(container.querySelectorAll('.power-card'));
+      const center = container.scrollLeft + container.clientWidth / 2;
+      let closest = 0;
+      let minDist = Infinity;
+      cards.forEach((c, i) => {
+        const cCenter = c.offsetLeft + c.clientWidth / 2;
+        const dist = Math.abs(cCenter - center);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      return closest;
+    }
+
+    let resizeObserver = null;
+
+    function updateButtons() {
+      if (!prevBtn || !nextBtn) return;
+      const idx = getVisibleIndex();
+      const total = container.querySelectorAll('.power-card').length;
+      prevBtn.disabled = idx === 0;
+      nextBtn.disabled = idx === total - 1;
+    }
+
+    function attach() {
+      if (!isMobile()) {
+        // ensure horizontal scroll removed if desktop
+        container.style.overflowX = '';
+        return;
+      }
+
+      // show buttons
+      if (prevBtn) prevBtn.style.display = '';
+      if (nextBtn) nextBtn.style.display = '';
+
+      // wire buttons
+      if (prevBtn) prevBtn.addEventListener('click', () => {
+        const idx = getVisibleIndex();
+        scrollToCard(Math.max(0, idx - 1));
+      });
+      if (nextBtn) nextBtn.addEventListener('click', () => {
+        const idx = getVisibleIndex();
+        const total = container.querySelectorAll('.power-card').length;
+        scrollToCard(Math.min(total - 1, idx + 1));
+      });
+
+      // update buttons after scroll
+      let scrollerTimeout = null;
+      container.addEventListener('scroll', () => {
+        if (scrollerTimeout) clearTimeout(scrollerTimeout);
+        scrollerTimeout = setTimeout(() => { updateButtons(); }, 100);
+      }, { passive: true });
+
+      // basic swipe support (for some non-native scroll situations)
+      let startX = 0;
+      let isDown = false;
+      container.addEventListener('pointerdown', (e) => { isDown = true; startX = e.clientX; }, { passive: true });
+      container.addEventListener('pointerup', (e) => {
+        if (!isDown) return; isDown = false; const dx = e.clientX - startX; if (Math.abs(dx) > 30) {
+          if (dx < 0) { const idx = getVisibleIndex(); const total = container.querySelectorAll('.power-card').length; scrollToCard(Math.min(total - 1, idx + 1)); }
+          else { const idx = getVisibleIndex(); scrollToCard(Math.max(0, idx - 1)); }
+        }
+      });
+
+      updateButtons();
+
+      // observe resize to recalc
+      resizeObserver = new ResizeObserver(() => { updateButtons(); });
+      resizeObserver.observe(container);
+    }
+
+    // attach on load and on resize
+    function init() { if (isMobile()) attach(); else { if (prevBtn) prevBtn.style.display = 'none'; if (nextBtn) nextBtn.style.display = 'none'; } }
+    init();
+    window.addEventListener('resize', init);
+  })();
+</script>
+
+<script>
+  // Scroll-triggered animations (works on mobile and desktop)
+  (function () {
+    const root = document.getElementById('three-powers-{{ section.id }}');
+    if (!root) return;
+
+    const header = root.querySelector('[data-animate="header"]');
+    const cards = Array.from(root.querySelectorAll('.power-card'));
+
+    const observerOptions = { threshold: 0.15 };
+
+    // Observe header
+    if (header) {
+      const hObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      hObserver.observe(header);
+    }
+
+    // Observe cards with stagger
+    const cardObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          // read index variable
+          const idx = parseInt(getComputedStyle(el).getPropertyValue('--i')) || 0;
+          // slower stagger: multiply index by 260ms for gentler reveal
+          setTimeout(() => { el.classList.add('animate-visible'); }, idx * 260);
+          obs.unobserve(el);
+        }
+      });
+    }, observerOptions);
+
+    cards.forEach(card => cardObserver.observe(card));
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Three Powers",
+  "tag": "section",
+  "class": "section-three-powers",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Shape Dividers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_top_divider",
+      "label": "Show Top Shape Divider",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bottom_divider",
+      "label": "Show Bottom Shape Divider",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "shape_divider_color",
+      "label": "Shape Divider Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "shape_divider_height",
+      "label": "Shape Divider Height (Desktop)",
+      "min": 40,
+      "max": 150,
+      "step": 10,
+      "default": 70,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "It's Time to Feel Like Your Best Self Again."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "This is what it feels like to truly refuel your body. We're not just targeting aging; we're unlocking a new chapter of your energy and clarity."
+    },
+    {
+      "type": "header",
+      "content": "Section Appearance"
+    },
+    {
+      "type": "select",
+      "id": "background_type",
+      "label": "Background Type",
+      "options": [
+        { "value": "solid", "label": "Solid Color" },
+        { "value": "gradient", "label": "Linear Gradient" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#002f5c"
+    },
+    {
+      "type": "select",
+      "id": "gradient_direction",
+      "label": "Gradient Direction",
+      "options": [
+        { "value": "to right", "label": "Left to Right" },
+        { "value": "to bottom", "label": "Top to Bottom" },
+        { "value": "to bottom right", "label": "Top Left to Bottom Right" },
+        { "value": "to bottom left", "label": "Top Right to Bottom Left" },
+        { "value": "45deg", "label": "45 Degrees" },
+        { "value": "135deg", "label": "135 Degrees" }
+      ],
+      "default": "to right"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start_color",
+      "label": "Gradient Start Color",
+      "default": "#002f5c"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end_color",
+      "label": "Gradient End Color",
+      "default": "#0057a6"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "default": 1400,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top Padding (Mobile)",
+      "min": 0,
+      "max": 300,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom Padding (Mobile)",
+      "min": 0,
+      "max": 300,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top Padding (Desktop)",
+      "min": 0,
+      "max": 600,
+      "step": 10,
+      "default": 600,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Heading Style"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading Size (Mobile)",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading Size (Desktop)",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "default": 52,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mobile",
+      "label": "Subheading Size (Mobile)",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_desktop",
+      "label": "Subheading Size (Desktop)",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading Color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "header",
+      "content": "Card Style"
+    },
+    {
+      "type": "select",
+      "id": "card_background_type",
+      "label": "Card Background Type",
+      "options": [
+        { "value": "solid", "label": "Solid Color" },
+        { "value": "gradient", "label": "Linear Gradient" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card Background Color",
+      "default": "#0057a6"
+    },
+    {
+      "type": "select",
+      "id": "card_gradient_direction",
+      "label": "Card Gradient Direction",
+      "options": [
+        { "value": "to right", "label": "Left to Right" },
+        { "value": "to bottom", "label": "Top to Bottom" },
+        { "value": "to bottom right", "label": "Top Left to Bottom Right" },
+        { "value": "to bottom left", "label": "Top Right to Bottom Left" },
+        { "value": "45deg", "label": "45 Degrees" },
+        { "value": "135deg", "label": "135 Degrees" }
+      ],
+      "default": "to right"
+    },
+    {
+      "type": "color",
+      "id": "card_gradient_start_color",
+      "label": "Card Gradient Start Color",
+      "default": "#0057a6"
+    },
+    {
+      "type": "color",
+      "id": "card_gradient_end_color",
+      "label": "Card Gradient End Color",
+      "default": "#003d7a"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card Border Radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap Between Cards (Desktop)",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card Content Padding (Desktop)",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "default": 35,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image Height (Desktop)",
+      "min": 250,
+      "max": 500,
+      "step": 10,
+      "default": 400,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Number Style"
+    },
+    {
+      "type": "range",
+      "id": "number_size",
+      "label": "Number Size",
+      "min": 24,
+      "max": 60,
+      "step": 2,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Number Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Card Text Style"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_mobile",
+      "label": "Title Size (Mobile)",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "default": 22,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_desktop",
+      "label": "Title Size (Desktop)",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_title_weight",
+      "label": "Title Weight",
+      "options": [
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Title Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_description_size_mobile",
+      "label": "Description Size (Mobile)",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_description_size_desktop",
+      "label": "Description Size (Desktop)",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "card_description_color",
+      "label": "Description Color",
+      "default": "#cccccc"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "power",
+      "name": "Power Card",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Card Number",
+          "default": "01"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "DNA Repair"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Card Description",
+          "default": "It helps power your body's natural processes to fix damaged DNA and keep your cells healthy."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Three Powers",
+      "blocks": [
+        {
+          "type": "power",
+          "settings": {
+            "number": "01",
+            "title": "DNA Repair",
+            "description": "It helps power your body's natural processes to fix damaged DNA and keep your cells healthy."
+          }
+        },
+        {
+          "type": "power",
+          "settings": {
+            "number": "02",
+            "title": "Cellular Defense",
+            "description": "Activates important \"longevity genes\" that help your body fight off stress and maintain overall wellness."
+          }
+        },
+        {
+          "type": "power",
+          "settings": {
+            "number": "03",
+            "title": "Energy Production",
+            "description": "It's an essential component for the chemical reactions that convert food into cellular energy."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

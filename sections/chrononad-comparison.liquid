@@ -1,0 +1,306 @@
+{{ 'section-chrononad-comparison.css' | asset_url | stylesheet_tag }}
+
+<section class="chrononad-comparison section-{{ section.id }}-padding">
+  <div class="chrononad-comparison__container page-width">
+    <!-- Two Column Layout -->
+    <div class="chrononad-comparison__two-column">
+      <!-- Left Column: Animated Chart -->
+      <div class="chrononad-comparison__chart-col">
+        {% if section.settings.chart_title != blank %}
+          <h3 class="chrononad-comparison__chart-title">
+            {{ section.settings.chart_title }}
+          </h3>
+        {% endif %}
+
+        <div class="chrononad-comparison__chart-wrapper">
+          <!-- Bar Chart Container -->
+          <div class="comparison-chart" data-nad-alone="{{ section.settings.nad_alone_percentage }}" data-nad-resveratrol="{{ section.settings.nad_resveratrol_percentage }}">
+            <!-- NAD+ Alone Bar -->
+            <div class="chart-bar-group">
+              <div class="chart-bar-container">
+                <div class="chart-bar chart-bar--primary" data-percentage="{{ section.settings.nad_alone_percentage }}">
+                  <div class="chart-bar-fill chart-bar-fill--primary"></div>
+                  <div class="chart-bar-label">
+                    <span class="chart-percentage">{{ section.settings.nad_alone_percentage }}%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-bar-legend">
+                <span class="chart-legend-dot chart-legend-dot--primary"></span>
+                <span class="chart-legend-text">{{ section.settings.nad_alone_label | default: "NAD+ Alone" }}</span>
+              </div>
+            </div>
+
+            <!-- NAD+ with Resveratrol Bar -->
+            <div class="chart-bar-group">
+              <div class="chart-bar-container">
+                <div class="chart-bar chart-bar--secondary" data-percentage="{{ section.settings.nad_resveratrol_percentage }}">
+                  <div class="chart-bar-fill chart-bar-fill--secondary"></div>
+                  <div class="chart-bar-label">
+                    <span class="chart-percentage">{{ section.settings.nad_resveratrol_percentage }}%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-bar-legend">
+                <span class="chart-legend-dot chart-legend-dot--secondary"></span>
+                <span class="chart-legend-text">{{ section.settings.nad_resveratrol_label | default: "NAD+ with Resveratrol" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Citation -->
+        {% if section.settings.citation_text != blank %}
+          <div class="chrononad-comparison__citation">
+            {{ section.settings.citation_text }}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Right Column: Text Content -->
+      <div class="chrononad-comparison__content-col">
+        {% if section.settings.eyebrow_text != blank %}
+          <div class="chrononad-comparison__eyebrow">
+            {{ section.settings.eyebrow_text }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.main_heading != blank %}
+          <h2 class="chrononad-comparison__heading">
+            {{ section.settings.main_heading }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="chrononad-comparison__description">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.advantage_title != blank %}
+          <div class="chrononad-comparison__advantage">
+            <h3 class="chrononad-comparison__advantage-title">
+              {{ section.settings.advantage_title }}
+            </h3>
+            {% if section.settings.advantage_text != blank %}
+              <p class="chrononad-comparison__advantage-text">
+                {{ section.settings.advantage_text }}
+              </p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.button_text != blank %}
+          <a href="{{ section.settings.button_link }}" class="chrononad-comparison__button">
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const section = document.querySelector('.chrononad-comparison');
+    if (!section) return;
+
+    const chart = section.querySelector('.comparison-chart');
+    const bars = chart.querySelectorAll('.chart-bar');
+    let hasAnimated = false;
+
+    function animateChart() {
+      bars.forEach((bar, index) => {
+        const fill = bar.querySelector('.chart-bar-fill');
+        const percentage = parseFloat(bar.getAttribute('data-percentage'));
+        
+        // Delay each bar slightly for stagger effect
+        setTimeout(() => {
+          fill.style.width = percentage + '%';
+          
+          // Animate percentage number
+          const label = bar.querySelector('.chart-percentage');
+          animateNumber(label, 0, percentage, 2000);
+        }, index * 300);
+      });
+    }
+
+    function animateNumber(element, start, end, duration) {
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease out cubic
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        const currentValue = Math.round(start + (end - start) * easedProgress);
+        
+        element.textContent = currentValue + '%';
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
+
+    // Intersection Observer for scroll-triggered animation
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          hasAnimated = true;
+          animateChart();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    observer.observe(section);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "ChronoNAD Comparison",
+  "tag": "section",
+  "class": "section-chrononad-comparison",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left Column - Chart"
+    },
+    {
+      "type": "text",
+      "id": "chart_title",
+      "label": "Chart Title",
+      "default": "Increase in NAD+ in Key Tissues*"
+    },
+    {
+      "type": "range",
+      "id": "nad_alone_percentage",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "NAD+ Alone Percentage",
+      "default": 80
+    },
+    {
+      "type": "text",
+      "id": "nad_alone_label",
+      "label": "NAD+ Alone Label",
+      "default": "NAD+ Alone"
+    },
+    {
+      "type": "range",
+      "id": "nad_resveratrol_percentage",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "label": "NAD+ with Resveratrol Percentage",
+      "default": 130
+    },
+    {
+      "type": "text",
+      "id": "nad_resveratrol_label",
+      "label": "NAD+ with Resveratrol Label",
+      "default": "NAD+ with Resveratrol"
+    },
+    {
+      "type": "textarea",
+      "id": "citation_text",
+      "label": "Citation Text",
+      "default": "Source: Jiang et al., Pharmacology Research & Perspectives, 2022"
+    },
+    {
+      "type": "header",
+      "content": "Right Column - Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow Text",
+      "default": "HOW CHRONONAD+ EMPOWERS YOU"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading",
+      "default": "How ChronoNAD+ Empowers You:"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "NAD+ combined with Resveratrol is a powerful blend designed to help support your vitality from within. By nourishing your body's natural energy pathways and cellular repair processes, this helps you fight back father time."
+    },
+    {
+      "type": "text",
+      "id": "advantage_title",
+      "label": "Advantage Title",
+      "default": "The 1.7x Advantage"
+    },
+    {
+      "type": "textarea",
+      "id": "advantage_text",
+      "label": "Advantage Text",
+      "default": "Research shows that combining NAD+ with Resveratrol can boost NAD+ levels in our body up to 1.7x higher than using NAD+ alone. This synergistic effect ensures optimal cellular function and enhanced anti-aging benefits."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "ChronoNAD Comparison"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+</style>

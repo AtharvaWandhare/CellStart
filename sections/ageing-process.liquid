@@ -1,0 +1,503 @@
+<style>
+  .ageing-process {
+    background: linear-gradient(180deg, #0a5db8 0%, #0b63ce 100%);
+    padding: 5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ageing-process {
+      padding: 3rem 1.5rem;
+    }
+  }
+
+  .ageing-process__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Header Section */
+  .ageing-process__header {
+    text-align: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ageing-process__header.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ageing-process__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ageing-process__title {
+      font-size: 3rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .ageing-process__title {
+      font-size: 3.5rem;
+    }
+  }
+
+  .ageing-process__description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ageing-process__description {
+      font-size: 1.125rem;
+    }
+  }
+
+  .ageing-process__header.animate-in .ageing-process__description {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Cards Grid */
+  .ageing-process__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ageing-process__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+
+  /* Card */
+  .ageing-process__card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    transition: opacity 0.7s ease, transform 0.7s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+
+  .ageing-process__card.animate-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Stagger delays for cards */
+  .ageing-process__card:nth-child(1) {
+    transition-delay: 0.3s;
+  }
+
+  .ageing-process__card:nth-child(2) {
+    transition-delay: 0.5s;
+  }
+
+  .ageing-process__card:nth-child(3) {
+    transition-delay: 0.7s;
+  }
+
+  .ageing-process__card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  /* Card Number Badge */
+  .ageing-process__number {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #0b63ce 0%, #0a5db8 100%);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(11, 99, 206, 0.4);
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+
+  .ageing-process__card.animate-in .ageing-process__number {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger number animations */
+  .ageing-process__card:nth-child(1) .ageing-process__number {
+    transition-delay: 0.5s;
+  }
+
+  .ageing-process__card:nth-child(2) .ageing-process__number {
+    transition-delay: 0.7s;
+  }
+
+  .ageing-process__card:nth-child(3) .ageing-process__number {
+    transition-delay: 0.9s;
+  }
+
+  /* Card Image */
+  .ageing-process__image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e8f4ff 0%, #cde6ff 100%);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ageing-process__image-wrapper {
+      height: 220px;
+    }
+  }
+
+  .ageing-process__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.1);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ageing-process__card.animate-in .ageing-process__image {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger image animations */
+  .ageing-process__card:nth-child(1) .ageing-process__image {
+    transition-delay: 0.6s;
+  }
+
+  .ageing-process__card:nth-child(2) .ageing-process__image {
+    transition-delay: 0.8s;
+  }
+
+  .ageing-process__card:nth-child(3) .ageing-process__image {
+    transition-delay: 1s;
+  }
+
+  .ageing-process__card:hover .ageing-process__image {
+    transform: scale(1.05);
+  }
+
+  /* Card Content */
+  .ageing-process__content {
+    padding: 2rem 1.5rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ageing-process__content {
+      padding: 2.5rem 2rem;
+    }
+  }
+
+  .ageing-process__card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0b63ce;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ageing-process__card-title {
+      font-size: 1.75rem;
+    }
+  }
+
+  .ageing-process__card.animate-in .ageing-process__card-title {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger card title animations */
+  .ageing-process__card:nth-child(1) .ageing-process__card-title {
+    transition-delay: 0.8s;
+  }
+
+  .ageing-process__card:nth-child(2) .ageing-process__card-title {
+    transition-delay: 1s;
+  }
+
+  .ageing-process__card:nth-child(3) .ageing-process__card-title {
+    transition-delay: 1.2s;
+  }
+
+  .ageing-process__card-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #6b7280;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .ageing-process__card.animate-in .ageing-process__card-text {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger card text animations */
+  .ageing-process__card:nth-child(1) .ageing-process__card-text {
+    transition-delay: 0.9s;
+  }
+
+  .ageing-process__card:nth-child(2) .ageing-process__card-text {
+    transition-delay: 1.1s;
+  }
+
+  .ageing-process__card:nth-child(3) .ageing-process__card-text {
+    transition-delay: 1.3s;
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .ageing-process__header,
+    .ageing-process__description,
+    .ageing-process__card,
+    .ageing-process__number,
+    .ageing-process__image,
+    .ageing-process__card-title,
+    .ageing-process__card-text {
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<div class="ageing-process">
+  <div class="ageing-process__container page-width">
+    <div class="ageing-process__header" data-animate>
+      {%- if section.settings.title != blank -%}
+        <h2 class="ageing-process__title">
+          {{ section.settings.title }}
+        </h2>
+      {%- endif -%}
+      
+      {%- if section.settings.description != blank -%}
+        <p class="ageing-process__description">
+          {{ section.settings.description }}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <div class="ageing-process__grid">
+      {%- for block in section.blocks -%}
+        <div
+          class="ageing-process__card"
+          data-animate
+          {{ block.shopify_attributes }}
+        >
+          <div class="ageing-process__number">
+            {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+          </div>
+
+          <div class="ageing-process__image-wrapper">
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 600 }}"
+                alt="{{ block.settings.title | escape }}"
+                class="ageing-process__image"
+                loading="lazy"
+                width="600"
+                height="280"
+              >
+            {%- else -%}
+              <div class="ageing-process__image" style="background: linear-gradient(135deg, {{ block.settings.placeholder_color_1 | default: '#e8f4ff' }} 0%, {{ block.settings.placeholder_color_2 | default: '#cde6ff' }} 100%);"></div>
+            {%- endif -%}
+          </div>
+
+          <div class="ageing-process__content">
+            {%- if block.settings.title != blank -%}
+              <h3 class="ageing-process__card-title">
+                {{ block.settings.title }}
+              </h3>
+            {%- endif -%}
+
+            {%- if block.settings.text != blank -%}
+              <p class="ageing-process__card-text">
+                {{ block.settings.text }}
+              </p>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const animateOnScroll = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          // Optional: Unobserve after animation to improve performance
+          animateOnScroll.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with data-animate attribute
+    document.addEventListener('DOMContentLoaded', () => {
+      const animateElements = document.querySelectorAll('[data-animate]');
+      animateElements.forEach(element => {
+        animateOnScroll.observe(element);
+      });
+    });
+
+    // Handle dynamic section rendering in theme editor
+    if (Shopify && Shopify.designMode) {
+      document.addEventListener('shopify:section:load', (event) => {
+        const animateElements = event.target.querySelectorAll('[data-animate]');
+        animateElements.forEach(element => {
+          animateOnScroll.observe(element);
+        });
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Ageing Process",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section heading",
+      "default": "Ageing is a Process. Feeling Your Best is a Choice."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "You don't have to accept the 'normal' decline. By supporting your body at the cellular level, you can change the way you age. It starts with these three fundamental steps."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Process Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Step image",
+          "info": "Recommended size: 600x280px"
+        },
+        {
+          "type": "color",
+          "id": "placeholder_color_1",
+          "label": "Placeholder gradient start",
+          "default": "#e8f4ff",
+          "info": "Used if no image is uploaded"
+        },
+        {
+          "type": "color",
+          "id": "placeholder_color_2",
+          "label": "Placeholder gradient end",
+          "default": "#cde6ff",
+          "info": "Used if no image is uploaded"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Step title",
+          "default": "DNA Repair"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Step description",
+          "default": "It helps power your body's natural processes to fix damaged DNA and keep your cells healthy."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ageing Process",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "DNA Repair",
+            "text": "It helps power your body's natural processes to fix damaged DNA and keep your cells healthy.",
+            "placeholder_color_1": "#fff4e6",
+            "placeholder_color_2": "#ffd89b"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Cellular Defense",
+            "text": "Activates important 'longevity genes' that help your body fight off stress and maintain overall wellness.",
+            "placeholder_color_1": "#f3e8ff",
+            "placeholder_color_2": "#d4b5ff"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Energy Production",
+            "text": "It's an essential component for the chemical reactions that convert food into cellular energy.",
+            "placeholder_color_1": "#e8f4ff",
+            "placeholder_color_2": "#b8d9ff"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

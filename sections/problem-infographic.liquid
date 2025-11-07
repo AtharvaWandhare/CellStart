@@ -1,0 +1,968 @@
+{{ 'problem-infographic.css' | asset_url | stylesheet_tag }}
+
+<section class="nad-decline-meter section-{{ section.id }}-padding" style="background-color: {{ section.settings.section_bg_color }};">
+  <div class="nad-decline-meter__container page-width">
+    <!-- Two Column Layout -->
+
+    <div class="nad-decline-meter__two-column {% if section.settings.swap_columns %}nad-decline-meter__two-column--swapped{% endif %}">
+      <!-- Left Column: Text Content -->
+
+      <div class="nad-decline-meter__content-col" style="text-align: {{ section.settings.content_alignment }}; margin-top: {{ section.settings.content_col_margin_top }}px; margin-bottom: {{ section.settings.content_col_margin_bottom }}px;">
+        {% if section.settings.subtitle != blank %}
+          <div class="nad-decline-meter__subtitle" style="font-size: {{ section.settings.subtitle_font_size }}px; color: {{ section.settings.subtitle_color }}; margin-bottom: {{ section.settings.subtitle_margin_bottom }}px; padding: {{ section.settings.subtitle_padding }}px;">
+            {{ section.settings.subtitle }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.main_heading != blank %}
+          <h2 class="nad-decline-meter__heading" style="font-size: {{ section.settings.heading_font_size }}px; color: {{ section.settings.heading_color }}; margin-bottom: {{ section.settings.heading_margin_bottom }}px; padding: {{ section.settings.heading_padding }}px;">
+            {% assign heading_parts = section.settings.main_heading | split: 'NAD+' %}
+            {% if heading_parts.size > 1 %}
+              {{ heading_parts[0] -}}
+              <span class="nad-highlight" style="color: {{ section.settings.heading_highlight_color }};">NAD+</span>{{ heading_parts[1] }}
+            {% else %}
+              {{ section.settings.main_heading }}
+            {% endif %}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="nad-decline-meter__description" style="font-size: {{ section.settings.description_font_size }}px; color: {{ section.settings.description_color }}; margin-bottom: {{ section.settings.description_margin_bottom }}px; padding: {{ section.settings.description_padding }}px;">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.button_text != blank %}
+          <a href="{{ section.settings.button_link }}" class="nad-decline-meter__button" style="font-size: {{ section.settings.button_font_size }}px; color: {{ section.settings.button_text_color }}; background-color: {{ section.settings.button_bg_color }}; border-color: {{ section.settings.button_border_color }}; padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px; margin-top: {{ section.settings.button_margin_top }}px;">
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Right Column: Gauge -->
+
+      <div class="nad-decline-meter__gauge-col" style="margin-top: {{ section.settings.gauge_col_margin_top }}px; margin-bottom: {{ section.settings.gauge_col_margin_bottom }}px;">
+        {% if section.settings.title != blank %}
+          <h3 class="nad-decline-meter__title" style="font-size: {{ section.settings.title_font_size }}px; color: {{ section.settings.title_color }}; margin-bottom: {{ section.settings.title_margin_bottom }}px; padding: {{ section.settings.title_padding }}px;">
+            {{ section.settings.title }}
+          </h3>
+        {% endif %}
+
+        <div class="nad-decline-meter__gauge-wrapper">
+          <svg class="nad-decline-meter__gauge" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+            <!-- Define gradient for the stroke -->
+
+            <defs>
+              <linearGradient id="gaugeGradient-{{ section.id }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-opacity:1" />
+                <stop offset="100%" style="stop-opacity:1" />
+              </linearGradient>
+
+              <!-- Glow filter -->
+              <filter id="glow-{{ section.id }}" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Background circle -->
+            <circle
+              class="nad-decline-meter__circle-bg"
+              cx="150"
+              cy="150"
+              r="130"
+              fill="none"
+              stroke-width="14"
+            />
+
+
+
+            <!-- Animated progress circle -->
+
+            <circle
+
+              class="nad-decline-meter__circle-progress"
+
+              cx="150"
+
+              cy="150"
+
+              r="130"
+
+              fill="none"
+
+              stroke="url(#gaugeGradient-{{ section.id }})"
+
+              stroke-width="14"
+
+              stroke-linecap="round"
+
+              transform="rotate(-90 150 150)"
+
+              data-percentage="{{ section.settings.decline_percentage }}"
+
+            />
+          </svg>
+
+          <!-- Center content -->
+
+          <div class="nad-decline-meter__content">
+            <div class="nad-decline-meter__percentage" style="font-size: {{ section.settings.percentage_font_size }}px; color: {{ section.settings.percentage_color }};">↓ {{ section.settings.decline_percentage }}%</div>
+
+            <div class="nad-decline-meter__label" style="font-size: {{ section.settings.label_font_size }}px; color: {{ section.settings.label_color }};">{{ section.settings.gauge_label_text }}</div>
+          </div>
+        </div>
+
+        <!-- Age timeline -->
+
+        <div class="nad-decline-meter__timeline" style="margin-top: {{ section.settings.timeline_margin_top }}px; margin-bottom: {{ section.settings.timeline_margin_bottom }}px;">
+          <div class="nad-decline-meter__timeline-item">
+            <div class="nad-decline-meter__age" style="font-size: {{ section.settings.age_font_size }}px; color: {{ section.settings.age_color }}; margin-bottom: {{ section.settings.age_margin_bottom }}px;">Age {{ section.settings.start_age }}</div>
+
+            <div class="nad-decline-meter__status" style="font-size: {{ section.settings.status_font_size }}px; color: {{ section.settings.status_color }};">100% NAD+</div>
+          </div>
+
+          <div class="nad-decline-meter__timeline-line" style="background: linear-gradient(to right, {{ section.settings.timeline_start_color }} 0%, {{ section.settings.timeline_middle_color }} 50%, {{ section.settings.timeline_end_color }} 100%);"></div>
+
+          <div class="nad-decline-meter__timeline-item">
+            <div class="nad-decline-meter__age" style="font-size: {{ section.settings.age_font_size }}px; color: {{ section.settings.age_color }}; margin-bottom: {{ section.settings.age_margin_bottom }}px;">Age {{ section.settings.end_age }}</div>
+
+            <div class="nad-decline-meter__status" style="font-size: {{ section.settings.status_font_size }}px; color: {{ section.settings.status_color }};">{{ 100 | minus: section.settings.decline_percentage }}% NAD+</div>
+          </div>
+        </div>
+
+        <!-- Citation -->
+
+        <div class="nad-decline-meter__citation" style="font-size: {{ section.settings.citation_font_size }}px; color: {{ section.settings.citation_color }}; margin-top: {{ section.settings.citation_margin_top }}px; padding: {{ section.settings.citation_padding }}px;">
+          {{ section.settings.citation_text }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const section = document.querySelector('.nad-decline-meter');
+
+    if (!section) return;
+
+    const progressCircle = section.querySelector('.nad-decline-meter__circle-progress');
+
+    const percentageElement = section.querySelector('.nad-decline-meter__percentage');
+
+    const targetPercentage = parseFloat(progressCircle.getAttribute('data-percentage'));
+
+    const radius = 130;
+
+    const circumference = 2 * Math.PI * radius;
+
+    // Calculate offset to show decline percentage filled from top
+
+    const offset = circumference - (targetPercentage / 100) * circumference;
+
+    // Set initial state
+
+    progressCircle.style.strokeDasharray = circumference;
+
+    progressCircle.style.strokeDashoffset = circumference;
+
+    progressCircle.style.transition = 'none';
+
+    let animationFrameId = null;
+
+    let isAnimating = false;
+
+    // Number animation function using requestAnimationFrame
+
+    function animateNumber(duration = 2000) {
+      if (isAnimating) return;
+
+      isAnimating = true;
+
+      const startTime = performance.now();
+
+      const startValue = 0;
+
+      let lastValue = -1; // Track last rendered value to avoid unnecessary updates
+
+      function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Easing function (ease-out cubic)
+
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+        const currentValue = Math.round(startValue + (targetPercentage - startValue) * easedProgress);
+
+        // Only update DOM if value actually changed (reduces flickering)
+
+        if (currentValue !== lastValue) {
+          percentageElement.textContent = '↓ ' + currentValue + '%';
+
+          lastValue = currentValue;
+        }
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(updateNumber);
+        } else {
+          if (lastValue !== targetPercentage) {
+            percentageElement.textContent = '↓ ' + targetPercentage + '%';
+          }
+
+          isAnimating = false;
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(updateNumber);
+    }
+
+    // Reset animation to initial state
+
+    function resetAnimation() {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+
+        animationFrameId = null;
+      }
+
+      isAnimating = false;
+
+      percentageElement.textContent = '↓ 0%';
+
+      progressCircle.style.transition = 'none';
+
+      progressCircle.style.strokeDashoffset = circumference;
+
+      progressCircle.style.filter = 'none';
+
+      // Force reflow
+
+      progressCircle.offsetHeight;
+    }
+
+    // Main animation function
+
+    function animateGauge() {
+      // Animate circle (slower)
+
+      progressCircle.style.transition = 'stroke-dashoffset 3.5s cubic-bezier(0.77, 0, 0.175, 1)';
+
+      progressCircle.style.strokeDashoffset = offset;
+
+      // Animate number (slower)
+
+      animateNumber(3500);
+
+      // Add glow effect after animation completes
+
+      setTimeout(() => {
+        progressCircle.style.filter = 'url(#glow-{{ section.id }})';
+      }, 3500);
+    }
+
+    // Loop animation every 10 seconds
+
+    function startAnimationLoop() {
+      animateGauge();
+
+      setInterval(() => {
+        resetAnimation();
+
+        // Start new animation after a short delay
+
+        setTimeout(() => {
+          animateGauge();
+        }, 100);
+      }, 10000);
+    }
+
+    // Intersection Observer for scroll-triggered animation
+
+    const observerOptions = {
+      threshold: 0.3,
+
+      rootMargin: '0px',
+    };
+
+    let hasAnimated = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          hasAnimated = true;
+
+          startAnimationLoop();
+
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    observer.observe(section);
+  })();
+</script>
+
+<style>
+  .nad-decline-meter__circle-progress {
+    filter: drop-shadow(0 0 8px {{ section.settings.gauge_color | color_modify: 'alpha', 0.3 }});
+  }
+
+  .nad-decline-meter__two-column--swapped {
+    direction: rtl;
+  }
+
+  .nad-decline-meter__two-column--swapped > * {
+    direction: ltr;
+  }
+
+  #gaugeGradient-{{ section.id }} stop:first-child {
+    stop-color: {{ section.settings.gauge_color }};
+  }
+
+  #gaugeGradient-{{ section.id }} stop:last-child {
+    stop-color: {{ section.settings.gauge_gradient_end_color }};
+  }
+
+  .nad-decline-meter__circle-bg {
+    stroke: {{ section.settings.gauge_bg_color }};
+  }
+
+  .nad-decline-meter__button:hover {
+    background-color: {{ section.settings.button_border_color }};
+    color: #ffffff;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "NAD+ Decline Meter",
+  "tag": "section",
+  "class": "section-nad-decline-meter",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "swap_columns",
+      "label": "Swap Columns",
+      "default": false,
+      "info": "Switch the position of text content and gauge"
+    },
+    {
+      "type": "header",
+      "content": "Left Column Content"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "content_col_margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Column Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "content_col_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Column Margin Bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Subtitle Settings"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "THE SCIENCE BEHIND NAD+"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "min": 12,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle Font Size",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#5a5a5a"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Subtitle Margin Bottom",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "subtitle_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Subtitle Padding",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Main Heading Settings"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading",
+      "default": "Every cell in your body is fueled by NAD+"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "color",
+      "id": "heading_highlight_color",
+      "label": "Heading Highlight Color (NAD+)",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Heading Margin Bottom",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "heading_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Heading Padding",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Description Settings"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Your 37.2 trillion cells are powered by NAD+, a vital coenzyme that fuels cellular energy and repair throughout your entire body. NAD+ levels naturally decline with age, lifestyle factors, and stressors. Replenishing NAD+ levels is essential for maintaining your cellular health, energy, and vitality."
+    },
+    {
+      "type": "range",
+      "id": "description_font_size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#555555"
+    },
+    {
+      "type": "range",
+      "id": "description_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Description Margin Bottom",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "description_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Description Padding",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Padding Vertical",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Button Padding Horizontal",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "button_margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Button Margin Top",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Right Column - Gauge"
+    },
+    {
+      "type": "range",
+      "id": "gauge_col_margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Gauge Column Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "gauge_col_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Gauge Column Margin Bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Gauge Title Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Gauge Title",
+      "default": "NAD+ Declines by Up to 65% Between Ages 30 and 70"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#002f5c"
+    },
+    {
+      "type": "range",
+      "id": "title_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Title Margin Bottom",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "title_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Title Padding",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Gauge Settings"
+    },
+    {
+      "type": "range",
+      "id": "decline_percentage",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Decline Percentage",
+      "default": 65
+    },
+    {
+      "type": "color",
+      "id": "gauge_color",
+      "label": "Gauge Color",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "color",
+      "id": "gauge_gradient_end_color",
+      "label": "Gauge Gradient End Color",
+      "default": "#6ba3e8",
+      "info": "Second color for gauge gradient"
+    },
+    {
+      "type": "color",
+      "id": "gauge_bg_color",
+      "label": "Gauge Background Color",
+      "default": "#e5e7eb"
+    },
+    {
+      "type": "header",
+      "content": "Gauge Center Text Settings"
+    },
+    {
+      "type": "range",
+      "id": "percentage_font_size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Percentage Font Size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "percentage_color",
+      "label": "Percentage Color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "gauge_label_text",
+      "label": "Gauge Label Text",
+      "default": "NAD+ Decline"
+    },
+    {
+      "type": "range",
+      "id": "label_font_size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Label Font Size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Timeline Settings"
+    },
+    {
+      "type": "range",
+      "id": "start_age",
+      "min": 20,
+      "max": 50,
+      "step": 5,
+      "label": "Start Age",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "end_age",
+      "min": 50,
+      "max": 90,
+      "step": 5,
+      "label": "End Age",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "timeline_margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Timeline Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "timeline_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Timeline Margin Bottom",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "timeline_start_color",
+      "label": "Timeline Start Color",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "color",
+      "id": "timeline_middle_color",
+      "label": "Timeline Middle Color",
+      "default": "#e5e7eb"
+    },
+    {
+      "type": "color",
+      "id": "timeline_end_color",
+      "label": "Timeline End Color",
+      "default": "#cde6ff"
+    },
+    {
+      "type": "header",
+      "content": "Age Text Settings"
+    },
+    {
+      "type": "range",
+      "id": "age_font_size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Age Font Size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "age_color",
+      "label": "Age Color",
+      "default": "#111827"
+    },
+    {
+      "type": "range",
+      "id": "age_margin_bottom",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Age Margin Bottom",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Status Text Settings"
+    },
+    {
+      "type": "range",
+      "id": "status_font_size",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Status Font Size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "status_color",
+      "label": "Status Color",
+      "default": "#6b7280"
+    },
+    {
+      "type": "header",
+      "content": "Citation Settings"
+    },
+    {
+      "type": "textarea",
+      "id": "citation_text",
+      "label": "Citation Text",
+      "default": "Source: Massudi et al., PLoS ONE, 1012; Jinfinity Health Report."
+    },
+    {
+      "type": "range",
+      "id": "citation_font_size",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Citation Font Size",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "citation_color",
+      "label": "Citation Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "citation_margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Citation Margin Top",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "citation_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Citation Padding",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "NAD+ Decline Meter"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  .section-{{ section.id }}-padding {
+
+    padding-top: {{ section.settings.padding_top }}px;
+
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+
+  }
+</style>

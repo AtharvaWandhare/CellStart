@@ -1,0 +1,798 @@
+{% comment %}
+  Expert Review Section
+  Minimal design showcasing expert endorsement with circular image
+{% endcomment %}
+
+<style>
+    .expert-image-plus-bg-1 {
+      background-image: url('{{ "expert-plus-1.svg" | asset_url }}');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      position: absolute;
+      top: -16%;
+      left: -40%;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.1;
+    }
+
+    .expert-review-section {
+      padding: 4rem 0;
+      background-color: {{ section.settings.background_color }};
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review-section {
+        padding: 6rem 0;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review-section {
+        padding: 8rem 0;
+      }
+    }
+
+    .expert-review__container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__container {
+        padding: 0 4rem;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__container {
+        padding: 0 5rem;
+      }
+    }
+
+    @media screen and (min-width: 1200px) {
+      .expert-review__container {
+        padding: 0 6rem;
+      }
+    }
+
+    /* Section Heading */
+    .expert-review__heading {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 1.5rem;
+      text-align: left;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__heading {
+        font-size: 0.938rem;
+        margin-bottom: 2rem;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__heading {
+        font-size: 2rem !important;
+        margin-bottom: 2.5rem;
+      }
+    }
+
+    /* Grid Layout */
+    .expert-review__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: flex-start;
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+    }
+
+    @media screen and (min-width: 1200px) {
+      .expert-review__grid {
+        gap: 6rem;
+      }
+    }
+
+    /* Content Column */
+    .expert-review__content {
+      order: 1;
+      position: relative;
+      padding-left: 0;
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__content {
+        padding-left: 2rem;
+      }
+    }
+
+    /* Decorative vertical line accent */
+    .expert-review__content::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 80px;
+      background: linear-gradient(180deg, {{ section.settings.blob_color_2 }} 0%, {{ section.settings.blob_color_1 }} 100%);
+      border-radius: 2px;
+      display: none;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__content::before {
+        height: 100px;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__content::before {
+        height: 120px;
+        display: block;
+      }
+    }
+
+    .expert-review__grid--image-right .expert-review__content {
+      order: 1;
+    }
+
+    .expert-review__grid--image-left .expert-review__content {
+      order: 2;
+    }
+
+    @media screen and (max-width: 989px) {
+      .expert-review__content {
+        order: 1 !important;
+      }
+    }
+
+    /* Expert Name - Large and Prominent */
+    .expert-review__expert-name {
+      font-size: 2rem;
+      font-weight: 700;
+      color: {{ section.settings.name_color }};
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__expert-name {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__expert-name {
+        font-size: 3rem;
+        margin-bottom: 2.5rem;
+      }
+    }
+
+    /* Bio Text - Clean and Readable */
+    .expert-review__bio {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: {{ section.settings.bio_color }};
+      margin-bottom: 0;
+      font-weight: 400;
+      max-width: 100%;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__bio {
+        font-size: 1.063rem;
+        line-height: 1.85;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__bio {
+        font-size: 1.5rem;
+        line-height: 1.9;
+      }
+    }
+
+    /* Highlight specific text within bio */
+    .expert-review__bio strong {
+      font-weight: 600;
+      color: {{ section.settings.name_color }};
+    }
+
+    /* Quote Text - HIDDEN (keeping for backward compatibility) */
+    .expert-review__quote {
+      display: none;
+    }
+
+    .expert-review__quote-highlight {
+      font-weight: 700;
+      color: {{ section.settings.highlight_color }};
+    }
+
+    /* Expert Info - HIDDEN (keeping for backward compatibility) */
+    .expert-review__info {
+      display: none;
+    }
+
+    .expert-review__logo {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__logo {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__logo {
+        width: 56px;
+        height: 56px;
+      }
+    }
+
+    .expert-review__logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .expert-review__text-wrapper {
+      flex: 1;
+      margin-left: 4rem;
+    }
+
+    .expert-review__name {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: {{ section.settings.name_color }};
+      margin-bottom: 0.25rem;
+      line-height: 1.3;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__name {
+        font-size: 1.25rem;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__name {
+        font-size: 1.375rem;
+      }
+    }
+
+    .expert-review__title {
+      font-size: 1rem;
+      color: {{ section.settings.title_color }};
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__title {
+        font-size: 1.063rem;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__title {
+        font-size: 1.125rem;
+      }
+    }
+
+    .expert-review__company {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: {{ section.settings.name_color }};
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__company {
+        font-size: 1.25rem;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__company {
+        font-size: 1.375rem;
+      }
+    }
+
+    /* Image Column */
+    .expert-review__image-column {
+      position: relative;
+      order: 2;
+    }
+
+    .expert-review__grid--image-right .expert-review__image-column {
+      order: 2;
+    }
+
+    .expert-review__grid--image-left .expert-review__image-column {
+      order: 1;
+    }
+
+    @media screen and (max-width: 989px) {
+      .expert-review__image-column {
+        order: 2 !important;
+      }
+    }
+
+    /* Decorative Blob Background */
+    .expert-review__blob-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      height: 400px;
+      margin: 0 auto;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__blob-wrapper {
+        height: 480px;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__blob-wrapper {
+        max-width: 600px;
+        height: 550px;
+      }
+    }
+
+  .expert-review__blob {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 50%;
+      left: 52%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      pointer-events: none;
+      display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+      .expert-review__blob {
+        display: block;
+      }
+    }
+
+
+    @media screen and (min-width: 990px) {
+      .expert-review__blob {
+        {% comment %} left: 50%; {% endcomment %}
+      }
+    }
+
+    .expert-review__blob svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Circular Image */
+    .expert-review__image-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Circular Image */
+    .expert-review__image-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: 300px;
+      height: 300px;
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__image-wrapper {
+        width: 380px;
+        height: 380px;
+      }
+    }
+
+    @media screen and (min-width: 990px) {
+      .expert-review__image-wrapper {
+        width: 450px;
+        height: 450px;
+      }
+    }
+
+    .expert-review__image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      border: 8px solid {{ section.settings.blob_color_2}};
+    }
+
+    @media screen and (min-width: 750px) {
+      .expert-review__image {
+        border: none;
+      }
+    }
+
+    /* Fade-in Animation */
+    .animate-fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .animate-fade-in.animate-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .animate-delay-1 {
+      transition-delay: 0.2s;
+    }
+
+    .animate-delay-2 {
+      transition-delay: 0.4s;
+    }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-visible');
+        }
+      });
+    }, observerOptions);
+
+    const animatedElements = document.querySelectorAll('.expert-review-section .animate-fade-in');
+    animatedElements.forEach((element) => {
+      observer.observe(element);
+    });
+  });
+</script>
+
+{%- liquid
+  assign image_position = section.settings.image_position
+-%}
+
+<div class="expert-review-section">
+  <div class="expert-image-plus-bg-1"></div>
+  <div class="expert-review__container">
+    <div class="expert-review__grid expert-review__grid--{{ image_position }}">
+      {%- comment -%} Content Column {%- endcomment -%}
+      <div class="expert-review__content animate-fade-in">
+        {%- if section.settings.heading != blank -%}
+          <div class="expert-review__heading">
+            {{ section.settings.heading }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.expert_name != blank -%}
+          <h2 class="expert-review__expert-name">
+            {{ section.settings.expert_name }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.bio_text != blank -%}
+          <div class="expert-review__bio">
+            {{ section.settings.bio_text }}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Legacy quote structure - hidden but kept for compatibility {%- endcomment -%}
+        {%- if section.settings.quote_part_1 != blank
+          or section.settings.highlight_text != blank
+          or section.settings.quote_part_2 != blank
+        -%}
+          <blockquote class="expert-review__quote">
+            {%- if section.settings.quote_part_1 != blank -%}
+              {{ section.settings.quote_part_1 }}
+            {%- endif -%}
+            {%- if section.settings.highlight_text != blank -%}
+              <span class="expert-review__quote-highlight">{{ section.settings.highlight_text }}</span>
+            {%- endif -%}
+            {%- if section.settings.quote_part_2 != blank -%}
+              {{ section.settings.quote_part_2 }}
+            {%- endif -%}
+          </blockquote>
+        {%- endif -%}
+
+        {%- comment -%} Legacy info structure - hidden but kept for compatibility {%- endcomment -%}
+        <div class="expert-review__info">
+          {%- if section.settings.company_logo != blank -%}
+            <div class="expert-review__logo">
+              {{
+                section.settings.company_logo
+                | image_url: width: 80
+                | image_tag: loading: 'lazy', alt: section.settings.company_name
+              }}
+            </div>
+          {%- endif -%}
+
+          <div class="expert-review__text-wrapper">
+            {%- if section.settings.expert_name != blank -%}
+              <div class="expert-review__name">
+                {{ section.settings.expert_name }}
+              </div>
+            {%- endif -%}
+
+            {%- if section.settings.expert_title != blank -%}
+              <p class="expert-review__title">
+                {{ section.settings.expert_title }}
+              </p>
+            {%- endif -%}
+
+            {%- if section.settings.company_name != blank -%}
+              <span class="expert-review__company">
+                {{ section.settings.company_name }}
+              </span>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Image Column with Decorative Blob {%- endcomment -%}
+      <div class="expert-review__image-column animate-fade-in animate-delay-1">
+        <div class="expert-review__blob-wrapper">
+          {%- comment -%} Decorative Blob Background {%- endcomment -%}
+          <div class="expert-review__blob">
+            <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="blobGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:{{ section.settings.blob_color_1 }};stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:{{ section.settings.blob_color_2 }};stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <circle cx="300" cy="300" r="250" fill="url(#blobGradient)" />
+            </svg>
+          </div>
+
+          {%- comment -%} Circular Expert Image {%- endcomment -%}
+          <div class="expert-review__image-wrapper">
+            {%- if section.settings.expert_image != blank -%}
+              {{
+                section.settings.expert_image
+                | image_url: width: 900
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'expert-review__image',
+                  widths: '400, 600, 800, 900',
+                  sizes: '(min-width: 990px) 450px, (min-width: 750px) 380px, 300px'
+              }}
+            {%- else -%}
+              <div
+                class="expert-review__image"
+                style="background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);"
+              ></div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Expert Review",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "OUR CLINICAL ADVISORS",
+      "info": "Small uppercase heading that appears above the expert name"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#9CA3AF"
+    },
+    {
+      "type": "text",
+      "id": "expert_name",
+      "label": "Expert name",
+      "default": "Dr. Anthony Njapa",
+      "info": "Large prominent name displayed at the top"
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Name color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "textarea",
+      "id": "bio_text",
+      "label": "Expert biography",
+      "default": "With more than 22 years of clinical medical experience, Dr. Anthony Njapa leads the CellStart Clinical Advisory Board with an unwavering commitment to patient care and wellness. After nearly a decade practicing as an OB/GYN in New York, he founded Coastal MDs in Wilmington, North Carolina, where he remains a trusted physician focused on comprehensive health and recovery care. Dr. Njapa's clinical expertise and leadership ensures that CellStart products are guided by medical insight and grounded in proven science, so our customers can trust the quality and efficacy of every product we offer.",
+      "info": "Full biography text for the expert"
+    },
+    {
+      "type": "color",
+      "id": "bio_color",
+      "label": "Biography text color",
+      "default": "#5f636cff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        {
+          "value": "image-left",
+          "label": "Image on left"
+        },
+        {
+          "value": "image-right",
+          "label": "Image on right"
+        }
+      ],
+      "default": "image-right",
+      "info": "Choose which side the expert image appears on"
+    },
+    {
+      "type": "header",
+      "content": "Expert Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "expert_image",
+      "label": "Expert image",
+      "info": "Recommended: Square image, minimum 800x800px. Will be displayed as circular."
+    },
+    {
+      "type": "header",
+      "content": "Decorative Background"
+    },
+    {
+      "type": "color",
+      "id": "blob_color_1",
+      "label": "Blob gradient color 1",
+      "default": "#E0E7FF"
+    },
+    {
+      "type": "color",
+      "id": "blob_color_2",
+      "label": "Blob gradient color 2",
+      "default": "#C7D2FE"
+    },
+    {
+      "type": "header",
+      "content": "Legacy Settings (Hidden)"
+    },
+    {
+      "type": "paragraph",
+      "content": "The settings below are kept for backward compatibility but are not displayed in the current design."
+    },
+    {
+      "type": "header",
+      "content": "Legacy Settings (Hidden)"
+    },
+    {
+      "type": "paragraph",
+      "content": "The settings below are kept for backward compatibility but are not displayed in the current design."
+    },
+    {
+      "type": "textarea",
+      "id": "quote_part_1",
+      "label": "Quote - Part 1 (before highlight) [LEGACY - HIDDEN]",
+      "default": "\"The clinical evidence is clear. We're seeing a "
+    },
+    {
+      "type": "text",
+      "id": "highlight_text",
+      "label": "Highlighted text [LEGACY - HIDDEN]",
+      "default": "92% improvement in cellular energy",
+      "info": "This text will be bold and highlighted"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_part_2",
+      "label": "Quote - Part 2 (after highlight) [LEGACY - HIDDEN]",
+      "default": " with this formulation, which is remarkable for NAD+ supplementation.\""
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote text color [LEGACY - HIDDEN]",
+      "default": "#1a1f36"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight text color [LEGACY - HIDDEN]",
+      "default": "#1a1f36"
+    },
+    {
+      "type": "text",
+      "id": "expert_title",
+      "label": "Expert title/position [LEGACY - HIDDEN]",
+      "default": "Director of Clinical Research"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color [LEGACY - HIDDEN]",
+      "default": "#4a5568"
+    },
+    {
+      "type": "text",
+      "id": "company_name",
+      "label": "Company/Institution name [LEGACY - HIDDEN]",
+      "default": "Longevity Research Institute"
+    },
+    {
+      "type": "image_picker",
+      "id": "company_logo",
+      "label": "Company logo (optional) [LEGACY - HIDDEN]",
+      "info": "Small logo to display next to expert info"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Expert Review"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,788 @@
+{% comment %}
+  Section: Product Benefits
+  Purpose: Showcase product benefits with auto-rotating media slideshow on left and static content on right
+  Layout: Two column - media slideshow (left) | content (right)
+{% endcomment %}
+
+<style>
+      .product-benefits {
+        background: var(--product-benefits-bg, {{ section.settings.background_color }});
+        padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+        position: relative;
+      }
+
+      @media screen and (min-width: 990px) {
+        .product-benefits {
+          padding: {{ section.settings.padding_top_desktop }}px 0 {{ section.settings.padding_bottom_desktop }}px;
+        }
+      }
+
+      .product-benefits__container {
+        max-width: {{ section.settings.container_width }}px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .product-benefits__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        align-items: center;
+      }
+
+      @media screen and (min-width: 990px) {
+        .product-benefits__grid {
+          grid-template-columns: 1fr 1fr;
+          gap: {{ section.settings.column_gap }}px;
+        }
+
+        .product-benefits__grid--reverse {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .product-benefits__grid--reverse .product-benefits__media {
+          order: 2;
+        }
+
+        .product-benefits__grid--reverse .product-benefits__content {
+          order: 1;
+        }
+      }
+
+      /* Media Column (Left) */
+      .product-benefits__media {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: {{ section.settings.media_border_radius }}px;
+        background: #f5f5f5;
+      }
+
+      .product-benefits__slideshow {
+        position: relative;
+        width: 100%;
+        padding-bottom: 75%; /* 4:3 aspect ratio default */
+        overflow: hidden;
+      }
+
+      .product-benefits__slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out;
+        pointer-events: none;
+      }
+
+      .product-benefits__slide.active {
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 2;
+      }
+
+      .product-benefits__slide img,
+      .product-benefits__slide video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .product-benefits__slide video {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Slideshow Controls */
+      .product-benefits__controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 10;
+      }
+
+      .product-benefits__dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .product-benefits__dot.active {
+        background: rgba(255, 255, 255, 1);
+        transform: scale(1.2);
+      }
+
+      .product-benefits__dot:hover {
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      /* Content Column (Right) */
+      .product-benefits__content {
+        text-align: left;
+      }
+
+      @media screen and (max-width: 989px) {
+        .product-benefits__content {
+          text-align: center;
+        }
+      }
+
+      .product-benefits__subtitle {
+        font-size: {{ section.settings.subtitle_size_mobile }}px;
+        font-weight: 600;
+        color: var(--product-benefits-subtitle-color, {{ section.settings.subtitle_color }});
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1rem;
+      }
+
+      @media screen and (min-width: 990px) {
+        .product-benefits__subtitle {
+          font-size: {{ section.settings.subtitle_size_desktop }}px;
+        }
+      }
+
+      .product-benefits__title {
+        font-size: {{ section.settings.title_size_mobile }}px;
+        font-weight: {{ section.settings.title_weight }};
+        color: var(--product-benefits-title-color, {{ section.settings.title_color }});
+        margin: 0 0 1.5rem 0;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+
+      @media screen and (min-width: 990px) {
+        .product-benefits__title {
+          font-size: {{ section.settings.title_size_desktop }}px;
+        }
+      }
+
+      .product-benefits__description {
+        font-size: {{ section.settings.description_size_mobile }}px;
+        line-height: 1.6;
+        color: var(--product-benefits-description-color, {{ section.settings.description_color }});
+        margin: 0;
+      }
+
+      @media screen and (min-width: 990px) {
+        .product-benefits__description {
+          font-size: {{ section.settings.description_size_desktop }}px;
+        }
+      }
+
+      .product-benefits__cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        background: var(--product-benefits-cta-bg, #0b63ce);
+        color: var(--product-benefits-cta-color, #ffffff);
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 20px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .product-benefits__cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(11,99,206,0.12);
+      }
+
+      /* Top Shape Divider */
+      .custom-shape-divider-top-1762191499 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+  }
+
+  .custom-shape-divider-top-1762191499 svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 148px;
+  }
+
+  .custom-shape-divider-top-1762191499 .shape-fill {
+      fill: #FFFFFF;
+  }
+
+      /* Bottom Shape Divider */
+      {% comment %} .custom-shape-divider-bottom-1762188840 { {% endcomment %}
+      .custom-shape-divider-bottom-1762188840 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        overflow: hidden;
+        line-height: 0;
+        transform: rotate(180deg);
+    }
+
+    .custom-shape-divider-bottom-1762188840 svg {
+        position: relative;
+        display: block;
+        width: calc(100% + 1.3px);
+        height: 103px;
+    }
+
+    .custom-shape-divider-bottom-1762188840 .shape-fill {
+        fill: #FFFFFF;
+    }
+
+      /* Accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        .product-benefits__slide {
+          transition: none;
+        }
+      }
+</style>
+
+<section
+  class="product-benefits"
+  id="product-benefits-{{ section.id }}"
+  style="--product-benefits-bg: {{ section.settings.background_color }}; --product-benefits-subtitle-color: {{ section.settings.subtitle_color }}; --product-benefits-title-color: {{ section.settings.title_color }}; --product-benefits-description-color: {{ section.settings.description_color }};"
+>
+  {%- comment -%} Top SVG Shape Divider {%- endcomment -%}
+  {% comment %} <div class="custom-shape-divider-top-1762188805" aria-hidden="true"> {% endcomment %}
+  <div class="custom-shape-divider-top-1762191499">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+      <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+      <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+    </svg>
+  </div>
+
+  <div class="product-benefits__container">
+    <div class="product-benefits__grid {% if section.settings.reverse_layout %}product-benefits__grid--reverse{% endif %}">
+      {%- comment -%} Media Column (Left/Slideshow) {%- endcomment -%}
+      <div class="product-benefits__media">
+        <div
+          class="product-benefits__slideshow"
+          data-slideshow
+          data-rotation-speed="{{ section.settings.rotation_speed }}"
+        >
+          {%- assign has_media = false -%}
+
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'media' -%}
+              {%- assign has_media = true -%}
+              {%- assign is_first = forloop.first -%}
+
+              <div
+                class="product-benefits__slide {% if is_first %}active{% endif %}"
+                data-slide="{{ forloop.index0 }}"
+                {{ block.shopify_attributes }}
+              >
+                {%- comment -%} Video has priority over image {%- endcomment -%}
+                {%- if block.settings.video != blank -%}
+                  <video
+                    src="{{ block.settings.video | file_url }}"
+                    {% if block.settings.video_autoplay %}
+                      autoplay
+                    {% endif %}
+                    {% if block.settings.video_loop %}
+                      loop
+                    {% endif %}
+                    {% if block.settings.video_muted %}
+                      muted
+                    {% endif %}
+                    playsinline
+                    {% unless block.settings.video_controls %}
+                      controls="false"
+                    {% endunless %}
+                    aria-label="{{ block.settings.video_alt | escape }}"
+                  ></video>
+                {%- elsif block.settings.image != blank -%}
+                  <img
+                    src="{{ block.settings.image | image_url: width: 1200 }}"
+                    srcset="
+                      {{ block.settings.image | image_url: width: 600 }} 600w,
+                      {{ block.settings.image | image_url: width: 900 }} 900w,
+                      {{ block.settings.image | image_url: width: 1200 }} 1200w
+                    "
+                    sizes="(min-width: 990px) 50vw, 100vw"
+                    alt="{{ block.settings.image.alt | escape }}"
+                    loading="lazy"
+                    width="{{ block.settings.image.width }}"
+                    height="{{ block.settings.image.height }}"
+                  >
+                {%- else -%}
+                  {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if has_media == false -%}
+            <div class="product-benefits__slide active">
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Slideshow Dots/Controls {%- endcomment -%}
+        {%- assign media_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'media' -%}
+            {%- assign media_count = media_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%} Navigation dots removed by request. {%- endcomment -%}
+      </div>
+
+      {%- comment -%} Content Column (Right/Static) {%- endcomment -%}
+      <div class="product-benefits__content">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="product-benefits__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.title != blank -%}
+          <h2 class="product-benefits__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.description != blank -%}
+          <div class="product-benefits__description">
+            {{ section.settings.description }}
+          </div>
+        {%- endif -%}
+        {%- if section.settings.cta_text != blank -%}
+          {%- if section.settings.cta_link == blank -%}
+            <a role="link" aria-disabled="true" class="product-benefits__cta">{{ section.settings.cta_text }}</a>
+          {%- else -%}
+            <a href="{{ section.settings.cta_link }}" class="product-benefits__cta">{{ section.settings.cta_text }}</a>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Bottom SVG Shape Divider {%- endcomment -%}
+  {% comment %} <div class="custom-shape-divider-bottom-1762188840" aria-hidden="true"> {% endcomment %}
+  <div class="custom-shape-divider-bottom-1762188840">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+      <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+      <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+    </svg>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const slideshows = document.querySelectorAll('[data-slideshow]');
+
+    slideshows.forEach((slideshow) => {
+      const slides = slideshow.querySelectorAll('[data-slide]');
+      const dots = slideshow.parentElement.querySelectorAll('[data-dot]');
+      const rotationSpeed = parseInt(slideshow.dataset.rotationSpeed || 5000);
+
+      if (slides.length <= 1) return; // No rotation needed for single slide
+
+      let currentIndex = 0;
+      let autoRotateInterval;
+
+      function showSlide(index) {
+        // Remove active class from all slides and dots
+        slides.forEach((slide) => slide.classList.remove('active'));
+        dots.forEach((dot) => dot.classList.remove('active'));
+
+        // Add active class to current slide and dot
+        if (slides[index]) {
+          slides[index].classList.add('active');
+        }
+        if (dots[index]) {
+          dots[index].classList.add('active');
+        }
+
+        currentIndex = index;
+      }
+
+      function nextSlide() {
+        const nextIndex = (currentIndex + 1) % slides.length;
+        showSlide(nextIndex);
+      }
+
+      function startAutoRotate() {
+        stopAutoRotate();
+        autoRotateInterval = setInterval(nextSlide, rotationSpeed);
+      }
+
+      function stopAutoRotate() {
+        if (autoRotateInterval) {
+          clearInterval(autoRotateInterval);
+        }
+      }
+
+      // Dot click handlers
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          showSlide(index);
+          stopAutoRotate();
+          startAutoRotate(); // Restart auto-rotation after manual control
+        });
+      });
+
+      // Pause on hover
+      slideshow.addEventListener('mouseenter', stopAutoRotate);
+      slideshow.addEventListener('mouseleave', startAutoRotate);
+
+      // Start auto-rotation
+      startAutoRotate();
+
+      // Pause when page is hidden (performance optimization)
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopAutoRotate();
+        } else {
+          startAutoRotate();
+        }
+      });
+    });
+
+    // Theme editor support
+    if (Shopify && Shopify.designMode) {
+      document.addEventListener('shopify:section:load', () => {
+        // Re-initialize slideshows when section is loaded in editor
+        location.reload();
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Benefits",
+  "tag": "section",
+  "class": "section-product-benefits",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse_layout",
+      "label": "Reverse layout (media on right)",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "rotation_speed",
+      "label": "Slideshow rotation speed (ms)",
+      "min": 2000,
+      "max": 9500,
+      "step": 500,
+      "default": 5000,
+      "unit": "ms",
+      "info": "Time between slide transitions"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Premium Quality"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Science-Backed Benefits"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Our products are formulated with the highest quality ingredients, backed by scientific research and designed to deliver real results you can feel.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Section Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container Max Width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "default": 1200,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column Gap (Desktop)",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top Padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom Padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Top Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Bottom Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "media_border_radius",
+      "label": "Media Border Radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Text Style"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "label": "Subtitle Size (Mobile)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "label": "Subtitle Size (Desktop)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#0b63ce"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Title Size (Mobile)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Title Size (Desktop)",
+      "min": 30,
+      "max": 60,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "description_size_mobile",
+      "label": "Description Size (Mobile)",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_size_desktop",
+      "label": "Description Size (Desktop)",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#6b7280"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Right column CTA text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Right column CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Shape Dividers"
+    },
+    {
+      "type": "color",
+      "id": "shape_divider_top_color",
+      "label": "Top shape divider fill color",
+      "default": "#ffffff",
+      "info": "Color for the top shape divider"
+    },
+    {
+      "type": "color",
+      "id": "shape_divider_bottom_color",
+      "label": "Bottom shape divider fill color",
+      "default": "#ffffff",
+      "info": "Color for the bottom shape divider"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "media",
+      "name": "Media (Image/Video)",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Recommended size: 1200x900px (4:3)"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video",
+          "info": "Video takes priority over image if both are selected"
+        },
+        {
+          "type": "text",
+          "id": "video_alt",
+          "label": "Video description (for accessibility)",
+          "default": "Product benefit video"
+        },
+        {
+          "type": "checkbox",
+          "id": "video_autoplay",
+          "label": "Autoplay video",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "video_loop",
+          "label": "Loop video",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "video_muted",
+          "label": "Mute video",
+          "default": true,
+          "info": "Videos must be muted for autoplay to work"
+        },
+        {
+          "type": "checkbox",
+          "id": "video_controls",
+          "label": "Show video controls",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Benefits",
+      "blocks": [
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        },
+        {
+          "type": "media"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
