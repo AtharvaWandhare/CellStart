@@ -11,16 +11,17 @@
   "current": {
     "logo": "shopify://shop_images/CellStart-01.png",
     "logo_width": 120,
-    "type_header_font": "assistant_n4",
+    "favicon": "shopify://shop_images/Screenshot_2025-11-08_004437.png",
+    "type_header_font": "cabin_n4",
     "heading_scale": 100,
-    "type_body_font": "assistant_n4",
+    "type_body_font": "source_sans_pro_n4",
     "body_scale": 100,
     "page_width": 1200,
     "spacing_sections": 0,
     "spacing_grid_horizontal": 8,
     "spacing_grid_vertical": 8,
     "animations_reveal_on_scroll": true,
-    "animations_hover_elements": "none",
+    "animations_hover_elements": "3d-lift",
     "buttons_border_thickness": 1,
     "buttons_border_opacity": 100,
     "buttons_radius": 0,
@@ -42,7 +43,7 @@
     "inputs_shadow_horizontal_offset": 0,
     "inputs_shadow_vertical_offset": 4,
     "inputs_shadow_blur": 5,
-    "card_style": "standard",
+    "card_style": "card",
     "card_image_padding": 0,
     "card_text_alignment": "left",
     "card_color_scheme": "scheme-2",
@@ -106,13 +107,14 @@
     "badge_corner_radius": 40,
     "sale_badge_color_scheme": "scheme-1",
     "sold_out_badge_color_scheme": "scheme-1",
-    "brand_headline": "",
-    "brand_description": "<p></p>",
-    "brand_image_width": 100,
+    "brand_headline": "<strong>Lorem Ipsum Dolor.</strong>",
+    "brand_description": "<p>Lorem ipsum dolor sit amet consectetur adipisicing.</p>",
+    "brand_image": "shopify://shop_images/CellStart-White_Version-01.png",
+    "brand_image_width": 180,
     "social_facebook_link": "",
-    "social_instagram_link": "https://instagram.com/shopify",
+    "social_instagram_link": "https://www.instagram.com/cellstart_/",
     "social_youtube_link": "",
-    "social_tiktok_link": "https://tiktok.com/@shopify",
+    "social_tiktok_link": "https://tiktok.com/@cellstart",
     "social_twitter_link": "",
     "social_snapchat_link": "",
     "social_pinterest_link": "",
@@ -194,6 +196,39 @@
           "text": "#ffffff",
           "button": "#ffffff",
           "button_label": "#334fb4",
+          "secondary_button_label": "#ffffff",
+          "shadow": "#121212"
+        }
+      },
+      "scheme-d41f6a1b-fda5-443b-8342-6f385d520d55": {
+        "settings": {
+          "background": "#ffffff",
+          "background_gradient": "",
+          "text": "#121212",
+          "button": "#0057a6",
+          "button_label": "#ffffff",
+          "secondary_button_label": "#002f5c",
+          "shadow": "#121212"
+        }
+      },
+      "scheme-a9743695-01c4-45c2-a29d-53d40dfc4ca0": {
+        "settings": {
+          "background": "#002f5c",
+          "background_gradient": "",
+          "text": "#ffffff",
+          "button": "#ffffff",
+          "button_label": "#121212",
+          "secondary_button_label": "#ffffff",
+          "shadow": "#ffffff"
+        }
+      },
+      "scheme-8650f227-deb9-4490-9fed-3954e20047b7": {
+        "settings": {
+          "background": "#0057a6",
+          "background_gradient": "",
+          "text": "#ffffff",
+          "button": "#ffffff",
+          "button_label": "#121212",
           "secondary_button_label": "#ffffff",
           "shadow": "#121212"
         }

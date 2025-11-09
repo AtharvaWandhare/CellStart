@@ -733,8 +733,15 @@ class SliderComponent extends HTMLElement {
     this.enableSliderLooping = false;
     this.currentPageElement = this.querySelector('.slider-counter--current');
     this.pageTotalElement = this.querySelector('.slider-counter--total');
-    this.prevButton = this.querySelector('button[name="previous"]');
-    this.nextButton = this.querySelector('button[name="next"]');
+  // Collect all control buttons inside the component. Some templates render
+  // controls inside each slide (duplicated), so querySelector would only
+  // return the first and leave other buttons without handlers. Use
+  // querySelectorAll and attach listeners to every control while keeping
+  // a reference to the first buttons for enable/disable state updates.
+  this.prevButtons = Array.from(this.querySelectorAll('button[name="previous"]'));
+  this.nextButtons = Array.from(this.querySelectorAll('button[name="next"]'));
+  this.prevButton = this.prevButtons.length ? this.prevButtons[0] : null;
+  this.nextButton = this.nextButtons.length ? this.nextButtons[0] : null;
 
     if (!this.slider || !this.nextButton) return;
 
@@ -743,8 +750,10 @@ class SliderComponent extends HTMLElement {
     resizeObserver.observe(this.slider);
 
     this.slider.addEventListener('scroll', this.update.bind(this));
-    this.prevButton.addEventListener('click', this.onButtonClick.bind(this));
-    this.nextButton.addEventListener('click', this.onButtonClick.bind(this));
+  // Attach listeners to all prev/next buttons so controls inside any slide
+  // will function correctly.
+  this.prevButtons.forEach((btn) => btn.addEventListener('click', this.onButtonClick.bind(this)));
+  this.nextButtons.forEach((btn) => btn.addEventListener('click', this.onButtonClick.bind(this)));
   }
 
   initPages() {

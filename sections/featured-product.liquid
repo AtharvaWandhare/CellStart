@@ -414,11 +414,14 @@
                   %}
                 {%- when 'buy_buttons' -%}
                   {%- render 'buy-buttons',
-                    block: block,
                     product: product,
                     product_form_id: product_form_id,
                     section_id: section.id
                   -%}
+                {%- when 'description' -%}
+                  <div class="product__description rte" {{ block.shopify_attributes }}>
+                    {{ product.description }}
+                  </div>
                 {%- when 'custom_liquid' -%}
                   {{ block.settings.custom_liquid }}
                 {%- when 'rating' -%}
@@ -694,6 +697,11 @@
           "info": "t:sections.main-product.blocks.buy_buttons.settings.show_gift_card_recipient.info"
         }
       ]
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
     },
     {
       "type": "share",
@@ -1509,6 +1517,9 @@
         },
         {
           "type": "buy_buttons"
+        },
+        {
+          "type": "description"
         },
         {
           "type": "share"

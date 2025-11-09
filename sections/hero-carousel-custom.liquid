@@ -37,15 +37,19 @@
                 style="background-image: url('{{ block.settings.background_image | image_url: width: 3840 }}');"
               {% endif %}
             >
-              <div class="slide-content">
+              <div 
+                class="text-overlay-gradient"
+                style="background: linear-gradient(to {{ block.settings.gradient_direction }}, {{ block.settings.gradient_start_color }} 0%, {{ block.settings.gradient_end_color }} 100%); opacity: {{ block.settings.gradient_opacity }};"
+              ></div>
+              <div class="slide-content" style="padding-left: {{ block.settings.content_padding_left }}px; margin-left: {{ block.settings.content_margin_left }}px;">
                 {% if block.settings.heading != blank %}
-                  <h1 class="hero-heading-custom">
+                  <h1 class="hero-heading-custom" style="color: {{ block.settings.heading_color }}; font-size: {{ block.settings.heading_font_size }}px; font-weight: {{ block.settings.heading_font_weight }}; margin-bottom: {{ block.settings.heading_margin_bottom }}px;">
                     {{ block.settings.heading }}
                   </h1>
                 {% endif %}
 
                 {% if block.settings.subheading != blank %}
-                  <h3 class="hero-slogan-custom">
+                  <h3 class="hero-slogan-custom" style="color: {{ block.settings.subheading_color }}; font-size: {{ block.settings.subheading_font_size }}px; font-weight: {{ block.settings.subheading_font_weight }}; margin-bottom: {{ block.settings.subheading_margin_bottom }}px;">
                     {{ block.settings.subheading }}
                   </h3>
                 {% endif %}
@@ -55,13 +59,13 @@
                 {% endunless %}
 
                 {% if block.settings.description != blank %}
-                  <p class="hero-description-custom">
+                  <p class="hero-description-custom" style="color: {{ block.settings.description_color }}; font-size: {{ block.settings.description_font_size }}px; line-height: {{ block.settings.description_line_height }}; margin-bottom: {{ block.settings.description_margin_bottom }}px;">
                     {{ block.settings.description }}
                   </p>
                 {% endif %}
 
                 {% if block.settings.list_items != blank and block.settings.centered_layout == false %}
-                  <ul class="hero-list-custom">
+                  <ul class="hero-list-custom" style="color: {{ block.settings.list_color }}; font-size: {{ block.settings.list_font_size }}px; margin-bottom: {{ block.settings.list_margin_bottom }}px;">
                     {% assign list_items = block.settings.list_items | split: '||' %}
                     {% for item in list_items %}
                       <li>{{ item }}</li>
@@ -74,7 +78,7 @@
                 {% endunless %}
 
                 {% if block.settings.button_label != blank %}
-                  <a href="{{ block.settings.button_link | default: '#' }}" class="cta-btn-custom">
+                  <a href="{{ block.settings.button_link | default: '#' }}" class="cta-btn-custom" style="background-color: {{ block.settings.button_bg_color }}; color: {{ block.settings.button_text_color }}; border-color: {{ block.settings.button_border_color }}; font-size: {{ block.settings.button_font_size }}px; padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;">
                     {{ block.settings.button_label }}
                   </a>
                 {% endif %}
@@ -156,6 +160,67 @@
         },
         {
           "type": "header",
+          "content": "Text Overlay Gradient"
+        },
+        {
+          "type": "select",
+          "id": "gradient_direction",
+          "label": "Gradient Direction",
+          "options": [
+            { "value": "right", "label": "Left to Right" },
+            { "value": "left", "label": "Right to Left" },
+            { "value": "bottom", "label": "Top to Bottom" },
+            { "value": "top", "label": "Bottom to Top" }
+          ],
+          "default": "right"
+        },
+        {
+          "type": "color",
+          "id": "gradient_start_color",
+          "label": "Gradient Start Color",
+          "default": "rgba(0,0,0,0.5)"
+        },
+        {
+          "type": "color",
+          "id": "gradient_end_color",
+          "label": "Gradient End Color",
+          "default": "rgba(0,0,0,0)"
+        },
+        {
+          "type": "range",
+          "id": "gradient_opacity",
+          "label": "Gradient Opacity",
+          "min": 0,
+          "max": 1,
+          "step": 0.1,
+          "default": 0.5
+        },
+        {
+          "type": "header",
+          "content": "Content Spacing"
+        },
+        {
+          "type": "range",
+          "id": "content_padding_left",
+          "label": "Content Left Padding",
+          "min": 0,
+          "max": 200,
+          "step": 4,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "content_margin_left",
+          "label": "Content Left Margin",
+          "min": 0,
+          "max": 200,
+          "step": 4,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "header",
           "content": "Content"
         },
         {
@@ -172,23 +237,154 @@
           "default": "The <span class='hero-highlight'>NAD<span class='hero-highlight-plus'>+</span></span> Advantage"
         },
         {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading Color",
+          "default": "#002f5c"
+        },
+        {
+          "type": "range",
+          "id": "heading_font_size",
+          "label": "Heading Font Size",
+          "min": 24,
+          "max": 80,
+          "step": 2,
+          "unit": "px",
+          "default": 56
+        },
+        {
+          "type": "range",
+          "id": "heading_font_weight",
+          "label": "Heading Font Weight",
+          "min": 400,
+          "max": 900,
+          "step": 100,
+          "default": 700
+        },
+        {
+          "type": "range",
+          "id": "heading_margin_bottom",
+          "label": "Heading Bottom Margin",
+          "min": 0,
+          "max": 60,
+          "step": 4,
+          "unit": "px",
+          "default": 20
+        },
+        {
           "type": "text",
           "id": "subheading",
           "label": "Subheading",
           "default": "NAD+ Replenishment for Timeless Vitality."
         },
         {
+          "type": "color",
+          "id": "subheading_color",
+          "label": "Subheading Color",
+          "default": "#0057a6"
+        },
+        {
+          "type": "range",
+          "id": "subheading_font_size",
+          "label": "Subheading Font Size",
+          "min": 14,
+          "max": 32,
+          "step": 2,
+          "unit": "px",
+          "default": 22
+        },
+        {
+          "type": "range",
+          "id": "subheading_font_weight",
+          "label": "Subheading Font Weight",
+          "min": 400,
+          "max": 900,
+          "step": 100,
+          "default": 400
+        },
+        {
+          "type": "range",
+          "id": "subheading_margin_bottom",
+          "label": "Subheading Bottom Margin",
+          "min": 0,
+          "max": 60,
+          "step": 4,
+          "unit": "px",
+          "default": 28
+        },
+        {
           "type": "textarea",
           "id": "description",
           "label": "Description",
-          "default": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto obcaecati repellendus at."
+          "default": "Recharge your cells, revitalize your life. ChronoNAD+ is your daily defense against time."
+        },
+        {
+          "type": "color",
+          "id": "description_color",
+          "label": "Description Color",
+          "default": "#333333"
+        },
+        {
+          "type": "range",
+          "id": "description_font_size",
+          "label": "Description Font Size",
+          "min": 14,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "description_line_height",
+          "label": "Description Line Height",
+          "min": 1.2,
+          "max": 2.5,
+          "step": 0.1,
+          "default": 1.8
+        },
+        {
+          "type": "range",
+          "id": "description_margin_bottom",
+          "label": "Description Bottom Margin",
+          "min": 0,
+          "max": 60,
+          "step": 4,
+          "unit": "px",
+          "default": 32
         },
         {
           "type": "textarea",
           "id": "list_items",
           "label": "List Items (separate with ||)",
           "info": "Example: Item 1||Item 2||Item 3. Only shown when centered layout is OFF.",
-          "default": "Lorem ipsum dolor sit amet.||Lorem ipsum dolor sit.||Lorem ipsum dolor, sit amet consectetur adipisicing elit."
+          "default": "Boosts Cellular Energy||Supports Healthy Aging||Enhances Cognitive Function"
+        },
+        {
+          "type": "color",
+          "id": "list_color",
+          "label": "List Items Color",
+          "default": "#333333"
+        },
+        {
+          "type": "range",
+          "id": "list_font_size",
+          "label": "List Items Font Size",
+          "min": 14,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "list_margin_bottom",
+          "label": "List Bottom Margin",
+          "min": 0,
+          "max": 60,
+          "step": 4,
+          "unit": "px",
+          "default": 32
         },
         {
           "type": "text",
@@ -200,6 +396,54 @@
           "type": "url",
           "id": "button_link",
           "label": "Button Link"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Button Text Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background Color",
+          "default": "#0b63ce"
+        },
+        {
+          "type": "color",
+          "id": "button_border_color",
+          "label": "Button Border Color",
+          "default": "#0b63ce"
+        },
+        {
+          "type": "range",
+          "id": "button_font_size",
+          "label": "Button Font Size",
+          "min": 12,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "button_padding_vertical",
+          "label": "Button Vertical Padding",
+          "min": 8,
+          "max": 32,
+          "step": 2,
+          "unit": "px",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "button_padding_horizontal",
+          "label": "Button Horizontal Padding",
+          "min": 16,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "default": 48
         }
       ]
     }

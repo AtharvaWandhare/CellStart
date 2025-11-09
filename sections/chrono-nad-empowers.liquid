@@ -1,0 +1,664 @@
+{% comment %}
+  ChronoNAD+ Empowers Section
+  - Two-column layout with text and media (image/video)
+  - Fully customizable via theme editor
+{% endcomment %}
+
+{%- liquid
+  assign section_bg = 'var(--color-background)'
+  assign heading_color = 'var(--color-heading)'
+  assign text_color = 'var(--color-text)'
+
+  if section.settings.use_custom_colors
+    assign section_bg = section.settings.custom_background_color
+    assign heading_color = section.settings.custom_heading_color
+    assign text_color = section.settings.custom_text_color
+  endif
+-%}
+
+<style>
+  .chrono-nad-empowers-section {
+    background: {{ section_bg }};
+    padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+    color: {{ text_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers-section {
+      padding: {{ section.settings.padding_top_tablet }}px 0 {{ section.settings.padding_bottom_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers-section {
+      padding: {{ section.settings.padding_top_desktop }}px 0 {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  .chrono-nad-empowers__container {
+    max-width: {{ section.settings.container_max_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ section.settings.container_padding_right_mobile }}px 0 {{ section.settings.container_padding_left_mobile }}px;
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.column_gap_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__container {
+      padding: 0 {{ section.settings.container_padding_right_tablet }}px 0 {{ section.settings.container_padding_left_tablet }}px;
+      gap: {{ section.settings.column_gap_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__container {
+      padding: 0 {{ section.settings.container_padding_right_desktop }}px 0 {{ section.settings.container_padding_left_desktop }}px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: {{ section.settings.column_alignment }};
+      gap: {{ section.settings.column_gap_desktop }}px;
+    }
+  }
+
+  .chrono-nad-empowers__text-column {
+    padding: {{ section.settings.text_col_padding_top_mobile }}px {{ section.settings.text_col_padding_right_mobile }}px {{ section.settings.text_col_padding_bottom_mobile }}px {{ section.settings.text_col_padding_left_mobile }}px;
+  }
+  .chrono-nad-empowers__media-column {
+    padding: {{ section.settings.media_col_padding_top_mobile }}px {{ section.settings.media_col_padding_right_mobile }}px {{ section.settings.media_col_padding_bottom_mobile }}px {{ section.settings.media_col_padding_left_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__text-column {
+      padding: {{ section.settings.text_col_padding_top_tablet }}px {{ section.settings.text_col_padding_right_tablet }}px {{ section.settings.text_col_padding_bottom_tablet }}px {{ section.settings.text_col_padding_left_tablet }}px;
+    }
+    .chrono-nad-empowers__media-column {
+      padding: {{ section.settings.media_col_padding_top_tablet }}px {{ section.settings.media_col_padding_right_tablet }}px {{ section.settings.media_col_padding_bottom_tablet }}px {{ section.settings.media_col_padding_left_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__text-column {
+      padding: {{ section.settings.text_col_padding_top_desktop }}px {{ section.settings.text_col_padding_right_desktop }}px {{ section.settings.text_col_padding_bottom_desktop }}px {{ section.settings.text_col_padding_left_desktop }}px;
+    }
+    .chrono-nad-empowers__media-column {
+      padding: {{ section.settings.media_col_padding_top_desktop }}px {{ section.settings.media_col_padding_right_desktop }}px {{ section.settings.media_col_padding_bottom_desktop }}px {{ section.settings.media_col_padding_left_desktop }}px;
+    }
+  }
+
+  .chrono-nad-empowers__text-column,
+  .chrono-nad-empowers__media-column {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Text Column */
+  .chrono-nad-empowers__heading-1 {
+    font-size: {{ section.settings.heading_1_size_mobile }}px;
+    font-weight: {{ section.settings.heading_1_weight }};
+    line-height: {{ section.settings.heading_1_line_height }};
+    color: {{ heading_color }};
+    margin: 0 0 {{ section.settings.heading_1_margin_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__heading-1 {
+      font-size: {{ section.settings.heading_1_size_tablet }}px;
+      margin-bottom: {{ section.settings.heading_1_margin_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__heading-1 {
+      font-size: {{ section.settings.heading_1_size_desktop }}px;
+      margin-bottom: {{ section.settings.heading_1_margin_desktop }}px;
+    }
+  }
+
+  .chrono-nad-empowers__paragraph-1 {
+    font-size: {{ section.settings.paragraph_1_size_mobile }}px;
+    line-height: {{ section.settings.paragraph_1_line_height }};
+    margin: 0 0 {{ section.settings.paragraph_1_margin_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__paragraph-1 {
+      font-size: {{ section.settings.paragraph_1_size_tablet }}px;
+      margin-bottom: {{ section.settings.paragraph_1_margin_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__paragraph-1 {
+      font-size: {{ section.settings.paragraph_1_size_desktop }}px;
+      margin-bottom: {{ section.settings.paragraph_1_margin_desktop }}px;
+    }
+  }
+
+  .chrono-nad-empowers__heading-2 {
+    font-size: {{ section.settings.heading_2_size_mobile }}px;
+    font-weight: {{ section.settings.heading_2_weight }};
+    line-height: {{ section.settings.heading_2_line_height }};
+    color: {{ heading_color }};
+    margin: 0 0 {{ section.settings.heading_2_margin_mobile }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__heading-2 {
+      font-size: {{ section.settings.heading_2_size_tablet }}px;
+      margin-bottom: {{ section.settings.heading_2_margin_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__heading-2 {
+      font-size: {{ section.settings.heading_2_size_desktop }}px;
+      margin-bottom: {{ section.settings.heading_2_margin_desktop }}px;
+    }
+  }
+
+  .chrono-nad-empowers__paragraph-2 {
+    font-size: {{ section.settings.paragraph_2_size_mobile }}px;
+    line-height: {{ section.settings.paragraph_2_line_height }};
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__paragraph-2 {
+      font-size: {{ section.settings.paragraph_2_size_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__paragraph-2 {
+      font-size: {{ section.settings.paragraph_2_size_desktop }}px;
+    }
+  }
+
+  /* Media Column */
+  .chrono-nad-empowers__media-wrapper {
+    max-width: {{ section.settings.media_max_width_mobile }}px;
+    margin: 0 auto;
+    border-radius: {{ section.settings.media_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 {{ section.settings.media_shadow_y }}px {{ section.settings.media_shadow_blur }}px rgba(0, 0, 0, {{ section.settings.media_shadow_opacity }});
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__media-wrapper {
+      max-width: {{ section.settings.media_max_width_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__media-wrapper {
+      max-width: {{ section.settings.media_max_width_desktop }}px;
+    }
+  }
+
+  .chrono-nad-empowers__media-wrapper img,
+  .chrono-nad-empowers__media-wrapper video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .chrono-nad-empowers__source-text {
+    font-size: {{ section.settings.source_text_size_mobile }}px;
+    color: {{ text_color }};
+    opacity: 0.7;
+    margin-top: {{ section.settings.source_text_margin_mobile }}px;
+    text-align: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .chrono-nad-empowers__source-text {
+      font-size: {{ section.settings.source_text_size_tablet }}px;
+      margin-top: {{ section.settings.source_text_margin_tablet }}px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .chrono-nad-empowers__source-text {
+      font-size: {{ section.settings.source_text_size_desktop }}px;
+      margin-top: {{ section.settings.source_text_margin_desktop }}px;
+    }
+  }
+</style>
+
+<div class="chrono-nad-empowers-section">
+  <div class="chrono-nad-empowers__container">
+    <div class="chrono-nad-empowers__text-column">
+      {%- if section.settings.heading_1 != blank -%}
+        <h2 class="chrono-nad-empowers__heading-1">{{ section.settings.heading_1 }}</h2>
+      {%- endif -%}
+      {%- if section.settings.paragraph_1 != blank -%}
+        <div class="chrono-nad-empowers__paragraph-1">{{ section.settings.paragraph_1 }}</div>
+      {%- endif -%}
+      {%- if section.settings.heading_2 != blank -%}
+        <h3 class="chrono-nad-empowers__heading-2">{{ section.settings.heading_2 }}</h3>
+      {%- endif -%}
+      {%- if section.settings.paragraph_2 != blank -%}
+        <div class="chrono-nad-empowers__paragraph-2">{{ section.settings.paragraph_2 }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="chrono-nad-empowers__media-column">
+      <div class="chrono-nad-empowers__media-wrapper">
+        {%- if section.settings.media_type == 'image' and section.settings.image != blank -%}
+          <img
+            src="{{ section.settings.image | image_url: width: 1200 }}"
+            alt="{{ section.settings.image.alt | escape }}"
+            loading="lazy"
+            width="{{ section.settings.image.width }}"
+            height="{{ section.settings.image.height }}"
+          >
+        {%- elsif section.settings.media_type == 'video' and section.settings.video_url.id != blank -%}
+          {{ section.settings.video_url | video_tag: autoplay: section.settings.video_autoplay, loop: section.settings.video_loop, controls: false, muted: section.settings.video_autoplay }}
+        {%- elsif section.settings.media_type == 'video_file' and section.settings.video_file != blank -%}
+          {{ section.settings.video_file | video_tag: autoplay: section.settings.video_autoplay, loop: section.settings.video_loop, controls: true, muted: section.settings.video_autoplay }}
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.source_text != blank -%}
+        <p class="chrono-nad-empowers__source-text">{{ section.settings.source_text }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with Text & Chart",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Color Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_custom_colors",
+      "label": "Use custom colors",
+      "default": true,
+      "info": "If unchecked, colors will be inherited from your theme's settings."
+    },
+    {
+      "type": "color",
+      "id": "custom_background_color",
+      "label": "Custom background color",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "custom_heading_color",
+      "label": "Custom heading color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "custom_text_color",
+      "label": "Custom text color",
+      "default": "#374151"
+    },
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Container max width",
+      "default": 1200
+    },
+    {
+      "type": "select",
+      "id": "column_alignment",
+      "label": "Column vertical alignment (Desktop)",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile", "min": 0, "max": 150, "step": 5, "unit": "px", "label": "Top padding (Mobile)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile", "min": 0, "max": 150, "step": 5, "unit": "px", "label": "Bottom padding (Mobile)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "container_padding_left_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Left padding (Mobile)", "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_padding_right_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Right padding (Mobile)", "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top_tablet", "min": 0, "max": 200, "step": 5, "unit": "px", "label": "Top padding (Tablet)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_tablet", "min": 0, "max": 200, "step": 5, "unit": "px", "label": "Bottom padding (Tablet)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "container_padding_left_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Left padding (Tablet)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "container_padding_right_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Right padding (Tablet)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop", "min": 0, "max": 250, "step": 5, "unit": "px", "label": "Top padding (Desktop)", "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop", "min": 0, "max": 250, "step": 5, "unit": "px", "label": "Bottom padding (Desktop)", "default": 80
+    },
+    {
+      "type": "range",
+      "id": "container_padding_left_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Left padding (Desktop)", "default": 48
+    },
+    {
+      "type": "range",
+      "id": "container_padding_right_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Right padding (Desktop)", "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Column Padding"
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_top_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col top padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_right_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col right padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_bottom_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col bottom padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_left_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col left padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_top_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col top padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_right_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col right padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_bottom_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col bottom padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_left_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col left padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_top_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col top padding (Desktop)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_right_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col right padding (Desktop)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_bottom_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col bottom padding (Desktop)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text_col_padding_left_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Text col left padding (Desktop)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_top_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col top padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_right_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col right padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_bottom_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col bottom padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_left_mobile", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col left padding (Mobile)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_top_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col top padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_right_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col right padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_bottom_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col bottom padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_left_tablet", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col left padding (Tablet)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_top_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col top padding (Desktop)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_right_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col right padding (Desktop)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_bottom_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col bottom padding (Desktop)", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "media_col_padding_left_desktop", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Media col left padding (Desktop)", "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Column Layout"
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile", "min": 20, "max": 80, "step": 4, "unit": "px", "label": "Column gap (Mobile)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "column_gap_tablet", "min": 20, "max": 100, "step": 4, "unit": "px", "label": "Column gap (Tablet)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "column_gap_desktop", "min": 20, "max": 152, "step": 4, "unit": "px", "label": "Column gap (Desktop)", "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "heading_1",
+      "label": "Heading 1",
+      "default": "How ChronoNAD+ Empowers You"
+    },
+    {
+      "type": "richtext",
+      "id": "paragraph_1",
+      "label": "Paragraph 1",
+      "default": "<p>NAD+ combined with Resveratrol is a powerful blend designed to help support your vitality from within. By nourishing your body's natural energy pathways and cellular repair processes, this helps you fight back father time.</p>"
+    },
+    {
+      "type": "text",
+      "id": "heading_2",
+      "label": "Heading 2",
+      "default": "The 1.7x Advantage"
+    },
+    {
+      "type": "richtext",
+      "id": "paragraph_2",
+      "label": "Paragraph 2",
+      "default": "<p>Research shows that combining NAD+ with Resveratrol can boost NAD+ levels in our body up to 1.7x higher than using NAD+ alone.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Typography - Heading 1"
+    },
+    { "type": "range", "id": "heading_1_size_mobile", "min": 24, "max": 60, "step": 1, "unit": "px", "label": "Font size (Mobile)", "default": 36 },
+    { "type": "range", "id": "heading_1_size_tablet", "min": 24, "max": 80, "step": 1, "unit": "px", "label": "Font size (Tablet)", "default": 48 },
+    { "type": "range", "id": "heading_1_size_desktop", "min": 24, "max": 100, "step": 1, "unit": "px", "label": "Font size (Desktop)", "default": 56 },
+    { "type": "range", "id": "heading_1_weight", "min": 400, "max": 900, "step": 100, "label": "Font weight", "default": 700 },
+    { "type": "range", "id": "heading_1_line_height", "min": 1.0, "max": 2.0, "step": 0.1, "label": "Line height", "default": 1.2 },
+    { "type": "range", "id": "heading_1_margin_mobile", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Margin bottom (Mobile)", "default": 16 },
+    { "type": "range", "id": "heading_1_margin_tablet", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Margin bottom (Tablet)", "default": 20 },
+    { "type": "range", "id": "heading_1_margin_desktop", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Margin bottom (Desktop)", "default": 24 },
+    {
+      "type": "header",
+      "content": "Typography - Paragraph 1"
+    },
+    { "type": "range", "id": "paragraph_1_size_mobile", "min": 14, "max": 24, "step": 1, "unit": "px", "label": "Font size (Mobile)", "default": 16 },
+    { "type": "range", "id": "paragraph_1_size_tablet", "min": 14, "max": 28, "step": 1, "unit": "px", "label": "Font size (Tablet)", "default": 18 },
+    { "type": "range", "id": "paragraph_1_size_desktop", "min": 14, "max": 32, "step": 1, "unit": "px", "label": "Font size (Desktop)", "default": 20 },
+    { "type": "range", "id": "paragraph_1_line_height", "min": 1.2, "max": 2.2, "step": 0.1, "label": "Line height", "default": 1.7 },
+    { "type": "range", "id": "paragraph_1_margin_mobile", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Margin bottom (Mobile)", "default": 32 },
+    { "type": "range", "id": "paragraph_1_margin_tablet", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Margin bottom (Tablet)", "default": 40 },
+    { "type": "range", "id": "paragraph_1_margin_desktop", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Margin bottom (Desktop)", "default": 48 },
+    {
+      "type": "header",
+      "content": "Typography - Heading 2"
+    },
+    { "type": "range", "id": "heading_2_size_mobile", "min": 20, "max": 50, "step": 1, "unit": "px", "label": "Font size (Mobile)", "default": 28 },
+    { "type": "range", "id": "heading_2_size_tablet", "min": 20, "max": 70, "step": 1, "unit": "px", "label": "Font size (Tablet)", "default": 36 },
+    { "type": "range", "id": "heading_2_size_desktop", "min": 20, "max": 90, "step": 1, "unit": "px", "label": "Font size (Desktop)", "default": 42 },
+    { "type": "range", "id": "heading_2_weight", "min": 400, "max": 900, "step": 100, "label": "Font weight", "default": 700 },
+    { "type": "range", "id": "heading_2_line_height", "min": 1.0, "max": 2.0, "step": 0.1, "label": "Line height", "default": 1.3 },
+    { "type": "range", "id": "heading_2_margin_mobile", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Margin bottom (Mobile)", "default": 12 },
+    { "type": "range", "id": "heading_2_margin_tablet", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Margin bottom (Tablet)", "default": 16 },
+    { "type": "range", "id": "heading_2_margin_desktop", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Margin bottom (Desktop)", "default": 20 },
+    {
+      "type": "header",
+      "content": "Typography - Paragraph 2"
+    },
+    { "type": "range", "id": "paragraph_2_size_mobile", "min": 14, "max": 24, "step": 1, "unit": "px", "label": "Font size (Mobile)", "default": 16 },
+    { "type": "range", "id": "paragraph_2_size_tablet", "min": 14, "max": 28, "step": 1, "unit": "px", "label": "Font size (Tablet)", "default": 18 },
+    { "type": "range", "id": "paragraph_2_size_desktop", "min": 14, "max": 32, "step": 1, "unit": "px", "label": "Font size (Desktop)", "default": 20 },
+    { "type": "range", "id": "paragraph_2_line_height", "min": 1.2, "max": 2.2, "step": 0.1, "label": "Line height", "default": 1.7 },
+    {
+      "type": "header",
+      "content": "Media Settings"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media type",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video (URL)" },
+        { "value": "video_file", "label": "Video (File)" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video URL",
+      "accept": ["youtube", "vimeo"]
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Video File"
+    },
+    {
+      "type": "checkbox",
+      "id": "video_autoplay",
+      "label": "Autoplay video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_loop",
+      "label": "Loop video",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "media_max_width_mobile", "min": 200, "max": 600, "step": 10, "unit": "px", "label": "Media max width (Mobile)", "default": 400
+    },
+    {
+      "type": "range",
+      "id": "media_max_width_tablet", "min": 300, "max": 800, "step": 10, "unit": "px", "label": "Media max width (Tablet)", "default": 600
+    },
+    {
+      "type": "range",
+      "id": "media_max_width_desktop", "min": 400, "max": 1000, "step": 10, "unit": "px", "label": "Media max width (Desktop)", "default": 600
+    },
+    {
+      "type": "range",
+      "id": "media_border_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Media border radius", "default": 16
+    },
+    {
+      "type": "range",
+      "id": "media_shadow_y", "min": 0, "max": 30, "step": 1, "unit": "px", "label": "Media shadow Y offset", "default": 10
+    },
+    {
+      "type": "range",
+      "id": "media_shadow_blur", "min": 0, "max": 60, "step": 2, "unit": "px", "label": "Media shadow blur", "default": 30
+    },
+    {
+      "type": "range",
+      "id": "media_shadow_opacity", "min": 0, "max": 0.5, "step": 0.1, "label": "Media shadow opacity", "default": 0.1
+    },
+    {
+      "type": "header",
+      "content": "Source Text"
+    },
+    {
+      "type": "text",
+      "id": "source_text",
+      "label": "Source text",
+      "default": "Source: Jiang et al., Pharmacology Research & Perspectives, 2022"
+    },
+    { "type": "range", "id": "source_text_size_mobile", "min": 10, "max": 16, "step": 1, "unit": "px", "label": "Font size (Mobile)", "default": 12 },
+    { "type": "range", "id": "source_text_size_tablet", "min": 10, "max": 18, "step": 1, "unit": "px", "label": "Font size (Tablet)", "default": 13 },
+    { "type": "range", "id": "source_text_size_desktop", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Font size (Desktop)", "default": 14 },
+    { "type": "range", "id": "source_text_margin_mobile", "min": 8, "max": 40, "step": 2, "unit": "px", "label": "Margin top (Mobile)", "default": 16 },
+    { "type": "range", "id": "source_text_margin_tablet", "min": 8, "max": 40, "step": 2, "unit": "px", "label": "Margin top (Tablet)", "default": 20 },
+    { "type": "range", "id": "source_text_margin_desktop", "min": 8, "max": 40, "step": 2, "unit": "px", "label": "Margin top (Desktop)", "default": 24 }
+  ],
+  "presets": [
+    {
+      "name": "Image with Text & Chart"
+    }
+  ]
+}
+{% endschema %}

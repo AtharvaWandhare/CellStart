@@ -13,8 +13,47 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "link_list_aRVJ7A": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Products",
+            "menu": "product"
+          }
+        },
+        "link_list_ggxJAN": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Quick links",
+            "menu": "quick-links"
+          }
+        },
+        "link_list_t3wc43": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Policies",
+            "menu": "privacy-policies"
+          }
+        },
+        "link_list_FRUN8M": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Socials",
+            "menu": "socials"
+          }
+        }
+      },
+      "block_order": [
+        "link_list_aRVJ7A",
+        "link_list_ggxJAN",
+        "link_list_t3wc43",
+        "link_list_FRUN8M"
+      ],
+      "custom_css": [
+        "h1,h2,h3,h4 {color: white;}"
+      ],
       "settings": {
-        "color_scheme": "scheme-5",
+        "color_scheme": "scheme-8650f227-deb9-4490-9fed-3954e20047b7",
         "newsletter_enable": true,
         "newsletter_heading": "Subscribe to our emails",
         "enable_follow_on_shop": true,
