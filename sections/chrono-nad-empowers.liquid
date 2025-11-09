@@ -256,7 +256,7 @@
         {%- elsif section.settings.media_type == 'video' and section.settings.video_url.id != blank -%}
           {{ section.settings.video_url | video_tag: autoplay: section.settings.video_autoplay, loop: section.settings.video_loop, controls: false, muted: section.settings.video_autoplay }}
         {%- elsif section.settings.media_type == 'video_file' and section.settings.video_file != blank -%}
-          {{ section.settings.video_file | video_tag: autoplay: section.settings.video_autoplay, loop: section.settings.video_loop, controls: true, muted: section.settings.video_autoplay }}
+          {{ section.settings.video_file | video_tag: autoplay: section.settings.video_autoplay, loop: section.settings.video_loop, controls: false, muted: section.settings.video_autoplay }}
         {%- else -%}
           {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
         {%- endif -%}

@@ -20,6 +20,7 @@ slideshow-component .slideshow.banner {
   margin: 0;
   gap: 0;
   overflow-y: hidden;
+  position: relative;
 }
 
 /* Make the hero banner full viewport height and ensure media covers it */
@@ -196,23 +197,28 @@ slideshow-component .slideshow.banner {
 }
 
 .slideshow__controls {
+  /* border: 0.1rem solid rgba(var(--color-foreground), 0.08); */
   background-color: transparent;
   position: absolute;
-  bottom: 0;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 3;
-  color: white;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
 }
 
-.slideshow__controls--top {
-  order: 2;
-  z-index: 3;
-  bottom: auto;
-  top: 2rem;
+.slideshow__controls > * {
+  pointer-events: auto;
 }
 
 @media screen and (max-width: 749px) {
+  .slideshow__controls {
+    bottom: 1rem;
+  }
+  
   .slideshow__controls--border-radius-mobile {
     border-bottom-right-radius: var(--text-boxes-radius);
     border-bottom-left-radius: var(--text-boxes-radius);
