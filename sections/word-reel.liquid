@@ -14,6 +14,9 @@
     border-top: 5px double var(--word-reel-border, var(--word-reel-accent-2));
     border-bottom: 5px double var(--word-reel-border, var(--word-reel-accent-2));
     z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .word-reel__heading {
@@ -95,12 +98,6 @@
 </style>
 
 <div class="word-reel" style="--scroll-speed: {{ section.settings.scroll_speed }}s; --word-reel-border: {{ section.settings.border_color }};">
-  {%- if section.settings.heading != blank -%}
-    <h2 class="word-reel__heading">
-      {{ section.settings.heading }}
-    </h2>
-  {%- endif -%}
-
   <div class="word-reel__track-container">
     <div class="word-reel__track">
       {%- comment -%} First set of items {%- endcomment -%}

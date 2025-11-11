@@ -36,11 +36,11 @@
             "separator_width_desktop": 320,
             "separator_width_tablet": 240,
             "separator_width_mobile": 160,
-            "separator_thickness": 1,
-            "separator_margin_top_desktop": 10,
-            "separator_margin_top_tablet": 8,
+            "separator_thickness": 2,
+            "separator_margin_top_desktop": 0,
+            "separator_margin_top_tablet": 0,
             "separator_margin_top_mobile": 6,
-            "separator_margin_bottom_desktop": 16,
+            "separator_margin_bottom_desktop": 0,
             "separator_margin_bottom_tablet": 14,
             "separator_margin_bottom_mobile": 12,
             "button_label": "Learn More",
@@ -100,6 +100,7 @@
         "slide_dExTEV",
         "slide_L7K3wW"
       ],
+      "custom_css": [],
       "name": "t:sections.slideshow.presets.name",
       "settings": {
         "layout": "full_bleed",
@@ -109,7 +110,12 @@
         "change_slides_speed": 7,
         "image_behavior": "none",
         "show_text_below": true,
-        "accessibility_info": "Slideshow about our brand"
+        "accessibility_info": "Slideshow about our brand",
+        "controls_color": "#0057a6",
+        "controls_bg_color": "#ffffff",
+        "controls_bg_opacity": 1,
+        "controls_border_color": "#ffffff",
+        "controls_border_width": 0
       }
     },
     "word_reel_U9HQ4D": {
@@ -118,7 +124,7 @@
         "item_rDGwBr": {
           "type": "item",
           "settings": {
-            "text": "Science-Backed",
+            "text": "cGMP Certified",
             "text_size": 18,
             "text_color": "#6c757d"
           }
@@ -126,7 +132,7 @@
         "word_1": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/dna_large_479e8413-7aa3-4bca-a2b0-b66307ec4567.png",
+            "image": "shopify://shop_images/cGMP-removebg-preview.png",
             "text": "",
             "text_size": 18,
             "text_color": "#6c757d"
@@ -135,7 +141,7 @@
         "item_bwC3yy": {
           "type": "item",
           "settings": {
-            "text": "Premium Quality",
+            "text": "Clinically Tested",
             "text_size": 18,
             "text_color": "#6c757d"
           }
@@ -143,7 +149,7 @@
         "word_2": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/dna_large_479e8413-7aa3-4bca-a2b0-b66307ec4567.png",
+            "image": "shopify://shop_images/Clinically_Tested-removebg-preview.png",
             "text": "",
             "text_size": 18,
             "text_color": "#6c757d"
@@ -152,7 +158,7 @@
         "word_3": {
           "type": "item",
           "settings": {
-            "text": "Lab Tested",
+            "text": "Made in USA",
             "text_size": 18,
             "text_color": "#6c757d"
           }
@@ -160,7 +166,7 @@
         "item_e6FQAj": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/dna_large_479e8413-7aa3-4bca-a2b0-b66307ec4567.png",
+            "image": "shopify://shop_images/Made_in_USA-removebg-preview.png",
             "text": "",
             "text_size": 18,
             "text_color": "#6c757d"
@@ -169,7 +175,7 @@
         "item_L97jwx": {
           "type": "item",
           "settings": {
-            "text": "Made in USA",
+            "text": "No Animal Testing",
             "text_size": 18,
             "text_color": "#6c757d"
           }
@@ -177,7 +183,7 @@
         "word_4": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/dna_large_479e8413-7aa3-4bca-a2b0-b66307ec4567.png",
+            "image": "shopify://shop_images/No_Animal_Testing-removebg-preview.png",
             "text": "",
             "text_size": 18,
             "text_color": "#6c757d"
@@ -186,7 +192,7 @@
         "item_9JnFPg": {
           "type": "item",
           "settings": {
-            "text": "GMP Certified",
+            "text": "Non GMO",
             "text_size": 18,
             "text_color": "#6c757d"
           }
@@ -194,7 +200,41 @@
         "word_5": {
           "type": "item",
           "settings": {
-            "image": "shopify://shop_images/dna_large_479e8413-7aa3-4bca-a2b0-b66307ec4567.png",
+            "image": "shopify://shop_images/Non_GMO-removebg-preview.png",
+            "text": "",
+            "text_size": 18,
+            "text_color": "#6c757d"
+          }
+        },
+        "item_mw9MNk": {
+          "type": "item",
+          "settings": {
+            "text": "Sugar Free",
+            "text_size": 18,
+            "text_color": "#6c757d"
+          }
+        },
+        "item_8A3UQd": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/Sugar_Free-removebg-preview.png",
+            "text": "",
+            "text_size": 18,
+            "text_color": "#6c757d"
+          }
+        },
+        "item_TbehrH": {
+          "type": "item",
+          "settings": {
+            "text": "Vegan Friendly",
+            "text_size": 18,
+            "text_color": "#6c757d"
+          }
+        },
+        "item_HtAnKg": {
+          "type": "item",
+          "settings": {
+            "image": "shopify://shop_images/Vegan_Friendly-removebg-preview.png",
             "text": "",
             "text_size": 18,
             "text_color": "#6c757d"
@@ -211,12 +251,16 @@
         "item_L97jwx",
         "word_4",
         "item_9JnFPg",
-        "word_5"
+        "word_5",
+        "item_mw9MNk",
+        "item_8A3UQd",
+        "item_TbehrH",
+        "item_HtAnKg"
       ],
       "settings": {
         "heading": "Trusted Quality",
-        "scroll_speed": 30,
-        "border_color": "#63acf0"
+        "scroll_speed": 45,
+        "border_color": "#000000"
       }
     },
     "sale_banner_mXNVEG": {
@@ -739,7 +783,7 @@
             "title": "Highly Recommended - Karlyn Kanuckel",
             "description": "I've been taking the ChronoNAD+ supplement daily and I noticed the difference in just a couple of weeks.",
             "platform": "TikTok",
-            "video_url": ""
+            "cloudinary_video_url": "https://res.cloudinary.com/dc4nrt1hn/video/upload/v1762807893/Karlyn_v68vwo.mp4"
           }
         },
         "ugc_video_m8RBNQ": {
@@ -749,7 +793,7 @@
             "title": "Feeling my Best - Tinka Malue",
             "description": "I take vitamins & supplements like ChronoNAD+ for energy support.",
             "platform": "TikTok",
-            "video_url": ""
+            "cloudinary_video_url": "https://res.cloudinary.com/dc4nrt1hn/video/upload/v1762807934/Tinka_ts8d2f.mov"
           }
         },
         "ugc_video_kHhV6G": {
@@ -758,8 +802,8 @@
             "thumbnail": "shopify://shop_images/Screenshot_2025-11-05_002855.png",
             "title": "Amazing Quality - Hailey Ross",
             "description": "I use this supplement to RESET my Body.",
-            "platform": "TikTok",
-            "video_url": ""
+            "platform": "Instagram",
+            "cloudinary_video_url": "https://res.cloudinary.com/dc4nrt1hn/video/upload/v1762807925/Hailey_t4kj4d.mov"
           }
         }
       },
@@ -774,9 +818,9 @@
       ],
       "name": "UGC Video Showcase",
       "settings": {
-        "eyebrow": "Real Results",
-        "heading": "See What Our Community Is Saying",
-        "description": "Real people, real transformations. Watch authentic reviews from our valued customers.",
+        "eyebrow": "",
+        "heading": "Real people, real transformations.",
+        "description": "",
         "background_color": "#f8f9fa",
         "heading_color": "#002f5c",
         "text_color": "#0057a6",
@@ -784,10 +828,13 @@
         "card_background": "#ffffff",
         "card_border_radius": 12,
         "container_width": 1400,
-        "padding_top_mobile": 40,
+        "padding_top_mobile": 0,
         "padding_bottom_mobile": 40,
-        "padding_top_desktop": 80,
-        "padding_bottom_desktop": 80
+        "padding_top_desktop": 0,
+        "padding_bottom_desktop": 80,
+        "disclaimer_text": "These individuals partner with CellStart as compensated endorsers, sharing their personal opinions and experiences. They do not provide medical advice. Statements have not been evaluated by the FDA.",
+        "disclaimer_font_size": 12,
+        "disclaimer_color": "#6c757d"
       }
     },
     "word_reel_NbjrAY": {

@@ -214,6 +214,31 @@ slideshow-component .slideshow.banner {
   pointer-events: auto;
 }
 
+/* Make slideshow control icons white */
+.slideshow__controls .slider-button {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.slideshow__controls .slider-button:not([disabled]):hover {
+  color: rgb(255, 255, 255);
+}
+
+.slideshow__controls .slider-button[disabled] .icon {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.slideshow__controls .slider-counter__link {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.slideshow__controls .slider-counter__link:hover {
+  color: rgb(255, 255, 255);
+}
+
+.slideshow__controls .caption {
+  color: rgba(255, 255, 255, 0.9);
+}
+
 @media screen and (max-width: 749px) {
   .slideshow__controls {
     bottom: 1rem;

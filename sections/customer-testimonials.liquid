@@ -126,12 +126,16 @@
   .customer-testimonials__carousel-wrapper {
     position: relative;
     margin-bottom: {{ section.settings.carousel_margin_bottom_mobile }}px;
-    overflow: hidden;
+    overflow: visible;
   }
 
   @media screen and (min-width: 990px) {
     .customer-testimonials__carousel-wrapper {
       margin-bottom: {{ section.settings.carousel_margin_bottom_desktop }}px;
+      overflow: visible;
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
   }
 
@@ -143,6 +147,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding-bottom: {{ section.settings.grid_padding_bottom }}px;
+    flex: 1;
   }
 
   .customer-testimonials__grid::-webkit-scrollbar {
@@ -158,7 +163,7 @@
   @media screen and (min-width: 990px) {
     .customer-testimonials__grid {
       gap: {{ section.settings.carousel_gap_desktop }}px;
-      overflow-x: hidden;
+      overflow-x: auto;
     }
   }
 
@@ -167,10 +172,10 @@
     background: {{ section.settings.card_background_color }};
     border-radius: {{ section.settings.card_border_radius }}px;
     padding: {{ section.settings.card_padding_vertical_mobile }}px {{ section.settings.card_padding_horizontal_mobile }}px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #e2e8f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     display: flex;
     flex-direction: column;
-    height: 100%;
     min-width: {{ section.settings.card_min_width_mobile }}px;
     flex-shrink: 0;
   }
@@ -186,6 +191,8 @@
     .customer-testimonial-card {
       min-width: {{ section.settings.card_min_width_desktop }}px;
       max-width: {{ section.settings.card_max_width_desktop }}px;
+      width: {{ section.settings.card_min_width_desktop }}px;
+      height: 400px;
       padding: {{ section.settings.card_padding_vertical_desktop }}px {{ section.settings.card_padding_horizontal_desktop }}px;
     }
   }
@@ -193,18 +200,7 @@
   .customer-testimonial-card:hover {
     transform: translateY({{ section.settings.card_hover_translate }}px);
     box-shadow: 0 12px 24px rgba(2, 88, 166, 0.08);
-  }
-
-  .customer-testimonial-card--active {
-    border: 2px solid {{ section.settings.star_color }};
-    box-shadow: 0 8px 20px rgba(2, 88, 166, 0.15);
-  }
-
-  @media screen and (min-width: 990px) {
-    .customer-testimonial-card--active {
-      border-width: {{ section.settings.card_active_border_width }}px;
-      box-shadow: 0 12px 28px rgba(2, 88, 166, 0.2);
-    }
+    border-color: {{ section.settings.star_color }};
   }
 
   /* Star Rating */
@@ -248,6 +244,11 @@
     margin-bottom: {{ section.settings.review_margin_bottom_mobile }}px;
     flex-grow: 1;
     max-width: {{ section.settings.review_max_width }}ch;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
   }
 
   @media screen and (min-width: 750px) {
@@ -263,6 +264,7 @@
       font-size: {{ section.settings.review_text_size_desktop }}px;
       line-height: {{ section.settings.review_line_height_desktop }};
       margin-bottom: {{ section.settings.review_margin_bottom_desktop }}px;
+      -webkit-line-clamp: 8;
     }
   }
 
@@ -310,13 +312,6 @@
   }
 
   /* Navigation Arrows */
-  .customer-testimonials__navigation {
-    display: flex;
-    justify-content: flex-end;
-    gap: {{ section.settings.nav_gap }}px;
-    margin-top: {{ section.settings.nav_margin_top }}px;
-  }
-
   .customer-testimonials__nav-button {
     width: {{ section.settings.nav_button_size_mobile }}px;
     height: {{ section.settings.nav_button_size_mobile }}px;
@@ -328,6 +323,24 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  @media screen and (min-width: 990px) {
+    .customer-testimonials__nav-button {
+      display: flex;
+    }
+
+    .customer-testimonials__nav-button--prev,
+    .customer-testimonials__nav-button--next {
+      display: flex;
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    .customer-testimonials__nav-button {
+      display: none;
+    }
   }
 
   @media screen and (min-width: 750px) {
@@ -434,35 +447,6 @@
       const gap = 32; // 2rem gap
       const scrollAmount = cardWidth + gap;
 
-      // Function to update active card indicator
-      function updateActiveCard() {
-        const cards = carousel.querySelectorAll('.customer-testimonial-card');
-        const carouselRect = carousel.getBoundingClientRect();
-        const carouselCenter = carouselRect.left + carouselRect.width / 2;
-        
-        let closestCard = null;
-        let minDistance = Infinity;
-        
-        cards.forEach(card => {
-          const cardRect = card.getBoundingClientRect();
-          const cardCenter = cardRect.left + cardRect.width / 2;
-          const distance = Math.abs(carouselCenter - cardCenter);
-          
-          if (distance < minDistance) {
-            minDistance = distance;
-            closestCard = card;
-          }
-        });
-        
-        // Remove active class from all cards
-        cards.forEach(card => card.classList.remove('customer-testimonial-card--active'));
-        
-        // Add active class to closest card
-        if (closestCard) {
-          closestCard.classList.add('customer-testimonial-card--active');
-        }
-      }
-
       prevButton.addEventListener('click', function () {
         carousel.scrollBy({
           left: -scrollAmount,
@@ -477,6 +461,17 @@
         });
       });
 
+      // Enable horizontal scrolling with mousewheel/trackpad
+      carousel.addEventListener('wheel', function(e) {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          carousel.scrollBy({
+            left: e.deltaY,
+            behavior: 'auto'
+          });
+        }
+      }, { passive: false });
+
       // Update button states based on scroll position
       function updateButtonStates() {
         const maxScroll = carousel.scrollWidth - carousel.clientWidth;
@@ -490,11 +485,9 @@
       }
 
       carousel.addEventListener('scroll', updateButtonStates);
-      carousel.addEventListener('scroll', updateActiveCard);
       
       // Initial state
       updateButtonStates();
-      updateActiveCard();
     }
   });
 </script>
@@ -525,6 +518,15 @@
     {%- comment -%} Testimonials Carousel {%- endcomment -%}
     {%- if section.blocks.size > 0 -%}
       <div class="customer-testimonials__carousel-wrapper">
+        {%- comment -%} Navigation Arrows {%- endcomment -%}
+        {%- if section.settings.show_navigation -%}
+          <button class="customer-testimonials__nav-button customer-testimonials__nav-button--prev" aria-label="Previous testimonials">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+        {%- endif -%}
+
         <div class="customer-testimonials__grid">
           {%- for block in section.blocks -%}
             {%- assign delay_class = 'animate-delay-' | append: forloop.index -%}
@@ -568,23 +570,15 @@
             </div>
           {%- endfor -%}
         </div>
-      </div>
 
-      {%- comment -%} Navigation Arrows {%- endcomment -%}
-      {%- if section.settings.show_navigation -%}
-        <div class="customer-testimonials__navigation">
-          <button class="customer-testimonials__nav-button customer-testimonials__nav-button--prev" aria-label="Previous testimonials">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-            </svg>
-          </button>
+        {%- if section.settings.show_navigation -%}
           <button class="customer-testimonials__nav-button customer-testimonials__nav-button--next" aria-label="Next testimonials">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
             </svg>
           </button>
-        </div>
-      {%- endif -%}
+        {%- endif -%}
+      </div>
     {%- endif -%}
   </div>
 </div>

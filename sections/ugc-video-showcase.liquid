@@ -1,7 +1,7 @@
 {% comment %}
   Section: UGC Video Showcase
   Purpose: Display user-generated content videos from TikTok, Instagram, etc. for social proof
-  Features: Mobile-ratio video cards with thumbnail images, titles, descriptions, and modal iframe popup on click
+  Features: Video cards with Cloudinary-hosted videos that play in a modal
 {% endcomment %}
 
 <style>
@@ -270,6 +270,18 @@
     }
   }
 
+  /* Disclaimer */
+  .ugc-disclaimer {
+    font-size: {{ section.settings.disclaimer_font_size }}px;
+    color: {{ section.settings.disclaimer_color }};
+    margin-top: 1rem;
+    opacity: 0.85;
+    text-align: center;
+    max-width: calc({{ section.settings.container_width }}px - 40px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   /* Modal Styles */
   .ugc-video-modal {
     display: none;
@@ -296,6 +308,7 @@
     position: relative;
     width: 100%;
     max-width: 450px;
+    max-height: 85vh;
     background: #000;
     border-radius: 12px;
     overflow: hidden;
@@ -307,20 +320,21 @@
     transform: scale(1);
   }
 
-  .ugc-video-modal-iframe-wrapper {
+  .ugc-video-modal-video-wrapper {
     position: relative;
     width: 100%;
-    padding-bottom: 133.33%; /* 3:4 aspect ratio */
+    max-height: 85vh;
     background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .ugc-video-modal-iframe-wrapper iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
+  .ugc-video-modal-video-wrapper video {
     width: 100%;
-    height: 100%;
-    border: 0;
+    height: auto;
+    max-height: 85vh;
+    object-fit: contain;
   }
 
   .ugc-video-modal-close {
@@ -389,7 +403,7 @@
             <div
               class="ugc-video-card"
               {{ block.shopify_attributes }}
-              data-video-url="{{ block.settings.video_url | escape }}"
+              data-video-url="{{ block.settings.cloudinary_video_url | escape }}"
             >
               <div class="ugc-video-thumbnail">
                 {%- if block.settings.thumbnail != blank -%}
@@ -450,6 +464,11 @@
       <div class="ugc-scroll-indicator">
         ← Swipe to see more →
       </div>
+
+      {%- if section.settings.disclaimer_text != blank -%}
+        <p class="ugc-disclaimer">{{ section.settings.disclaimer_text }}</p>
+      {%- endif -%}
+
     </div>
   </div>
 
@@ -468,13 +487,17 @@
       </svg>
     </button>
     <div class="ugc-video-modal-content">
-      <div class="ugc-video-modal-iframe-wrapper">
-        <iframe
-          id="ugc-video-iframe-{{ section.id }}"
-          src=""
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
+      <div class="ugc-video-modal-video-wrapper">
+        <video
+          id="ugc-video-player-{{ section.id }}"
+          controls
+          autoplay
+          muted
+          playsinline
+          preload="metadata"
+        >
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
   </div>
@@ -484,14 +507,14 @@
   (function () {
     const sectionId = '{{ section.id }}';
     const modal = document.getElementById('ugc-video-modal-' + sectionId);
-    const iframe = document.getElementById('ugc-video-iframe-' + sectionId);
+    const videoPlayer = document.getElementById('ugc-video-player-' + sectionId);
     const closeBtn = modal ? modal.querySelector('.ugc-video-modal-close') : null;
     const videoCards = document.querySelectorAll('#ugc-video-' + sectionId + ' .ugc-video-card');
     const carousel = document.getElementById('ugc-carousel-' + sectionId);
     const prevBtn = document.querySelector('#ugc-video-' + sectionId + ' .ugc-carousel-prev');
     const nextBtn = document.querySelector('#ugc-video-' + sectionId + ' .ugc-carousel-next');
 
-    if (!modal || !iframe || !closeBtn) return;
+    if (!modal || !videoPlayer || !closeBtn) return;
 
     // Carousel navigation
     if (carousel && prevBtn && nextBtn) {
@@ -532,10 +555,17 @@
     videoCards.forEach(function (card) {
       card.addEventListener('click', function () {
         const videoUrl = card.getAttribute('data-video-url');
+        
         if (videoUrl) {
-          iframe.src = videoUrl;
+          videoPlayer.src = videoUrl;
+          videoPlayer.volume = 0.2; // Set volume to 20%
           modal.classList.add('active');
           document.body.style.overflow = 'hidden';
+          
+          // Play video
+          videoPlayer.play().catch(function(error) {
+            console.log('Video autoplay prevented:', error);
+          });
         }
       });
 
@@ -558,7 +588,8 @@
     // Close modal
     function closeModal() {
       modal.classList.remove('active');
-      iframe.src = '';
+      videoPlayer.pause();
+      videoPlayer.src = '';
       document.body.style.overflow = '';
     }
 
@@ -706,6 +737,32 @@
       "step": 10,
       "default": 80,
       "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Disclaimer"
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer_text",
+      "label": "Disclaimer Text",
+      "default": "These individuals partner with CellStart as compensated endorsers, sharing their personal opinions and experiences. They do not provide medical advice. Statements have not been evaluated by the FDA."
+    },
+    {
+      "type": "range",
+      "id": "disclaimer_font_size",
+      "label": "Disclaimer Font Size (px)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "disclaimer_color",
+      "label": "Disclaimer Color",
+      "default": "#6c757d"
     }
   ],
   "blocks": [
@@ -740,9 +797,9 @@
         },
         {
           "type": "url",
-          "id": "video_url",
-          "label": "Video Embed URL",
-          "info": "Use the embed URL from TikTok/Instagram (e.g., https://www.tiktok.com/embed/...)"
+          "id": "cloudinary_video_url",
+          "label": "Cloudinary Video URL",
+          "info": "Upload your video to Cloudinary and paste the full URL here (e.g., https://res.cloudinary.com/...)"
         }
       ]
     }
@@ -757,7 +814,7 @@
             "title": "Life-Changing Results",
             "description": "I've been using this for 3 months and the difference is incredible!",
             "platform": "TikTok",
-            "video_url": ""
+            "cloudinary_video_url": ""
           }
         },
         {
@@ -766,7 +823,7 @@
             "title": "Highly Recommend",
             "description": "Best supplement I've ever tried. Energy levels through the roof!",
             "platform": "Instagram",
-            "video_url": ""
+            "cloudinary_video_url": ""
           }
         },
         {
@@ -775,7 +832,7 @@
             "title": "Amazing Quality",
             "description": "Premium ingredients, fast shipping, and real results. 5 stars!",
             "platform": "TikTok",
-            "video_url": ""
+            "cloudinary_video_url": ""
           }
         },
         {
@@ -784,7 +841,7 @@
             "title": "Game Changer",
             "description": "My friends keep asking what I'm taking. This is the secret!",
             "platform": "Instagram",
-            "video_url": ""
+            "cloudinary_video_url": ""
           }
         }
       ]

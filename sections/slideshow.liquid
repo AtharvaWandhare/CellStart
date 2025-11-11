@@ -25,6 +25,61 @@
   {%- endstyle -%}
 {%- endif -%}
 
+<style>
+  /* Customizable slideshow controls (arrows, dots, background, border)
+     The controls element is a sibling of the slider div, so we target it
+     with adjacent/general sibling selectors to ensure specificity. */
+  #Slider-{{ section.id }} + .slideshow__controls,
+  #Slider-{{ section.id }} ~ .slideshow__controls,
+  .slideshow[data-section-id="{{ section.id }}"] + .slideshow__controls {
+    background: {{ section.settings.controls_bg_color | default: '#ffffff' }};
+    opacity: {{ section.settings.controls_bg_opacity | default: 1 }};
+    border: {{ section.settings.controls_border_width | default: 0 }}px solid {{ section.settings.controls_border_color | default: '#ffffff' }};
+    border-radius: 8px;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  /* Arrow buttons color and SVG overrides */
+  #Slider-{{ section.id }} + .slideshow__controls .slider-button,
+  #Slider-{{ section.id }} ~ .slideshow__controls .slider-button {
+    color: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+  }
+
+  #Slider-{{ section.id }} + .slideshow__controls .slider-button svg,
+  #Slider-{{ section.id }} ~ .slideshow__controls .slider-button svg {
+    fill: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+    stroke: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+  }
+
+  /* Dots color */
+  #Slider-{{ section.id }} + .slideshow__controls .dot,
+  #Slider-{{ section.id }} ~ .slideshow__controls .dot,
+  #Slider-{{ section.id }} + .slideshow__controls .slider-counter__link,
+  #Slider-{{ section.id }} ~ .slideshow__controls .slider-counter__link {
+    background-color: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+    border-color: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+  }
+
+  /* Active dot state */
+  #Slider-{{ section.id }} + .slideshow__controls .slider-counter__link--active .dot,
+  #Slider-{{ section.id }} ~ .slideshow__controls .slider-counter__link--active .dot {
+    background-color: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+  }
+
+  /* Ensure disabled state is visible */
+  #Slider-{{ section.id }} + .slideshow__controls .slider-button[disabled],
+  #Slider-{{ section.id }} ~ .slideshow__controls .slider-button[disabled],
+  #Slider-{{ section.id }} + .slideshow__controls .slider-counter__link[disabled],
+  #Slider-{{ section.id }} ~ .slideshow__controls .slider-counter__link[disabled] {
+    opacity: 0.35 !important;
+    cursor: not-allowed;
+  }
+</style>
+
 <slideshow-component
   class="slider-mobile-gutter{% if section.settings.layout == 'grid' %} page-width{% endif %}{% if section.settings.show_text_below %} mobile-text-below{% endif %}"
   role="region"
@@ -332,6 +387,48 @@
       "label": "t:sections.slideshow.settings.accessibility.label",
       "info": "t:sections.slideshow.settings.accessibility.info",
       "default": "t:sections.slideshow.settings.accessibility.default"
+    }
+    ,
+    {
+      "type": "header",
+      "content": "Slider Controls"
+    },
+    {
+      "type": "color",
+      "id": "controls_color",
+      "label": "Controls Color (arrows & dots)",
+      "default": "#0057a6"
+    },
+    {
+      "type": "color",
+      "id": "controls_bg_color",
+      "label": "Controls Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "controls_bg_opacity",
+      "label": "Controls Background Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "controls_border_color",
+      "label": "Controls Border Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "controls_border_width",
+      "label": "Controls Border Width (px)",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
     }
   ],
   "blocks": [
