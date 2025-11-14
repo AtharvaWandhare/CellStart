@@ -24,7 +24,7 @@
     "animations_hover_elements": "3d-lift",
     "buttons_border_thickness": 1,
     "buttons_border_opacity": 100,
-    "buttons_radius": 0,
+    "buttons_radius": 8,
     "buttons_shadow_opacity": 0,
     "buttons_shadow_horizontal_offset": 0,
     "buttons_shadow_vertical_offset": 4,
@@ -124,10 +124,10 @@
     "predictive_search_show_vendor": false,
     "predictive_search_show_price": false,
     "currency_code_enabled": true,
-    "cart_type": "notification",
+    "cart_type": "drawer",
     "show_vendor": false,
     "show_cart_note": false,
-    "cart_drawer_collection": "",
+    "cart_drawer_collection": "frontpage",
     "cart_color_scheme": "scheme-1",
     "sections": {
       "main-password-header": {
@@ -144,6 +144,13 @@
       }
     },
     "content_for_index": [],
+    "blocks": {
+      "341186785192672687": {
+        "type": "shopify://apps/seal-subscriptions/blocks/subscription-script-append/13b25004-a140-4ab7-b5fe-29918f759699",
+        "disabled": false,
+        "settings": {}
+      }
+    },
     "color_schemes": {
       "scheme-1": {
         "settings": {
@@ -237,7 +244,18 @@
         "settings": {
           "background": "#ffffff",
           "background_gradient": "",
-          "text": "#121212",
+          "text": "#0057a6",
+          "button": "#121212",
+          "button_label": "#ffffff",
+          "secondary_button_label": "#121212",
+          "shadow": "#121212"
+        }
+      },
+      "scheme-326c49dc-bff4-48b8-93c6-ab1c5f6112e5": {
+        "settings": {
+          "background": "#ffffff",
+          "background_gradient": "",
+          "text": "#002f5c",
           "button": "#121212",
           "button_label": "#ffffff",
           "secondary_button_label": "#121212",

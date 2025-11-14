@@ -1,0 +1,381 @@
+{% comment %}
+  NAD+ Transformation Timeline Carousel
+  Premium carousel timeline with progressive line fill
+  Features: swipe navigation, clickable dots, nav buttons, peek effect
+{% endcomment %}
+
+{{ 'nad-transformation-timeline-carousel.css' | asset_url | stylesheet_tag }}
+
+<div id="nad-timeline-{{ section.id }}" class="nad-timeline-wrapper color-{{ section.settings.color_scheme }}" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    {% if section.settings.heading != blank %}
+      <div class="nad-timeline-header">
+        <h2 class="nad-timeline-heading {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        {% if section.settings.subheading != blank %}
+          <p class="nad-timeline-subheading">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="nad-timeline-carousel-wrapper">
+      <!-- Timeline with clickable dots -->
+      <div class="nad-timeline-dots-wrapper">
+        <div class="nad-timeline-line">
+          <div class="nad-timeline-progress" data-progress="0"></div>
+        </div>
+        <div class="nad-timeline-dots">
+          {% for block in section.blocks %}
+            {% if block.type == 'timeline_milestone' %}
+              <button 
+                type="button"
+                class="nad-timeline-dot{% if forloop.first %} active{% endif %}" 
+                data-index="{{ forloop.index0 }}"
+                aria-label="Go to {{ block.settings.period | default: 'milestone' | escape }}"
+              >
+                <span class="nad-dot-inner"></span>
+                <span class="nad-dot-pulse"></span>
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Carousel container -->
+      <div class="nad-carousel-container">
+        <!-- Navigation buttons -->
+        <button type="button" class="nad-nav-button nad-nav-prev" aria-label="Previous milestone">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button type="button" class="nad-nav-button nad-nav-next" aria-label="Next milestone">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Carousel track -->
+        <div class="nad-carousel-track">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'timeline_milestone' %}
+                <div class="nad-carousel-slide{% if forloop.first %} active{% endif %}" data-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+                  <div class="nad-milestone-card">
+                    {% if section.settings.show_images and block.settings.image != blank %}
+                      <div class="nad-milestone-image">
+                        <img 
+                          src="{{ block.settings.image | image_url: width: 800 }}" 
+                          alt="{{ block.settings.title | escape }}" 
+                          width="800" 
+                          height="600" 
+                          loading="lazy"
+                        />
+                      </div>
+                    {% elsif block.settings.icon != blank %}
+                      <div class="nad-milestone-icon">
+                        {{ block.settings.icon }}
+                      </div>
+                    {% endif %}
+                    
+                    {% if block.settings.period != blank %}
+                      <div class="nad-milestone-period">
+                        {{ block.settings.period }}
+                      </div>
+                    {% endif %}
+                    
+                    {% if block.settings.title != blank %}
+                      <h3 class="nad-milestone-title">
+                        {{ block.settings.title }}
+                      </h3>
+                    {% endif %}
+                    
+                    {% if block.settings.description != blank %}
+                      <div class="nad-milestone-description">
+                        {{ block.settings.description }}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var root = document.getElementById('nad-timeline-{{ section.id }}');
+  if (!root) return;
+
+  var track = root.querySelector('.nad-carousel-track');
+  var slides = Array.from(root.querySelectorAll('.nad-carousel-slide'));
+  var dots = Array.from(root.querySelectorAll('.nad-timeline-dot'));
+  var progress = root.querySelector('.nad-timeline-progress');
+  var prevBtn = root.querySelector('.nad-nav-prev');
+  var nextBtn = root.querySelector('.nad-nav-next');
+  
+  if (!slides.length) return;
+  
+  var current = 0;
+  
+  function update() {
+    // Update active classes
+    slides.forEach(function(s, i) {
+      s.classList.toggle('active', i === current);
+    });
+    dots.forEach(function(d, i) {
+      d.classList.toggle('active', i === current);
+    });
+    
+    // Update progress
+    var pct = slides.length > 1 ? (current / (slides.length - 1)) * 100 : 0;
+    progress.style.width = pct + '%';
+    
+    // Update buttons
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === slides.length - 1;
+    
+    // Scroll to slide
+    slides[current].scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center'
+    });
+  }
+  
+  // Button clicks
+  prevBtn.onclick = function() {
+    if (current > 0) {
+      current--;
+      update();
+    }
+  };
+  
+  nextBtn.onclick = function() {
+    if (current < slides.length - 1) {
+      current++;
+      update();
+    }
+  };
+  
+  // Dot clicks
+  dots.forEach(function(dot, i) {
+    dot.onclick = function() {
+      current = i;
+      update();
+    };
+  });
+  
+  // Swipe
+  var startX = 0;
+  track.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+  });
+  
+  track.addEventListener('touchend', function(e) {
+    var endX = e.changedTouches[0].clientX;
+    var diff = startX - endX;
+    
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && current < slides.length - 1) {
+        current++;
+        update();
+      } else if (diff < 0 && current > 0) {
+        current--;
+        update();
+      }
+    }
+  });
+  
+  // Scroll observer
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+        var idx = slides.indexOf(entry.target);
+        if (idx !== -1 && idx !== current) {
+          current = idx;
+          dots.forEach(function(d, i) {
+            d.classList.toggle('active', i === current);
+          });
+          var pct = slides.length > 1 ? (current / (slides.length - 1)) * 100 : 0;
+          progress.style.width = pct + '%';
+          prevBtn.disabled = current === 0;
+          nextBtn.disabled = current === slides.length - 1;
+        }
+      }
+    });
+  }, { root: track, threshold: 0.5 });
+  
+  slides.forEach(function(slide) {
+    observer.observe(slide);
+  });
+  
+  // Init
+  update();
+});
+</script>
+
+{% schema %}
+{
+  "name": "NAD+ Timeline",
+  "tag": "section",
+  "class": "section nad-transformation-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Transformation Journey"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Discover how NAD+ supplementation transforms your body over time"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_images",
+      "label": "Show uploaded images on milestones",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "timeline_milestone",
+      "name": "Timeline Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "period",
+          "label": "Time Period",
+          "default": "Within Days",
+          "info": "e.g., 'Within Days', 'Within Weeks'"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Initial Boost"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (optional)",
+          "info": "Upload an image to show above the title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Early on, you may not notice but increased NAD+ availability is already at work inside your cells, contributing to how energized you feel.</p>"
+        },
+        {
+          "type": "html",
+          "id": "icon",
+          "label": "Icon (SVG)",
+          "info": "Add custom SVG icon code (fallback if no image)",
+          "default": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='20' cy='20' r='18' stroke='currentColor' stroke-width='2'/><path d='M20 12V20L26 26' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NAD+ Timeline",
+      "blocks": [
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "Within Days",
+            "title": "Energy Foundation",
+            "description": "<p>Early on, you may not notice but increased NAD+ availability is already at work inside your cells, contributing to how energized you feel.</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='20' cy='20' r='18' stroke='currentColor' stroke-width='2'/><circle cx='20' cy='20' r='10' fill='currentColor' opacity='0.2'/><path d='M20 10V20L26 14' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+          }
+        },
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "Within Weeks",
+            "title": "Noticeable Changes",
+            "description": "<p>Significant rise in your body's overall NAD+ pool. You may notice reduced fatigue, and improved stamina & focus.*</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 4L22.5 14.5L33 12L25.5 20L33 28L22.5 25.5L20 36L17.5 25.5L7 28L14.5 20L7 12L17.5 14.5L20 4Z' fill='currentColor' opacity='0.2' stroke='currentColor' stroke-width='2'/></svg>"
+          }
+        },
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "Within Months",
+            "title": "Enhanced Vitality",
+            "description": "<p>You may notice increased endurance and cellular energy. Elevated NAD+ helps support your cells' natural repair processes, promoting skin health and resilience*</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6C12.268 6 6 12.268 6 20C6 27.732 12.268 34 20 34C27.732 34 34 27.732 34 20C34 12.268 27.732 6 20 6Z' stroke='currentColor' stroke-width='2'/><path d='M20 14V20L26 23' stroke='currentColor' stroke-width='2' stroke-linecap='round'/><circle cx='20' cy='20' r='8' fill='currentColor' opacity='0.1'/></svg>"
+          }
+        },
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "1 Year and Beyond",
+            "title": "Long-Term Benefits",
+            "description": "<p>Sustained NAD+ levels continue fueling the enzymes that protect against oxidative stress, a key factor in the visible signs of aging.*</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='20' cy='20' r='16' stroke='currentColor' stroke-width='2'/><circle cx='20' cy='20' r='10' stroke='currentColor' stroke-width='2'/><circle cx='20' cy='20' r='4' fill='currentColor'/><path d='M20 4V8M36 20H32M20 32V36M4 20H8' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

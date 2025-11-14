@@ -1,0 +1,283 @@
+{% comment %}
+  NAD+ Transformation Timeline Section
+  Premium horizontal timeline showcasing the transformation journey
+  Fully customizable through the theme editor
+{% endcomment %}
+
+{{ 'nad-transformation-timeline.css' | asset_url | stylesheet_tag }}
+
+<div id="nad-timeline-{{ section.id }}" class="nad-timeline-wrapper color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {% if section.settings.heading != blank %}
+      <div class="nad-timeline-header">
+        <h2 class="nad-timeline-heading {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        {% if section.settings.subheading != blank %}
+          <p class="nad-timeline-subheading">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="nad-timeline-container">
+      <div class="nad-timeline-track">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'timeline_milestone' %}
+              <div class="nad-timeline-milestone" {{ block.shopify_attributes }}>
+                <div class="nad-milestone-marker">
+                  <div class="nad-marker-dot"></div>
+                  <div class="nad-marker-pulse"></div>
+                </div>
+                
+                <div class="nad-milestone-content">
+                  {% if section.settings.show_images and block.settings.image != blank %}
+                    <div class="nad-milestone-media">
+                      <img src="{{ block.settings.image | image_url: width: 480 }}" alt="{{ block.settings.title | escape }}" width="480" height="320" loading="lazy" />
+                    </div>
+                  {% elsif block.settings.icon != blank %}
+                    <div class="nad-milestone-icon">
+                      {{ block.settings.icon }}
+                    </div>
+                  {% endif %}
+                  
+                  {% if block.settings.period != blank %}
+                    <div class="nad-milestone-period">
+                      {{ block.settings.period }}
+                    </div>
+                  {% endif %}
+                  
+                  {% if block.settings.title != blank %}
+                    <h3 class="nad-milestone-title">
+                      {{ block.settings.title }}
+                    </h3>
+                  {% endif %}
+                  
+                  {% if block.settings.description != blank %}
+                    <div class="nad-milestone-description">
+                      {{ block.settings.description }}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+      
+      <div class="nad-timeline-line" style="top: calc(50% + {{ section.settings.line_offset }}px);">
+        <div class="nad-timeline-progress"></div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+      (function(){
+        var sectionId = 'nad-timeline-{{ section.id }}';
+        var root = document.getElementById(sectionId);
+        if (!root) return;
+        var container = root.querySelector('.nad-timeline-container');
+        var line = root.querySelector('.nad-timeline-line');
+        var offset = {{ section.settings.line_offset | default: 0 }};
+
+        function alignLine(){
+          if (!root || !container || !line) return;
+          var marker = root.querySelector('.nad-milestone-marker');
+          if (!marker) return;
+          var containerRect = container.getBoundingClientRect();
+          var markerRect = marker.getBoundingClientRect();
+          var centerY = markerRect.top - containerRect.top + markerRect.height / 2;
+          // apply offset and set top in px relative to container
+          line.style.top = (centerY + (offset || 0)) + 'px';
+          // remove translate if present
+          line.style.transform = 'none';
+        }
+
+        // initial align (delayed to allow images to load)
+        window.setTimeout(alignLine, 60);
+        // realign on load/resize
+        window.addEventListener('load', alignLine);
+        var resizeTimer;
+        window.addEventListener('resize', function(){
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(alignLine, 80);
+        });
+        // observe DOM changes (editor drag/drop)
+        if (window.MutationObserver) {
+          var obs = new MutationObserver(function(){ alignLine(); });
+          obs.observe(root, { childList: true, subtree: true });
+        }
+      })();
+    </script>
+</div>
+
+{% schema %}
+{
+  "name": "NAD+ Timeline",
+  "tag": "section",
+  "class": "section nad-transformation-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Transformation Journey"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Discover how NAD+ supplementation transforms your body over time"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_images",
+      "label": "Show uploaded images on milestones",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "line_offset",
+      "min": -40,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Timeline vertical offset",
+      "default": 0,
+      "info": "Nudge the horizontal line up/down to align with markers"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "timeline_milestone",
+      "name": "Timeline Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "period",
+          "label": "Time Period",
+          "default": "Within Days",
+          "info": "e.g., 'Within Days', 'Within Weeks'"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Initial Boost"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (optional)",
+          "info": "Upload an image to show above the title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Early on, you may not notice but increased NAD+ availability is already at work inside your cells, contributing to how energized you feel.</p>"
+        },
+        {
+          "type": "html",
+          "id": "icon",
+          "label": "Icon (SVG)",
+          "info": "Add custom SVG icon code",
+          "default": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='20' cy='20' r='18' stroke='currentColor' stroke-width='2'/><path d='M20 12V20L26 26' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "NAD+ Timeline",
+      "blocks": [
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "Within Days",
+            "title": "Energy Foundation",
+            "description": "<p>Early on, you may not notice but increased NAD+ availability is already at work inside your cells, contributing to how energized you feel.</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='20' cy='20' r='18' stroke='currentColor' stroke-width='2'/><circle cx='20' cy='20' r='10' fill='currentColor' opacity='0.2'/><path d='M20 10V20L26 14' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+          }
+        },
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "Within Weeks",
+            "title": "Noticeable Changes",
+            "description": "<p>Significant rise in your body's overall NAD+ pool. You may notice reduced fatigue, and improved stamina & focus.*</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 4L22.5 14.5L33 12L25.5 20L33 28L22.5 25.5L20 36L17.5 25.5L7 28L14.5 20L7 12L17.5 14.5L20 4Z' fill='currentColor' opacity='0.2' stroke='currentColor' stroke-width='2'/></svg>"
+          }
+        },
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "Within Months",
+            "title": "Enhanced Vitality",
+            "description": "<p>You may notice increased endurance and cellular energy. Elevated NAD+ helps support your cells' natural repair processes, promoting skin health and resilience*</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6C12.268 6 6 12.268 6 20C6 27.732 12.268 34 20 34C27.732 34 34 27.732 34 20C34 12.268 27.732 6 20 6Z' stroke='currentColor' stroke-width='2'/><path d='M20 14V20L26 23' stroke='currentColor' stroke-width='2' stroke-linecap='round'/><circle cx='20' cy='20' r='8' fill='currentColor' opacity='0.1'/></svg>"
+          }
+        },
+        {
+          "type": "timeline_milestone",
+          "settings": {
+            "period": "1 Year and Beyond",
+            "title": "Long-Term Benefits",
+            "description": "<p>Sustained NAD+ levels continue fueling the enzymes that protect against oxidative stress, a key factor in the visible signs of aging.*</p>",
+            "icon": "<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='20' cy='20' r='16' stroke='currentColor' stroke-width='2'/><circle cx='20' cy='20' r='10' stroke='currentColor' stroke-width='2'/><circle cx='20' cy='20' r='4' fill='currentColor'/><path d='M20 4V8M36 20H32M20 32V36M4 20H8' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

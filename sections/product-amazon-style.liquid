@@ -1,0 +1,502 @@
+{{ 'component-product-amazon-style.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'product-amazon-style.js' | asset_url }}" defer="defer"></script>
+
+{%- assign product = section.settings.product | default: product -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign featured_media = current_variant.featured_media | default: product.featured_media -%}
+
+<script>
+  window.variantStrings = {
+    addToCart: {{ 'products.product.add_to_cart' | t | json }},
+    soldOut: {{ 'products.product.sold_out' | t | json }},
+    unavailable: {{ 'products.product.unavailable' | t | json }},
+  };
+  window.shopUrl = {{ request.origin | json }};
+</script>
+
+{%- style -%}
+  .amazon-btn-add-cart {
+    background: {{ section.settings.primary_button_color }};
+  }
+  .amazon-btn-add-cart:hover:not(:disabled) {
+    background: {{ section.settings.primary_button_color | color_darken: 10 }};
+  }
+  .amazon-subscription-option.active {
+    border-color: {{ section.settings.subscription_highlight_color }};
+    background: {{ section.settings.subscription_highlight_color | color_modify: 'alpha', 0.05 }};
+  }
+  .subscription-price,
+  .price-current {
+    color: {{ section.settings.subscription_highlight_color }};
+  }
+{%- endstyle -%}
+
+<div class="amazon-product-section page-width" data-section-id="{{ section.id }}">
+  <div class="amazon-product-grid">
+    
+    {%- comment -%} LEFT SIDE: Image Gallery {%- endcomment -%}
+    <div class="amazon-product-gallery">
+      {%- if product.media.size > 0 -%}
+        
+        {%- comment -%} Vertical Thumbnails {%- endcomment -%}
+        <div class="amazon-gallery-thumbnails">
+          {%- for media in product.media limit: 7 -%}
+            <button 
+              class="amazon-thumbnail{% if media == featured_media %} active{% endif %}"
+              data-media-id="{{ media.id }}"
+              aria-label="View image {{ forloop.index }}"
+              type="button"
+            >
+              {%- if media.media_type == 'image' -%}
+                <img 
+                  src="{{ media.preview_image | image_url: width: 80 }}" 
+                  alt="{{ media.alt | escape }}"
+                  loading="lazy"
+                  width="80"
+                  height="80"
+                >
+              {%- elsif media.media_type == 'video' or media.media_type == 'external_video' -%}
+                <img 
+                  src="{{ media.preview_image | image_url: width: 80 }}" 
+                  alt="{{ media.alt | escape }}"
+                  loading="lazy"
+                  width="80"
+                  height="80"
+                >
+                <svg class="media-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 2L13 8L3 14V2Z" fill="currentColor"/>
+                </svg>
+              {%- endif -%}
+            </button>
+          {%- endfor -%}
+        </div>
+
+        {%- comment -%} Main Image Display {%- endcomment -%}
+        <div class="amazon-gallery-main">
+          {%- for media in product.media -%}
+            <div 
+              class="amazon-main-media{% if media == featured_media %} active{% endif %}"
+              data-media-id="{{ media.id }}"
+            >
+              {%- case media.media_type -%}
+                {%- when 'image' -%}
+                  <img 
+                    src="{{ media | image_url: width: 1000 }}" 
+                    alt="{{ media.alt | escape }}"
+                    srcset="{{ media | image_url: width: 500 }} 500w,
+                            {{ media | image_url: width: 750 }} 750w,
+                            {{ media | image_url: width: 1000 }} 1000w"
+                    sizes="(min-width: 990px) 50vw, 100vw"
+                    width="{{ media.width }}"
+                    height="{{ media.height }}"
+                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                  >
+                {%- when 'video' -%}
+                  {{ media | video_tag: controls: true, autoplay: false, loop: false, muted: false }}
+                {%- when 'external_video' -%}
+                  {{ media | external_video_tag }}
+                {%- when 'model' -%}
+                  {{ media | model_viewer_tag }}
+              {%- endcase -%}
+            </div>
+          {%- endfor -%}
+        </div>
+
+      {%- else -%}
+        <div class="amazon-gallery-main">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} RIGHT SIDE: Product Info {%- endcomment -%}
+    <div class="amazon-product-info">
+      
+      {%- comment -%} Product Title {%- endcomment -%}
+      <h1 class="amazon-product-title">{{ product.title }}</h1>
+
+      {%- comment -%} Reviews {%- endcomment -%}
+      {%- if product.metafields.reviews.rating.value != blank -%}
+        <div class="amazon-product-reviews">
+          <div class="amazon-stars">
+            {%- assign rating = product.metafields.reviews.rating.value | times: 1.0 -%}
+            {%- assign rating_floor = rating | floor -%}
+            {%- for i in (1..5) -%}
+              {%- assign next_star = i | plus: 1 -%}
+              <svg class="star{% if i <= rating %} filled{% elsif i == next_star and rating != rating_floor %} half{% endif %}" width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 1.5l1.9 3.8 4.2.6-3 3 .7 4.1-3.8-2-3.8 2 .7-4.1-3-3 4.2-.6L8 1.5z" fill="currentColor"/>
+              </svg>
+            {%- endfor -%}
+          </div>
+          <span class="amazon-review-count">{{ product.metafields.reviews.rating_count | default: 0 }} Reviews</span>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Product Description {%- endcomment -%}
+      {%- if product.description != blank -%}
+        <div class="amazon-product-description">
+          {{ product.description | truncate: 200 }}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Price {%- endcomment -%}
+      <div class="amazon-product-price" id="price-{{ section.id }}">
+        <span class="price-current" data-price="{{ current_variant.price }}">
+          {{ current_variant.price | money }}
+        </span>
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="price-was">{{ current_variant.compare_at_price | money }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Variant Selector {%- endcomment -%}
+      {%- unless product.has_only_default_variant -%}
+        <div class="amazon-variant-selector">
+          <label class="amazon-selector-label">
+            {%- if product.options_with_values.size == 1 -%}
+              {{ product.options_with_values.first.name }}:
+            {%- else -%}
+              Select options:
+            {%- endif -%}
+          </label>
+          
+          <variant-radios 
+            class="amazon-variant-radios" 
+            data-section="{{ section.id }}" 
+            data-url="{{ product.url }}"
+            data-update-url="true"
+          >
+            {%- for option in product.options_with_values -%}
+              <fieldset class="amazon-variant-fieldset">
+                <legend class="amazon-variant-fieldset-legend">{{ option.name }}</legend>
+                {%- for value in option.values -%}
+                  <input 
+                    type="radio" 
+                    id="Option-{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                    name="options[{{ option.name | escape }}]"
+                    value="{{ value | escape }}"
+                    form="product-form-{{ section.id }}"
+                    {% if option.selected_value == value %}checked{% endif %}
+                  >
+                  <label for="Option-{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" class="amazon-variant-label">
+                    {{ value }}
+                  </label>
+                {%- endfor -%}
+              </fieldset>
+            {%- endfor -%}
+            <script type="application/json">
+              {{ product.variants | json }}
+            </script>
+          </variant-radios>
+        </div>
+      {%- endunless -%}
+
+      {%- comment -%} Subscription Options {%- endcomment -%}
+      {%- if product.selling_plan_groups.size > 0 -%}
+        <div class="amazon-subscription-options">
+          {%- for group in product.selling_plan_groups limit: 1 -%}
+            {%- assign first_plan = group.selling_plans.first -%}
+            {%- assign discount_percentage = 0 -%}
+            {%- if first_plan.price_adjustments.size > 0 -%}
+              {%- assign price_adjustment = first_plan.price_adjustments.first -%}
+              {%- if price_adjustment.value_type == 'percentage' -%}
+                {%- assign discount_percentage = price_adjustment.value -%}
+              {%- endif -%}
+            {%- endif -%}
+            
+            {%- assign discounted_price = current_variant.price -%}
+            {%- if discount_percentage > 0 -%}
+              {%- assign discount_amount = current_variant.price | times: discount_percentage | divided_by: 100 -%}
+              {%- assign discounted_price = current_variant.price | minus: discount_amount -%}
+            {%- endif -%}
+            
+            <div class="amazon-subscription-option active">
+              <input 
+                type="radio" 
+                id="subscribe-{{ section.id }}" 
+                name="purchase-option-{{ section.id }}" 
+                value="subscription"
+                checked
+                data-selling-plan="{{ first_plan.id }}"
+              >
+              <label for="subscribe-{{ section.id }}">
+                <div class="subscription-header">
+                  <span class="subscription-label">
+                    Subscribe & Save
+                    {%- if discount_percentage > 0 %} {{ discount_percentage }}%{%- endif -%}
+                  </span>
+                  <span class="subscription-price" data-subscription-price="{{ discounted_price }}">
+                    {{ discounted_price | money }}
+                  </span>
+                </div>
+                {%- if section.settings.show_subscription_details -%}
+                  <div class="subscription-details">
+                    <a href="#" class="compare-link">Compare Savings</a>
+                  </div>
+                {%- endif -%}
+              </label>
+            </div>
+
+            {%- comment -%} Delivery Frequency Dropdown {%- endcomment -%}
+            <div class="amazon-delivery-frequency">
+              <select name="selling_plan" id="selling-plan-{{ section.id }}" class="amazon-select" form="product-form-{{ section.id }}">
+                {%- for plan in group.selling_plans -%}
+                  <option value="{{ plan.id }}" {% if forloop.first %}selected{% endif %}>
+                    {{ plan.name }}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+            {%- comment -%} Subscription Benefits {%- endcomment -%}
+            <ul class="amazon-subscription-benefits">
+              <li>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                1 capsule per day for optimal NAD+ support.
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Free U.S. Shipping on every order, always.
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Never miss a day of NAD+ support.
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Pause, skip, or cancel anytime.
+              </li>
+            </ul>
+          {%- endfor -%}
+
+          {%- comment -%} One-Time Purchase Option {%- endcomment -%}
+          <div class="amazon-subscription-option">
+            <input 
+              type="radio" 
+              id="onetime-{{ section.id }}" 
+              name="purchase-option-{{ section.id }}" 
+              value="onetime"
+            >
+            <label for="onetime-{{ section.id }}">
+              <span class="subscription-label">One-Time Purchase</span>
+              <span class="subscription-price" data-onetime-price="{{ current_variant.price }}">
+                {{ current_variant.price | money }}
+              </span>
+            </label>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Add to Cart Form {%- endcomment -%}
+      {%- assign form_id = 'product-form-' | append: section.id -%}
+      <product-form class="amazon-product-form">
+        {%- form 'product', product, id: form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" data-productid="{{ product.id }}" class="product-variant-id">
+          
+          <div class="amazon-add-to-cart">
+            <button 
+              type="submit" 
+              name="add"
+              class="amazon-btn-add-cart"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              <span class="btn-text">
+                {%- if current_variant.available -%}
+                  {{ 'products.product.add_to_cart' | t }}
+                {%- else -%}
+                  {{ 'products.product.sold_out' | t }}
+                {%- endif -%}
+              </span>
+              <div class="loading-overlay__spinner hidden">
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  class="spinner"
+                  viewBox="0 0 66 66"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                </svg>
+              </div>
+            </button>
+          </div>
+
+          {%- if section.settings.show_dynamic_checkout -%}
+            <div class="amazon-dynamic-checkout">
+              {{ form | payment_button }}
+            </div>
+          {%- endif -%}
+
+          <div class="product-form__error-message-wrapper" role="alert" hidden>
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              class="icon icon-error"
+              viewBox="0 0 13 13"
+            >
+              <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+              <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+              <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+              <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7">
+            </svg>
+            <span class="product-form__error-message"></span>
+          </div>
+        {%- endform -%}
+      </product-form>
+
+      {%- comment -%} Additional Product Info {%- endcomment -%}
+      {%- if section.settings.show_vendor and product.vendor != blank -%}
+        <div class="amazon-product-vendor">
+          <span>Brand:</span> {{ product.vendor }}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_sku and current_variant.sku != blank -%}
+        <div class="amazon-product-sku">
+          <span>SKU:</span> <span data-sku>{{ current_variant.sku }}</span>
+        </div>
+      {%- endif -%}
+
+    </div>
+
+  </div>
+</div>
+
+{%- comment -%} Product JSON for JavaScript {%- endcomment -%}
+<script type="application/json" data-product-json>
+  {{ product | json }}
+</script>
+
+{%- comment -%} SEO Structured Data {%- endcomment -%}
+{%- liquid
+  if current_variant.featured_media
+    assign seo_media = current_variant.featured_media
+  else
+    assign seo_media = product.featured_media
+  endif
+-%}
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {% if seo_media -%}
+      "image": [
+        {{ seo_media | image_url: width: 1920 | prepend: "https:" | json }}
+      ],
+    {%- endif %}
+    "description": {{ product.description | strip_html | json }},
+    {% if product.selected_or_first_available_variant.sku != blank -%}
+      "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    {%- endif %}
+    "brand": {
+      "@type": "Brand",
+      "name": {{ product.vendor | json }}
+    },
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type" : "Offer",
+          {%- if variant.sku != blank -%}
+            "sku": {{ variant.sku | json }},
+          {%- endif -%}
+          {%- if variant.barcode.size == 12 -%}
+            "gtin12": {{ variant.barcode }},
+          {%- endif -%}
+          {%- if variant.barcode.size == 13 -%}
+            "gtin13": {{ variant.barcode }},
+          {%- endif -%}
+          {%- if variant.barcode.size == 14 -%}
+            "gtin14": {{ variant.barcode }},
+          {%- endif -%}
+          "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price" : {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency" : {{ cart.currency.iso_code | json }},
+          "url" : {{ request.origin | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Amazon-Style Product",
+  "tag": "section",
+  "class": "section-amazon-product",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Select a product to display. Leave empty to use the current product on product pages."
+    },
+    {
+      "type": "header",
+      "content": "Product Information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subscription_details",
+      "label": "Show subscription details link",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Purchase Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout buttons",
+      "info": "Shows express payment options like Shop Pay, Apple Pay, etc.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_color",
+      "label": "Primary button color",
+      "default": "#2563eb"
+    },
+    {
+      "type": "color",
+      "id": "subscription_highlight_color",
+      "label": "Subscription highlight color",
+      "default": "#2563eb"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Amazon-Style Product",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

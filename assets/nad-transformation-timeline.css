@@ -1,0 +1,452 @@
+/* NAD+ Transformation Timeline - Premium Design */
+
+/* Section Wrapper */
+.nad-timeline-wrapper {
+  padding: var(--section-padding-top, 6rem) 0 var(--section-padding-bottom, 6rem);
+  position: relative;
+  overflow: visible;
+}
+
+.nad-timeline-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(2, 88, 166, 0.02) 0%, rgba(255, 255, 255, 0) 50%);
+  pointer-events: none;
+}
+
+/* Header Section */
+.nad-timeline-header {
+  text-align: center;
+  max-width: 80rem;
+  margin: 0 auto 5rem;
+  padding: 0 2rem;
+}
+
+.nad-timeline-heading {
+  font-family: var(--font-family-heading, "Cabin", sans-serif);
+  color: var(--color-heading, #002f5c);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.nad-timeline-heading.h0 {
+  font-size: clamp(3rem, 5vw, 5rem);
+}
+
+.nad-timeline-heading.h1 {
+  font-size: clamp(2.5rem, 4vw, 4rem);
+}
+
+.nad-timeline-heading.h2 {
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.nad-timeline-subheading {
+  font-family: var(--font-family-body, "Source Sans 3", sans-serif);
+  color: var(--color-body-text, #0057a6);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  max-width: 60rem;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+/* Timeline Container */
+.nad-timeline-container {
+  position: relative;
+  padding: 4rem 2rem;
+  max-width: 140rem;
+  margin: 0 auto;
+}
+
+/* Timeline Line */
+.nad-timeline-line {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  height: 0.3rem;
+  background: linear-gradient(90deg,
+    rgba(175, 177, 185, 0.2) 0%,
+    rgba(2, 88, 166, 0.3) 50%,
+    rgba(175, 177, 185, 0.2) 100%);
+  border-radius: 10rem;
+  overflow: hidden;
+  z-index: 2;
+  transform: none; /* top will be set via JS to align with markers */
+}
+
+.nad-timeline-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, 
+    var(--color-primary, #0258A6) 0%, 
+    var(--color-secondary, #2872B4) 100%);
+  border-radius: 10rem;
+  animation: progressGrow 2s ease-out forwards;
+  box-shadow: 0 0 2rem rgba(2, 88, 166, 0.4);
+}
+
+@keyframes progressGrow {
+  to {
+    width: 100%;
+  }
+}
+
+/* Timeline Track */
+.nad-timeline-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+@media screen and (min-width: 990px) {
+  .nad-timeline-track {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Milestone */
+.nad-timeline-milestone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInUp 0.8s ease-out backwards;
+}
+
+.nad-timeline-milestone:nth-child(1) { animation-delay: 0.1s; }
+.nad-timeline-milestone:nth-child(2) { animation-delay: 0.2s; }
+.nad-timeline-milestone:nth-child(3) { animation-delay: 0.3s; }
+.nad-timeline-milestone:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Milestone Marker */
+.nad-milestone-marker {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 2rem;
+  z-index: 4;
+}
+
+.nad-marker-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 2rem;
+  background: linear-gradient(135deg, 
+    var(--color-primary, #0258A6) 0%, 
+    var(--color-secondary, #2872B4) 100%);
+  border-radius: 50%;
+  border: 0.4rem solid rgb(var(--color-background, 255, 255, 255));
+  box-shadow: 
+    0 0.4rem 1.6rem rgba(2, 88, 166, 0.3),
+    0 0 0 0.8rem rgba(2, 88, 166, 0.1);
+  transition: all 0.3s ease;
+}
+
+.nad-milestone-marker:hover .nad-marker-dot {
+  transform: translate(-50%, -50%) scale(1.2);
+  box-shadow: 
+    0 0.6rem 2rem rgba(2, 88, 166, 0.4),
+    0 0 0 1.2rem rgba(2, 88, 166, 0.15);
+}
+
+.nad-marker-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 2rem;
+  background: var(--color-primary, #0258A6);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+/* Milestone Content */
+.nad-milestone-content {
+  background: rgb(var(--color-background, 255, 255, 255));
+  border-radius: 1.6rem;
+  padding: 2.4rem;
+  text-align: center;
+  border: 0.1rem solid rgba(2, 88, 166, 0.08);
+  box-shadow: 
+    0 0.4rem 2rem rgba(0, 0, 0, 0.04),
+    0 0.8rem 4rem rgba(2, 88, 166, 0.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.nad-milestone-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.4rem;
+  background: linear-gradient(90deg, 
+    var(--color-primary, #0258A6) 0%, 
+    var(--color-secondary, #2872B4) 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nad-milestone:hover .nad-milestone-content {
+  transform: translateY(-0.8rem);
+  box-shadow: 
+    0 0.8rem 3rem rgba(0, 0, 0, 0.06),
+    0 1.6rem 6rem rgba(2, 88, 166, 0.1);
+  border-color: rgba(2, 88, 166, 0.15);
+}
+
+.nad-milestone:hover .nad-milestone-content::before {
+  transform: scaleX(1);
+}
+
+/* Milestone Icon */
+.nad-milestone-icon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  color: var(--color-primary, #0258A6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.nad-milestone-icon svg {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.nad-milestone:hover .nad-milestone-icon svg {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Milestone Image (optional) */
+.nad-milestone-media {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.nad-milestone-media img {
+  max-width: 6.5rem;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  box-shadow: 0 0.6rem 1.6rem rgba(2, 88, 166, 0.06);
+}
+
+/* Milestone Period */
+.nad-milestone-period {
+  font-family: var(--font-family-marketing, "Poppins", sans-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary, #0258A6);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, 
+    var(--color-primary, #0258A6) 0%, 
+    var(--color-secondary, #2872B4) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Milestone Title */
+.nad-milestone-title {
+  font-family: var(--font-family-heading, "Cabin", sans-serif);
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  font-weight: 700;
+  color: var(--color-heading, #002f5c);
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* Milestone Description */
+.nad-milestone-description {
+  font-family: var(--font-family-body, "Source Sans 3", sans-serif);
+  font-size: 1.4rem;
+  line-height: 1.7;
+  color: var(--color-body-text, #0057a6);
+  opacity: 0.85;
+  flex-grow: 1;
+}
+
+.nad-milestone-description p {
+  margin: 0;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 989px) {
+  .nad-timeline-wrapper {
+    padding: 4rem 0;
+  }
+
+  .nad-timeline-header {
+    margin-bottom: 3rem;
+  }
+
+  .nad-timeline-container {
+    padding: 2rem 1rem;
+  }
+
+  .nad-timeline-line {
+    display: none;
+  }
+
+  .nad-timeline-track {
+    gap: 2rem;
+  }
+
+  .nad-milestone-content {
+    padding: 2rem;
+  }
+
+  .nad-milestone-marker {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .nad-timeline-wrapper {
+    padding: 3rem 0;
+  }
+
+  .nad-timeline-header {
+    padding: 0 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .nad-timeline-track {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .nad-milestone-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .nad-milestone-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .nad-milestone-period {
+    font-size: 1.2rem;
+  }
+
+  .nad-milestone-description {
+    font-size: 1.3rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .nad-timeline-wrapper {
+    padding: 2rem 0;
+  }
+
+  .nad-marker-pulse {
+    display: none;
+  }
+
+  .nad-milestone-content {
+    box-shadow: none;
+    border: 0.1rem solid #ddd;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .nad-timeline-milestone,
+  .nad-timeline-progress,
+  .nad-marker-pulse {
+    animation: none;
+  }
+
+  .nad-milestone-content,
+  .nad-marker-dot,
+  .nad-milestone-icon svg {
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .nad-timeline-line {
+    background: currentColor;
+    opacity: 0.3;
+  }
+
+  .nad-milestone-content {
+    border-width: 0.2rem;
+  }
+
+  .nad-marker-dot {
+    border-width: 0.3rem;
+  }
+}
+
+/* Dark Mode Support (if Dawn theme has it) */
+@media (prefers-color-scheme: dark) {
+  .nad-timeline-wrapper::before {
+    background: linear-gradient(135deg, rgba(2, 88, 166, 0.05) 0%, rgba(0, 0, 0, 0) 50%);
+  }
+
+  .nad-milestone-content {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .nad-milestone:hover .nad-milestone-content {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}

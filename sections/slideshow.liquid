@@ -54,20 +54,33 @@
     fill: {{ section.settings.controls_color | default: '#0057a6' }} !important;
     stroke: {{ section.settings.controls_color | default: '#0057a6' }} !important;
   }
-
-  /* Dots color */
+  /* Dots appearance — target only the inner .dot element so the button remains round
+     and links don't get filled. Also add spacing between link elements. */
   #Slider-{{ section.id }} + .slideshow__controls .dot,
-  #Slider-{{ section.id }} ~ .slideshow__controls .dot,
-  #Slider-{{ section.id }} + .slideshow__controls .slider-counter__link,
-  #Slider-{{ section.id }} ~ .slideshow__controls .slider-counter__link {
+  #Slider-{{ section.id }} ~ .slideshow__controls .dot {
     background-color: {{ section.settings.controls_color | default: '#0057a6' }} !important;
     border-color: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    display: block !important;
+    box-sizing: border-box !important;
   }
 
-  /* Active dot state */
+  /* Keep the link/button itself transparent and provide horizontal gap */
+  #Slider-{{ section.id }} + .slideshow__controls .slider-counter__link,
+  #Slider-{{ section.id }} ~ .slideshow__controls .slider-counter__link {
+    margin: 0 6px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  /* Active dot state (slightly larger/filled) */
   #Slider-{{ section.id }} + .slideshow__controls .slider-counter__link--active .dot,
   #Slider-{{ section.id }} ~ .slideshow__controls .slider-counter__link--active .dot {
-    background-color: {{ section.settings.controls_color | default: '#0057a6' }} !important;
+    background-color: {{ section.settings.controls_active_color | default: '#003a6b' }} !important;
+    transform: scale(1.15);
   }
 
   /* Ensure disabled state is visible */
@@ -399,6 +412,12 @@
       "label": "Controls Color (arrows & dots)",
       "default": "#0057a6"
     },
+      {
+        "type": "color",
+        "id": "controls_active_color",
+        "label": "Controls Active Dot Color",
+        "default": "#003a6b"
+      },
     {
       "type": "color",
       "id": "controls_bg_color",

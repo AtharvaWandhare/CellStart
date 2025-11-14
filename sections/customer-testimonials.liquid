@@ -167,6 +167,25 @@
     }
   }
 
+  /* Mobile fit: ensure a single review card is fully visible in the viewport */
+  @media screen and (max-width: 749px) {
+    .customer-testimonials__grid {
+      /* Respect container padding so first/last cards aren't cut off */
+      padding-left: {{ section.settings.container_padding_mobile }}px;
+      padding-right: {{ section.settings.container_padding_mobile }}px;
+      box-sizing: content-box;
+    }
+
+    .customer-testimonial-card {
+      /* Make cards fit the available viewport width (minus container padding) */
+      min-width: calc(100% - {{ section.settings.container_padding_mobile | times: 2 }}px);
+      width: calc(100% - {{ section.settings.container_padding_mobile | times: 2 }}px);
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 0 auto;
+    }
+  }
+
   /* Testimonial Card */
   .customer-testimonial-card {
     background: {{ section.settings.card_background_color }};
@@ -529,12 +548,7 @@
 
         <div class="customer-testimonials__grid">
           {%- for block in section.blocks -%}
-            {%- assign delay_class = 'animate-delay-' | append: forloop.index -%}
-            {%- if forloop.index > 4 -%}
-              {%- assign delay_class = 'animate-delay-4' -%}
-            {%- endif -%}
-
-            <div class="customer-testimonial-card animate-fade-in {{ delay_class }}" {{ block.shopify_attributes }}>
+            <div class="customer-testimonial-card" {{ block.shopify_attributes }}>
               {%- comment -%} Star Rating {%- endcomment -%}
               <div class="customer-testimonial__rating">
                 {%- for i in (1..5) -%}

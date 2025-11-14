@@ -14,30 +14,22 @@
     "announcement-bar": {
       "type": "announcement-bar",
       "blocks": {
-        "announcement_VrgtmU": {
-          "type": "announcement",
-          "settings": {
-            "text": "Welcome to our store",
-            "link": ""
-          }
-        },
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
-            "text": "Get 20% OFF on your first purchase",
-            "link": ""
+            "text": "Get 20% OFF on your first purchase! SHOP NOW!",
+            "link": "shopify://products/nad"
           }
         },
         "announcement_FEdxw6": {
           "type": "announcement",
           "settings": {
-            "text": "Black Friday Sale is LIVE!",
-            "link": ""
+            "text": "Black Friday Sale is LIVE. GRAB The Offer NOW!",
+            "link": "shopify://products/nad"
           }
         }
       },
       "block_order": [
-        "announcement_VrgtmU",
         "announcement-bar-0",
         "announcement_FEdxw6"
       ],

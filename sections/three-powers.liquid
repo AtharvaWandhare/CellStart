@@ -38,7 +38,7 @@
 
     .three-powers-header {
       text-align: center;
-      margin-bottom: {{ section.settings.header_margin_bottom_mobile }}px;
+      {% comment %} margin-bottom: {{ section.settings.header_margin_bottom_mobile }}px; {% endcomment %}
       /* start hidden for scroll animation */
       opacity: 0;
       transform: translateY(18px);
@@ -88,16 +88,18 @@
     }
 
     /* animation helpers for cards */
+    /* Animations disabled for power cards so they render instantly */
     .power-card {
-      opacity: 0;
-      transform: translateY(24px) scale(0.98);
-      transition: opacity 0.9s cubic-bezier(0.2,0.9,0.2,1), transform 0.9s cubic-bezier(0.2,0.9,0.2,1);
-      will-change: transform, opacity;
+      opacity: 1;
+      transform: none;
+      transition: none;
+      will-change: auto;
     }
 
+    /* If other code toggles this class, keep it harmless */
     .power-card.animate-visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: none;
     }
 
     .three-powers-header.animate-visible {
@@ -551,21 +553,11 @@
       hObserver.observe(header);
     }
 
-    // Observe cards with stagger
-    const cardObserver = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const el = entry.target;
-          // read index variable
-          const idx = parseInt(getComputedStyle(el).getPropertyValue('--i')) || 0;
-          // slower stagger: multiply index by 260ms for gentler reveal
-          setTimeout(() => { el.classList.add('animate-visible'); }, idx * 260);
-          obs.unobserve(el);
-        }
-      });
-    }, observerOptions);
-
-    cards.forEach(card => cardObserver.observe(card));
+    // Card reveal disabled: make cards visible immediately (no scroll animation)
+    // This removes the staggered loading/appear effect so the cards render instantly.
+    cards.forEach(card => {
+      card.classList.add('animate-visible');
+    });
   })();
 </script>
 

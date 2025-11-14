@@ -133,7 +133,7 @@ slideshow-component .slideshow.banner {
 }
 
 .banner__subheading {
-  max-width: clamp(40ch, 100%, 80ch);
+  max-width: clamp(40ch, 100%, 60ch);
 }
 
 .slideshow__text>* {
